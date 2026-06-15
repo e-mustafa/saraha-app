@@ -1,4 +1,4 @@
-import { isDev } from '../../configs/env.js';
+import { isDev } from '../../config/env.js';
 import AppError from './app-error.js';
 
 const productionMsg = 'Sorry, something went wrong.';

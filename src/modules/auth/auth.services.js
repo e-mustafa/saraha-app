@@ -1,1 +1,3 @@
-export const signupService = () => {};
+export const signupService = () => {
+   return {}
+};

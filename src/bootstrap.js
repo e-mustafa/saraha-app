@@ -1,5 +1,5 @@
-import connectDB from './DB/connection';
-import globalErrorHandler from './utils/error-handler/global-error.js';
+import connectDB from './DB/connection.js';
+import {globalErrorHandler} from './utils/error-handler/index.js';
 import { throwException } from './utils/response/throw.exceptions.js';
 
 export default async function bootstrap(app, express) {

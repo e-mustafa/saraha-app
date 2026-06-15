@@ -1,5 +1,5 @@
 import { connect } from 'mongoose';
-import { configEnv } from '../config/env';
+import { configEnv } from '../config/env.js';
 
 export default async function connectDB() {
 	try {
