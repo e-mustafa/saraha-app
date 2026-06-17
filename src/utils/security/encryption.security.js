@@ -1,24 +1,38 @@
-import crypto from 'node:crypto';
+import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 import { configEnv } from '../../config/env.js';
 
-const ENCRYPTION_SECRET_KEY = Buffer.from(configEnv.security.encKey, 'hex');
-const IV_LENGTH = configEnv.security.iv;
+const algorithm = 'aes-256-cbc';
 
-export const encrypt = async (text) => {
-	const iv = crypto.randomBytes(IV_LENGTH);
-	const cipher = crypto.createCipheriv('aes-256-cbc', ENCRYPTION_SECRET_KEY, iv);
+const ENCRYPTION_SECRET_KEY = Buffer.from(configEnv.security.encKey, 'hex');
+const IV_LENGTH = +configEnv.security.iv;
+
+/**
+ * Encrypts a string using AES-256-CBC
+ * @param {string} text - The text to encrypt
+ * @returns {string} - The encrypted text in the format "iv:encryptedText"
+ */
+export const encrypt = (text) => {
+	const iv = randomBytes(IV_LENGTH);
+	console.log('iv', iv);
+	console.log('key', configEnv.security.encKey.length);
+	const cipher = createCipheriv(algorithm, ENCRYPTION_SECRET_KEY, iv);
 
 	let encryptedText = cipher.update(text, 'utf8', 'hex');
 	encryptedText += cipher.final('hex');
 	return `${iv.toString('hex')}:${encryptedText}`;
 };
 
-export const decrypt = async (encryptedText = '') => {
-	const [iv, encryptedText] = encryptedText.split(':');
+/**
+ * Decrypts a string using AES-256-CBC
+ * @param {string} encryptedData - The encrypted data in the format "iv:encryptedText"
+ * @returns {string} - The decrypted text
+ */
+export const decrypt = (encryptedData = '') => {
+	const [iv, encryptedText] = encryptedData.split(':');
 
 	const binaryLikeIv = Buffer.from(iv, 'hex');
 
-	const decipher = crypto.createDecipheriv('aes-256-cbc', ENCRYPTION_SECRET_KEY, binaryLikeIv);
+	const decipher = createDecipheriv(algorithm, ENCRYPTION_SECRET_KEY, binaryLikeIv);
 
 	let decryptedText = decipher.update(encryptedText, 'hex', 'utf8');
 	decryptedText += decipher.final('utf8');
