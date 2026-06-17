@@ -13,8 +13,10 @@ const sendErrorDev = (err, res) => {
 			name: err.name,
 			statusCode: err.statusCode,
 			isOperational: err.isOperational,
+			code: err.code,
 			stack: err.stack,
 		},
+		cause: err.cause,
 	});
 };
 
@@ -31,14 +33,17 @@ const sendErrorProduction = (err, res) => {
 // Transformer for invalid MongoDB Object ID errors (e.g., malformed ID)
 const handleMongooseCastError = (err) => {
 	const message = `Invalid field value for ${err.path}`;
-	return new AppError(400, message, err.errors);
+	return new AppError(400, message, 'invalid_field_value', err.errors);
 };
 
 // Transformer for duplicate database keys (e.g., email already registered)
 const handleMongooseDuplicateFields = (err) => {
-	const value = Object.keys(err.keyValue)[0];
+	const value = Object.keys(err?.cause?.keyValue)[0];
 	const message = `Duplicate field value: ${value}. Please use another value.`;
-	return new AppError(409, message);
+	const errors = {
+		[value]: err.message || message,
+	};
+	return new AppError(409, message, 'duplicate_field_value', errors);
 };
 
 // Transformer for schema validation failures (e.g., age out of bounds)
@@ -50,8 +55,8 @@ const handleMongooseValidationError = (err) => {
 		errors[el?.properties?.path || el.path] = el.message;
 	});
 
-	const message = `Validation failed. Please check your information.`;
-	return new AppError(400, message, errors);
+	const message = `Database validation failed. Please check your information.`;
+	return new AppError(400, message, 'database_validation_error', errors);
 };
 
 // Main Express global error handling middleware
@@ -62,10 +67,11 @@ export default function globalErrorHandler(err, req, res, next) {
 
 	// Use the original error object directly to avoid clone issues with non-enumerable properties
 	let error = err;
+	const cause = err.cause;
 
 	// Check and transform specific Mongoose/MongoDB errors
 	if (err.name === 'CastError') error = handleMongooseCastError(err);
-	if (err.code === 11000) error = handleMongooseDuplicateFields(err);
+	if (err.code === 11000 || cause?.code === 11000) error = handleMongooseDuplicateFields(err);
 	if (err.name === 'ValidationError') error = handleMongooseValidationError(err);
 
 	// Route error response based on the current environment
