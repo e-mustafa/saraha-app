@@ -15,6 +15,25 @@ export const configEnv = {
 		encKey: process.env.ENCRYPTION_KEY,
 		iv: process.env.IV_LENGTH,
 	},
+	// jwt: {
+	// 	secret: process.env.ACCESS_TOKEN_SECRET,
+	// 	expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
+	// },
+};
+
+export const jwtSignatureLevel = {
+	user: {
+		ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_USER_LEVEL,
+		REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_USER_LEVEL,
+		ACCESS_TOKEN_EXPIRES: process.env.ACCESS_TOKEN_USER_EXPIRES_IN || '15m',
+		REFRESH_TOKEN_EXPIRES: process.env.REFRESH_TOKEN_USER_EXPIRES_IN || '7d',
+	},
+	admin: {
+		ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_ADMIN_LEVEL,
+		REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_ADMIN_LEVEL,
+		ACCESS_TOKEN_EXPIRES: process.env.ACCESS_TOKEN_ADMIN_EXPIRES_IN || '10m',
+		REFRESH_TOKEN_EXPIRES: process.env.REFRESH_TOKEN_ADMIN_EXPIRES_IN || '3d',
+	},
 };
 
 export const isDev = configEnv.environment == 'development';
