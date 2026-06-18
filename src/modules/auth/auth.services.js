@@ -1,8 +1,10 @@
 import jwt from 'jsonwebtoken';
 import User from '../../DB/models/user.model.js';
 import { TOKEN_TYPES_ENUM } from '../../utils/enums/security,enum.js';
+import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
 import { throwException } from '../../utils/response/throw.exceptions.js';
 import { verifyHash } from '../../utils/security/hash.security.js';
+import { verifyOAuth2Google } from '../../utils/security/tokens/providers/google.token.js';
 import { generateTokens, getSignature } from '../../utils/security/tokens/token.js';
 
 export const signupService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
@@ -26,8 +28,8 @@ export const signupService = async ({ firstName, lastName, username, email, pass
 		lastName,
 		username,
 		email,
-		password, //: hashedPassword,
-		phone, //: encryptedPhone,
+		password, //: hashedPassword, in user model password is hashed automatically with pre save middleware
+		phone, //: encryptedPhone, in user model phone is encrypted automatically with pre save middleware
 		gender,
 		birthdate,
 	});
@@ -44,21 +46,17 @@ export const loginService = async ({ email, password }) => {
 		throwException(400, 'Please enter required fields email and password');
 	}
 
-	console.log('body', { email, password });
 	const user = await User.findOne({ email });
 	if (!user) {
 		throwException(404, 'Invalid email or password');
 	}
 
 	const isPasswordValid = await verifyHash(password, user.password);
-	console.log('isPasswordValid', isPasswordValid);
 	if (!isPasswordValid) {
 		throwException(401, 'Invalid email or password');
 	}
-	console.log('TokenExpiredError', jwt.TokenExpiredError());
 
 	const tokens = generateTokens(user);
-
 	return tokens;
 };
 
@@ -95,4 +93,49 @@ export const refreshAccessTokenService = async (refreshToken) => {
 		// throw exception if token is expired or invalid
 		throwException(401, 'Refresh token expired or invalid. Please login again.');
 	}
+};
+
+export const socialLoginService = async (provider, idToken) => {
+	if (!provider || !Object.values(PROVIDERS_ENUM).includes(provider)) {
+		throwException(400, 'Invalid provider');
+	}
+
+	let payload = {};
+	if (provider === PROVIDERS_ENUM.GOOGLE) {
+		payload = await verifyOAuth2Google(idToken);
+	}
+
+	payload = await verifyOAuth2Google(idToken);
+
+	const { email_verified, email, given_name, family_name, picture, ...rest } = payload;
+
+	if (!email_verified) throwException(400, 'Email not verified, Use another account', 'socialLogin-google');
+
+	const user = await User.findOne({ email }).lean();
+	if (user) {
+		// login existing user ->> generate access token
+		if (user.provider !== PROVIDERS_ENUM.GOOGLE) {
+			if (user.provider === PROVIDERS_ENUM.SYSTEM) {
+				throwException(400, 'User already exists, please login with your password');
+			} else {
+				throwException(400, 'User already exists with different provider');
+			}
+		}
+		// generate access token
+		const tokens = generateTokens(user);
+		return { isNew: false, tokens }; // message: 'Login successfully'
+	}
+
+	// Register create new user
+	const newUser = await User.create({
+		email,
+		firstName: given_name,
+		lastName: family_name,
+		username: `${email.split('@')[0]}_${Math.floor(Math.random() * 1000)}`,
+		avatar: picture,
+		provider,
+	});
+	// generate access token
+	const tokens = generateTokens(newUser);
+	return { isNew: true, tokens }; // message: 'User created successfully'
 };

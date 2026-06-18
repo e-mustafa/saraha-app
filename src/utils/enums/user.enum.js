@@ -16,7 +16,7 @@ export const USER_ROLES = Object.values(USER_ROLES_ENUM);
 export const ADMIN_ROLES = [USER_ROLES_ENUM.ADMIN, USER_ROLES_ENUM.EDITOR, USER_ROLES_ENUM.MANAGER, USER_ROLES_ENUM.OWNER];
 
 export const PROVIDERS_ENUM = {
-	LOCAL: 'local',
+	SYSTEM: 'system',
 	GOOGLE: 'google',
 	FACEBOOK: 'facebook',
 };

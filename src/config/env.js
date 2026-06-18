@@ -21,19 +21,30 @@ export const configEnv = {
 	// },
 };
 
+export const isDev = configEnv.environment == 'development';
+
 export const jwtSignatureLevel = {
 	user: {
-		ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_USER_LEVEL,
-		REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_USER_LEVEL,
+		ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_USER_LEVEL || '',
+		REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_USER_LEVEL || '',
 		ACCESS_TOKEN_EXPIRES: process.env.ACCESS_TOKEN_USER_EXPIRES_IN || '15m',
 		REFRESH_TOKEN_EXPIRES: process.env.REFRESH_TOKEN_USER_EXPIRES_IN || '7d',
 	},
 	admin: {
-		ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_ADMIN_LEVEL,
-		REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_ADMIN_LEVEL,
+		ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_ADMIN_LEVEL || '',
+		REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_ADMIN_LEVEL || '',
 		ACCESS_TOKEN_EXPIRES: process.env.ACCESS_TOKEN_ADMIN_EXPIRES_IN || '10m',
 		REFRESH_TOKEN_EXPIRES: process.env.REFRESH_TOKEN_ADMIN_EXPIRES_IN || '3d',
 	},
 };
 
-export const isDev = configEnv.environment == 'development';
+export const providersAuth = {
+	google: {
+		clientId: process.env.GOOGLE_CLIENT_ID || '',
+		clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+		redirectUri: process.env.GOOGLE_REDIRECT_URI || '',
+	},
+};
+
+
+

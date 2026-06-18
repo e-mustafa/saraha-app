@@ -57,6 +57,10 @@ export const generateTokens = (user, type = 'BOTH', customPayload) => {
 	}
 	const payload = {
 		id: user._id,
+		// email: user.email,
+		// firstName: user.firstName,
+		// lastName: user.lastName,
+		// avatar: user.avatar,
 		...customPayload,
 	};
 
