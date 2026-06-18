@@ -4,14 +4,17 @@ import AppError from './app-error.js';
 const productionMsg = 'Sorry, something went wrong.';
 
 // Helper to format error response in development mode
-const sendErrorDev = (err, res) => {
+const sendErrorDev = (err, req, res) => {
 	res.status(err.statusCode).json({
 		success: false,
+		statusCode: err.statusCode,
 		message: err.message,
+		timestamp: new Date().toISOString(),
+		path: req.originalUrl, // the requested path
 		errors: err.errors || undefined,
 		error: {
 			name: err.name,
-			statusCode: err.statusCode,
+			context: err.context,
 			isOperational: err.isOperational,
 			code: err.code,
 			stack: err.stack,
@@ -33,7 +36,7 @@ const sendErrorProduction = (err, res) => {
 // Transformer for invalid MongoDB Object ID errors (e.g., malformed ID)
 const handleMongooseCastError = (err) => {
 	const message = `Invalid field value for ${err.path}`;
-	return new AppError(400, message, 'invalid_field_value', err.errors);
+	return new AppError({ statusCode: 400, message, context: 'invalid_field_value', errors: err.errors });
 };
 
 // Transformer for duplicate database keys (e.g., email already registered)
@@ -43,7 +46,7 @@ const handleMongooseDuplicateFields = (err) => {
 	const errors = {
 		[value]: err.message || message,
 	};
-	return new AppError(409, message, 'duplicate_field_value', errors);
+	return new AppError({ statusCode: 409, message, context: 'duplicate_field_value', errors });
 };
 
 // Transformer for schema validation failures (e.g., age out of bounds)
@@ -56,7 +59,7 @@ const handleMongooseValidationError = (err) => {
 	});
 
 	const message = `Database validation failed. Please check your information.`;
-	return new AppError(400, message, 'database_validation_error', errors);
+	return new AppError({ statusCode: 400, message, context: 'database_validation_error', errors });
 };
 
 // Main Express global error handling middleware
@@ -76,7 +79,7 @@ export default function globalErrorHandler(err, req, res, next) {
 
 	// Route error response based on the current environment
 	if (isDev) {
-		sendErrorDev(error, res);
+		sendErrorDev(error, req, res);
 	} else {
 		sendErrorProduction(error, res);
 	}
