@@ -1,6 +1,6 @@
 import express from 'express';
-import { configEnv } from './src/config/env.js';
 import bootstrap from './src/bootstrap.js';
+import { configEnv } from './src/config/env.js';
 
 const app = express();
 
@@ -25,3 +25,9 @@ process.on('unhandledRejection', (err) => {
 		process.exit(1);
 	});
 });
+
+//! 👈🏻👈🏻👈🏻👈🏻 <-- postman collection
+// https://documenter.getpostman.com/view/49016393/2sBXwvHnuD
+
+//! 👈🏻👈🏻👈🏻👈🏻 <-- Github link
+// https://github.com/e-mustafa/saraha-app/tree/main

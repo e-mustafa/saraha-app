@@ -1,0 +1,868 @@
+{
+  "info": {
+    "_postman_id": "c2a29e45-4bb4-45f7-9d35-11764a8d58a0",
+    "name": "Saraha App",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49016393",
+    "_collection_link": "https://go.postman.co/collection/49016393-c2a29e45-4bb4-45f7-9d35-11764a8d58a0?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstName\": \"aya\",\r\n    \"lastName\": \"mohamed\",\r\n    \"username\": \"Aya_10\",\r\n    \"email\":\"Aya@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"confirmPassword\": \"123456\",\r\n    \"gender\": 0,\r\n    \"birthdate\": \"2006-10-19\",\r\n    \"phone\": \"01112223335\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "signup"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Signup",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"firstName\": \"Ahmed\",\r\n    \"lastName\": \"Ali\",\r\n    \"username\": \"Ahmed40\",\r\n    \"email\":\"Ahmed2@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"gender\": 0,\r\n    \"birthdate\": \"2005-10-19\",\r\n    \"phone\": \"01112223334\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/signup",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "signup"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "869"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"365-N5SFa5qeCJz69cS2i1rx8UjHipA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:01:03 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"This email is already registered\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"statusCode\": 409,\n        \"isOperational\": true,\n        \"stack\": \"Error: This email is already registered\\n    at throwException (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/response/throw.exceptions.js:4:8)\\n    at signupService (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/modules/auth/auth.services.js:15:3)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\\n    at async file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/modules/auth/auth.controller.js:18:16\\n    at async file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/error-handler/async-handler.js:4:4\"\n    }\n}"
+            },
+            {
+              "name": "Signup",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"firstName\": \"Ali\",\r\n    \"lastName\": \"mohamed\",\r\n    \"username\": \"ali10\",\r\n    \"email\":\"Ali@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"gender\": 0,\r\n    \"birthdate\": \"2005-10-19\",\r\n    \"phone\": \"01112223334\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/signup",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "signup"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "68"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"44-kMH3XJhRLaJ6y9DAc6QFB3J9jOk\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:04:36 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"User created successfully, please login\"\n}"
+            },
+            {
+              "name": "Signup",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"firstName\": \"aya\",\r\n    \"lastName\": \"mohamed\",\r\n    \"username\": \"Aya_10\",\r\n    \"email\":\"Aya@gmail.com\",\r\n    \"password\": \"12345\",\r\n    \"confirmPassword\": \"12345\",\r\n    \"gender\": 4,\r\n    \"birthdate\": \"2006-10-19\",\r\n    \"phone\": \"0111222333\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/signup",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "signup"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1885"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"75d-YjSLnk++TzM49s0BtCOCx4SdiAY\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 18 Jun 2026 18:42:45 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Validation Error\",\n    \"timestamp\": \"2026-06-18T18:42:45.159Z\",\n    \"path\": \"/api/v1/auth/signup\",\n    \"errors\": {\n        \"body\": {\n            \"password\": \"Password must be at least 6 characters\",\n            \"phone\": \"Please provide a valid Egyptian phone number\",\n            \"gender\": \"Invalid gender selection\"\n        }\n    },\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"ValidationFieldsError\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Validation Error\\n    at throwException (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at ValidationFieldsException (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/response/throw.exceptions.js:25:2)\\n    at file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/middlewares/validation.middleware.js:34:4\\n    at Layer.handleRequest (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at Route.dispatch (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:117:3)\\n    at handle (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:435:11)\\n    at Layer.handleRequest (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:295:15\\n    at processParams (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:582:12)\"\n    }\n}"
+            },
+            {
+              "name": "Signup",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"firstName\": \"aya\",\r\n    \"lastName\": \"mohamed\",\r\n    \"username\": \"Aya_10\",\r\n    \"email\":\"Aya@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"confirmPassword\": \"123456\",\r\n    \"gender\": 0,\r\n    \"birthdate\": \"2006-10-19\",\r\n    \"phone\": \"01112223335\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/signup",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "signup"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1832"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"728-ejVntqvF2M7BsTc5yo3gWpjteyU\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 18 Jun 2026 18:46:20 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Database validation failed. Please check your information.\",\n    \"timestamp\": \"2026-06-18T18:46:20.273Z\",\n    \"path\": \"/api/v1/auth/signup\",\n    \"errors\": {\n        \"password\": \"Password must be at least 8 characters\"\n    },\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"database_validation_error\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Database validation failed. Please check your information.\\n    at handleMongooseValidationError (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/error-handler/global-error.js:62:9)\\n    at globalErrorHandler (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/error-handler/global-error.js:78:46)\\n    at Layer.handleError (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:116:17)\\n    at trimPrefix (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:340:13)\\n    at E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:297:9\\n    at processParams (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:582:12)\\n    at next (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:291:5)\\n    at E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:688:15\\n    at next (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:276:14)\\n    at next (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:132:14)\"\n    }\n}"
+            },
+            {
+              "name": "Signup",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"firstName\": \"aya\",\r\n    \"lastName\": \"mohamed\",\r\n    \"username\": \"Aya_10\",\r\n    \"email\":\"Aya@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"confirmPassword\": \"123456\",\r\n    \"gender\": 0,\r\n    \"birthdate\": \"2006-10-19\",\r\n    \"phone\": \"01112223335\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/signup",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "signup"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "560"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"230-LWi0+QrpjXKvhPBVbuYp3tUR2nk\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 18 Jun 2026 18:47:10 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"User created successfully, please login\",\n    \"data\": {\n        \"firstName\": \"aya\",\n        \"lastName\": \"mohamed\",\n        \"username\": \"aya_10\",\n        \"email\": \"aya@gmail.com\",\n        \"confirmedEmail\": null,\n        \"isActive\": true,\n        \"password\": \"$2b$12$CxPrieu0J4NzOAH1p.arD.64LDlbR2WugaX5EGYJarSewWLJC/s32\",\n        \"phone\": \"b8f5e9bbb00ee0d70c066d1baec47fd5:39b94533c6758ecb065ae5d324ad085c\",\n        \"gender\": 0,\n        \"birthdate\": \"2006-10-19T00:00:00.000Z\",\n        \"role\": \"0\",\n        \"_id\": \"6a343d2da7ad56b805dae4e5\",\n        \"createdAt\": \"2026-06-18T18:47:09.848Z\",\n        \"updatedAt\": \"2026-06-18T18:47:09.848Z\",\n        \"__v\": 0,\n        \"id\": \"6a343d2da7ad56b805dae4e5\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Validate response status code\r",
+                  "pm.test(\"Check if the response status code is 200\", function () { \r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Safely validate response structure and automate token storage\r",
+                  "pm.test(\"Check and store access and refresh tokens\", function () { \r",
+                  "    // Parse JSON response once to optimize performance\r",
+                  "    const responseBody = pm.response.json();\r",
+                  "    \r",
+                  "    // Ensure the response contains the expected data structure\r",
+                  "    pm.expect(responseBody).to.have.property('data');\r",
+                  "    pm.expect(responseBody.data.accessToken).to.not.be.null;\r",
+                  "    pm.expect(responseBody.data.refreshToken).to.not.be.null;\r",
+                  "\r",
+                  "    // 3. Environment variables are set only if the assertions above pass successfully\r",
+                  "    pm.environment.set(\"accessToken\", responseBody.data.accessToken);\r",
+                  "    pm.environment.set(\"refreshToken\", responseBody.data.refreshToken);\r",
+                  "    \r",
+                  "    console.log(\"Tokens have been automatically updated in Environment!\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{bearer_token_1dpx}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"hind@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1997"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"7cd-oWqRsLq396CpGOQFrk2n4lJjVqs\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:06:13 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Please enter required fields email and password\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"statusCode\": 400,\n        \"isOperational\": true,\n        \"stack\": \"Error: Please enter required fields email and password\\n    at throwException (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/response/throw.exceptions.js:4:8)\\n    at loginService (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/modules/auth/auth.services.js:44:3)\\n    at file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/modules/auth/auth.controller.js:27:39\\n    at file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\.pnpm\\\\router@2.2.0_supports-color@5.5.0\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\.pnpm\\\\router@2.2.0_supports-color@5.5.0\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at Route.dispatch (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\.pnpm\\\\router@2.2.0_supports-color@5.5.0\\\\node_modules\\\\router\\\\lib\\\\route.js:117:3)\\n    at handle (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\.pnpm\\\\router@2.2.0_supports-color@5.5.0\\\\node_modules\\\\router\\\\index.js:435:11)\\n    at Layer.handleRequest (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\.pnpm\\\\router@2.2.0_supports-color@5.5.0\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\.pnpm\\\\router@2.2.0_supports-color@5.5.0\\\\node_modules\\\\router\\\\index.js:295:15\"\n    }\n}"
+            },
+            {
+              "name": "Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\":\"hind@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "713"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2c9-0G1zkp5nc3vm48bV2V5tx8xRk/A\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 22:50:59 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Login successful\",\n    \"data\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzE1ZjlkZjAxOThmZjY0ZTQwM2Q1NSIsImVtYWlsIjoiaGluZEBnbWFpbC5jb20iLCJyb2xlIjoiMCIsImlhdCI6MTc4MTY1MDI1OSwiZXhwIjoxNzgxNjUwODU5LCJhdWQiOlsid2ViIiwibW9iaWxlIl0sImlzcyI6IlNhcmFoYSBBcHAiLCJzdWIiOiJVc2VyIEF1dGhlbnRpY2F0aW9uIn0.mVfEoDA14SWrSbDuNtlrJnrlvyVDOy8aScc63fZBPbg\",\n        \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzE1ZjlkZjAxOThmZjY0ZTQwM2Q1NSIsImVtYWlsIjoiaGluZEBnbWFpbC5jb20iLCJyb2xlIjoiMCIsImlhdCI6MTc4MTY1MDI1OSwiZXhwIjoxNzgxOTA5NDU5LCJhdWQiOlsid2ViIiwibW9iaWxlIl0sImlzcyI6IlNhcmFoYSBBcHAiLCJzdWIiOiJVc2VyIEF1dGhlbnRpY2F0aW9uIn0.fWyLVqfYuWFOhY53Qs-NASWP2GEORqmej1xafvu_Efg\"\n    }\n}"
+            },
+            {
+              "name": "Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\":\"hind@gmail.co\",\r\n    \"password\": \"123456\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "854"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"356-xAHqua79/hZPETgDmIZHZgydg8o\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 22:52:29 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid email or password\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"statusCode\": 404,\n        \"isOperational\": true,\n        \"stack\": \"Error: Invalid email or password\\n    at throwException (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/response/throw.exceptions.js:4:8)\\n    at loginService (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/modules/auth/auth.services.js:49:3)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\\n    at async file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/modules/auth/auth.controller.js:27:16\\n    at async file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/error-handler/async-handler.js:4:4\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// // 1. Validate response status code\r",
+                  "// pm.test(\"Check if the response status code is 200\", function () { \r",
+                  "//     pm.response.to.have.status(200);\r",
+                  "// });\r",
+                  "\r",
+                  "// // 2. Safely validate response structure and automate token storage\r",
+                  "// pm.test(\"Check and store access and refresh tokens\", function () { \r",
+                  "//     // Parse JSON response once to optimize performance\r",
+                  "//     const responseBody = pm.response.json();\r",
+                  "    \r",
+                  "//     // Ensure the response contains the expected data structure\r",
+                  "//     pm.expect(responseBody).to.have.property('data');\r",
+                  "//     pm.expect(responseBody.data.accessToken).to.not.be.null;\r",
+                  "\r",
+                  "\r",
+                  "//     // 3. Environment variables are set only if the assertions above pass successfully\r",
+                  "//     pm.environment.set(\"accessToken\", responseBody.data.accessToken);\r",
+                  "\r",
+                  "    \r",
+                  "//     console.log(\"accessToken have been automatically updated in Environment!\");\r",
+                  "// });\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "refreshToken",
+                "value": "{{refreshToken}}",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "Cookie",
+                "value": "refreshToken={{refreshToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Cookie",
+                "value": "{{json_web_token_02zf}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh-token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh-token"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Refresh Token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "",
+                    "type": "text",
+                    "disabled": true
+                  },
+                  {
+                    "key": "refreshToken",
+                    "value": "{{refreshToken}}",
+                    "type": "text",
+                    "disabled": true
+                  },
+                  {
+                    "key": "Cookie",
+                    "value": "refreshToken={{refreshToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/refresh-token",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "refresh-token"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1817"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"719-yhqIU0HPJG7YpvtGq89MyRNNzlg\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 18 Jun 2026 18:51:14 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 401,\n    \"message\": \"Unauthorized, Authorization header is required\",\n    \"timestamp\": \"2026-06-18T18:51:14.605Z\",\n    \"path\": \"/api/v1/auth/refresh-token\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"UnauthorizedException\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Unauthorized, Authorization header is required\\n    at throwException (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at UnauthorizedException (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/response/throw.exceptions.js:33:2)\\n    at decodeToken (file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/security/tokens/token.js:95:3)\\n    at file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/middlewares/authentication.middleware.js:8:36\\n    at file:///E:/MUSTAFA/Cours%20Web%20devlopment/Back-End%20Node.js%20Route/projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at Route.dispatch (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:117:3)\\n    at handle (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:435:11)\\n    at Layer.handleRequest (E:\\\\MUSTAFA\\\\Cours Web devlopment\\\\Back-End Node.js Route\\\\projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Social Login - Google",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjMwMzViYjg2ZDk5ZjIyZTYxMzQ2N2E2NjgwODI1ZWViMGQ4MTM5YTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxNTc2MzcxNzQ2MDQtdG5oaG9ibzYzcjVhNzUzMmlpc3JicDk2YWQ0YnBzaG4uYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIxNTc2MzcxNzQ2MDQtdG5oaG9ibzYzcjVhNzUzMmlpc3JicDk2YWQ0YnBzaG4uYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDgyNjAyOTk2MDc2MjE3OTkwMzAiLCJlbWFpbCI6Im14Ljl4eHhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc4MTc5MTA4OCwibmFtZSI6IkRpc3RhbnQgSG9yaXpvbiIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NMYnZsQy1uS2xqc00zdFFHaWNuVmkwd2tUZS15MU04RE9XMGxpaVhxdll4bHRhU3NJPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6IkRpc3RhbnQiLCJmYW1pbHlfbmFtZSI6Ikhvcml6b24iLCJpYXQiOjE3ODE3OTEzODgsImV4cCI6MTc4MTc5NDk4OCwianRpIjoiMzVkYWFkZjcxNGQ1YzI3OThhY2ZhNmNmOTNkYzhjYjIyNzM5ZDZjZCJ9.U72b6uj71IoBcRTwPCjLRB0VYV1NUKaiW0uNJUY3LtabKV44BHqRO6Gk8c-FpDT9uiF9l_lQB-2I47XE7BxM4jqtpXl6l_z1ZEEkGDLNhIdpHY9wRZGbyfmNmAqk14DqtVYDOU1Vb_Th2kbN2keuRbpLva19eE5t2q9KxHGhZi9avViSAUBnt4L67jfH8OfcApmD9H3z99Ta2IXK8hU28ImyQnyo8l5uHrf64H789qdxz64tDtIrCdHEWvAUkb7d1R2hLVkfpUmeTzwwpcxSmX6-X80jtiflMLVPP7Oi3VJD9Kiy-RJcc8L2eSNpYyWhkmHi20LYvVecQr2p1-ny0A\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/social-login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "social-login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{json_web_token_0zim}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "json_web_token_0zim",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_19rq",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_02zf",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_1dpx",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_16re",
+      "secret": true
+    }
+  ]
+}
