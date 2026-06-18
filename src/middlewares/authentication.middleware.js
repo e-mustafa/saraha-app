@@ -1,6 +1,6 @@
 import { ADMIN_ROLES, USER_ROLES_ENUM } from '../utils/enums/user.enum.js';
 import asyncHandler from '../utils/error-handler/async-handler.js';
-import { throwException } from '../utils/response/throw.exceptions.js';
+import { UnauthorizedException } from '../utils/response/throw.exceptions.js';
 import { decodeToken } from '../utils/security/tokens/token.js';
 
 export const authentication = (isRefreshToken = false) => {
@@ -15,7 +15,7 @@ export const authentication = (isRefreshToken = false) => {
 export const authorization = (allowedRoles = []) => {
 	return asyncHandler(async (req, res, next) => {
 		if (!allowedRoles?.includes(req.user?.role || '')) {
-			throwException(403, 'Unauthorized Access!!');
+			UnauthorizedException(403, 'Unauthorized Access!!');
 		}
 		return next();
 	});

@@ -3,11 +3,11 @@ import { jwtSignatureLevel } from '../../../config/env.js';
 import User from '../../../DB/models/user.model.js';
 import { TOKEN_TYPES_ENUM } from '../../enums/security,enum.js';
 import { ADMIN_ROLES, USER_ROLES_ENUM } from '../../enums/user.enum.js';
-import { throwException } from '../../response/throw.exceptions.js';
+import { throwException, throwInternalException } from '../../response/throw.exceptions.js';
 
 export const generateToken = (payload, secretKey, options = {}) => {
 	if (!secretKey) {
-		throw new Error('JWT Secret key is missing or undefined.');
+		throwInternalException('JWT Secret key is missing or undefined.');
 	}
 	const appOptions = {
 		// algorithm: 'HS256',
@@ -21,7 +21,7 @@ export const generateToken = (payload, secretKey, options = {}) => {
 
 export const verifyToken = (token, secretKey) => {
 	if (!secretKey) {
-		throw new Error('JWT Secret key is missing or undefined.');
+		throwInternalException('JWT Secret key is missing or undefined.');
 	}
 	return jwt.verify(token, secretKey);
 };
@@ -47,13 +47,13 @@ export const getSignature = (role) => {
  */
 export const generateTokens = (user, type = 'BOTH', customPayload) => {
 	if (!user || user.role === undefined) {
-		throw new Error('Token generation failed: User role is missing or undefined');
+		throwInternalException('Token generation failed: User role is missing or undefined');
 	}
 
 	const signature = getSignature(user.role);
 	console.log('signature', signature);
 	if (!signature) {
-		throw new Error(`Unauthorized or Invalid role: ${user?.role}`);
+		throwInternalException(`Unauthorized or Invalid role: ${user?.role}`);
 	}
 	const payload = {
 		id: user._id,
@@ -107,16 +107,17 @@ export const decodeToken = async (authorization, isRefreshToken = false) => {
 	// Determine signature based on bearer type (admin or user)
 	const signature = getSignature(decodedPayload.role);
 
-	try { // use try catch to handle token expiration exception
-	// Verify token using the appropriate secret
-	const decoded = await verifyToken(
-		token,
-		// tokenType === TOKEN_TYPES_ENUM.ACCESS ? signature.ACCESS_TOKEN_SECRET : signature.REFRESH_TOKEN_SECRET,
-		isRefreshToken ? signature.REFRESH_TOKEN_SECRET : signature.ACCESS_TOKEN_SECRET,
-	);
+	try {
+		// use try catch to handle token expiration exception
+		// Verify token using the appropriate secret
+		const decoded = await verifyToken(
+			token,
+			// tokenType === TOKEN_TYPES_ENUM.ACCESS ? signature.ACCESS_TOKEN_SECRET : signature.REFRESH_TOKEN_SECRET,
+			isRefreshToken ? signature.REFRESH_TOKEN_SECRET : signature.ACCESS_TOKEN_SECRET,
+		);
 
-	const user = await User.findById(decoded.id).lean();
-	return { user, decoded };
+		const user = await User.findById(decoded.id).lean();
+		return { user, decoded };
 	} catch (error) {
 		throwException(401, 'Token expired.');
 	}

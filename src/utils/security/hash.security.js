@@ -9,7 +9,6 @@ export const generateHash = async (text, salt = +configEnv.security.salt, isHard
 	} else {
 		hashedText = await hash(text, salt);
 	}
-	console.log('hashedText', hashedText);
 	return hashedText;
 };
 

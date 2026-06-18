@@ -40,7 +40,7 @@ router.post(
 
 router.post(
 	routes.refreshToken,
-	requireAuth(true),
+	requireAuth(),
 	asyncHandler(async (req, res) => {
 		const data = await refreshAccessTokenService(req.cookies?.refreshToken || '');
 		successResponse({ res, message: 'Token refreshed successfully', data });
@@ -56,7 +56,6 @@ router.post(
 		} else {
 			successResponse({ res, message: 'Login successfully', data: tokens });
 		}
-		console.log('social login data', tokens);
 	}),
 );
 export default router;

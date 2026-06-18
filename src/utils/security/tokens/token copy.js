@@ -3,11 +3,11 @@ import { jwtSignatureLevel } from '../../../config/env.js';
 import User from '../../../DB/models/user.model.js';
 import { TOKEN_TYPES_ENUM } from '../../enums/security,enum.js';
 import { ADMIN_ROLES, USER_ROLES_ENUM } from '../../enums/user.enum.js';
-import { throwException } from '../../response/throw.exceptions.js';
+import { throwException, throwInternalException } from '../../response/throw.exceptions.js';
 
 export const generateToken = (payload, secretKey, options = {}) => {
 	if (!secretKey) {
-		throw new Error('JWT Secret key is missing or undefined.');
+		throwInternalException('JWT Secret key is missing or undefined.');
 	}
 	const appOptions = {
 		// algorithm: 'HS256',
@@ -21,13 +21,12 @@ export const generateToken = (payload, secretKey, options = {}) => {
 
 export const verifyToken = (token, secretKey) => {
 	if (!secretKey) {
-		throw new Error('JWT Secret key is missing or undefined.');
+		throwInternalException('JWT Secret key is missing or undefined.');
 	}
 	return jwt.verify(token, secretKey);
 };
 
 export const getSignature = (role) => {
-
 	let signature;
 	if (ADMIN_ROLES?.includes(Number(role))) {
 		signature = jwtSignatureLevel.admin;
@@ -48,13 +47,13 @@ export const getSignature = (role) => {
  */
 export const generateTokens = (user, type = 'BOTH', customPayload) => {
 	if (!user || user.role === undefined) {
-		throw new Error('Token generation failed: User role is missing or undefined');
+		throwInternalException('Token generation failed: User role is missing or undefined');
 	}
 
 	const signature = getSignature(user.role);
 	console.log('signature', signature);
 	if (!signature) {
-		throw new Error(`Unauthorized or Invalid role: ${user?.role}`);
+		throwInternalException(`Unauthorized or Invalid role: ${user?.role}`);
 	}
 	const payload = {
 		id: user._id,
@@ -96,12 +95,12 @@ const userBearer = 'Bearer';
 // export const decodeToken = async (authorization, isRefreshToken = false) => {
 // 	// const tokenType = isRefreshToken ? TOKEN_TYPES_ENUM.REFRESH : TOKEN_TYPES_ENUM.ACCESS;
 // 	if (!authorization) {
-// 		throw new Error('Authorization header is required');
+// 		throwInternalException('Authorization header is required');
 // 	}
 // 	const [bearer, token] = authorization.split(' ');
 
 // 	if (!token) {
-// 		throw new Error('Token not found');
+// 		throwInternalException('Token not found');
 // 	}
 
 // 	// Determine signature based on bearer type (admin or user)
@@ -111,7 +110,7 @@ const userBearer = 'Bearer';
 // 	} else if (bearer === userBearer) {
 // 		signature = jwtSignatureLevel.user;
 // 	} else {
-// 		throw new Error('Invalid token');
+// 		throwInternalException('Invalid token');
 // 	}
 
 // 	// Verify token using the appropriate secret
@@ -133,7 +132,6 @@ const userBearer = 'Bearer';
  * @throws {Error} If token is invalid or missing
  */
 export const decodeToken = async (authorization, isRefreshToken = false) => {
-	console.log('authorization', authorization);
 	if (!authorization) {
 		throwException('Authorization header is required');
 	}

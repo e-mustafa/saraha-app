@@ -2,19 +2,24 @@ import jwt from 'jsonwebtoken';
 import User from '../../DB/models/user.model.js';
 import { TOKEN_TYPES_ENUM } from '../../utils/enums/security,enum.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
-import { throwException } from '../../utils/response/throw.exceptions.js';
+import {
+	BadRequestException,
+	ConflictException,
+	NotFoundException,
+	UnauthorizedException,
+} from '../../utils/response/throw.exceptions.js';
 import { verifyHash } from '../../utils/security/hash.security.js';
 import { verifyOAuth2Google } from '../../utils/security/tokens/providers/google.token.js';
 import { generateTokens, getSignature } from '../../utils/security/tokens/token.js';
 
 export const signupService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
 	if (!firstName || !lastName || !username || !email || !password || !phone || gender === undefined || !birthdate) {
-		throwException(400, 'Please enter required fields');
+		NotFoundException('Please enter required fields', 'signupService');
 	}
 	// check if user already exists
 	const isExist = await User.findOne({ email });
 	if (isExist) {
-		throwException(409, 'This email is already registered');
+		ConflictException('This email is already registered', 'signupService');
 	}
 
 	// const hashedPassword = await generateHash(password);
@@ -34,26 +39,22 @@ export const signupService = async ({ firstName, lastName, username, email, pass
 		birthdate,
 	});
 
-	if (!user) {
-		throwException(500, 'Failed to create user');
-	}
-
 	return user;
 };
 
 export const loginService = async ({ email, password }) => {
 	if (!email || !password) {
-		throwException(400, 'Please enter required fields email and password');
+		BadRequestException('Please enter required fields email and password', 'loginService-missing-fields');
 	}
 
 	const user = await User.findOne({ email });
 	if (!user) {
-		throwException(404, 'Invalid email or password');
+		NotFoundException('Invalid email or password', 'loginService-invalid-email');
 	}
 
 	const isPasswordValid = await verifyHash(password, user.password);
 	if (!isPasswordValid) {
-		throwException(401, 'Invalid email or password');
+		UnauthorizedException('Invalid email or password', 'loginService-invalid-password');
 	}
 
 	const tokens = generateTokens(user);
@@ -62,42 +63,45 @@ export const loginService = async ({ email, password }) => {
 
 export const refreshAccessTokenService = async (refreshToken) => {
 	if (!refreshToken) {
-		throwException(401, 'Refresh token is required, please login again.');
+		UnauthorizedException('Refresh token is required, please login again.', 'refreshAccessTokenService-missing-token');
 	}
 
 	// decode token to get role and id
 	const decodedPayload = jwt.decode(refreshToken) || {};
-	console.log('decodedPayload', decodedPayload);
+
 	if (!decodedPayload.aud || !decodedPayload.id) {
-		throwException(401, 'Refresh token is corrupted.');
+		UnauthorizedException('Refresh token is corrupted.', 'refreshAccessTokenService-invalid-token');
 	}
 
 	// get signature by audience
 	const signature = getSignature(decodedPayload.aud);
 
-	try {
-		// verify refresh token
-		const decoded = jwt.verify(refreshToken, signature.REFRESH_TOKEN_SECRET);
+	// try {
+	// verify refresh token
+	const decoded = jwt.verify(refreshToken, signature.REFRESH_TOKEN_SECRET);
 
-		// get user from database by id to check if user is active and not banned
-		const user = await User.findById(decoded.id).lean();
-		if (!user) {
-			throwException(401, 'User associated with this token no longer exists.');
-		}
-
-		// generate access token
-		const { accessToken } = generateTokens(user, TOKEN_TYPES_ENUM.ACCESS);
-
-		return { accessToken };
-	} catch (error) {
-		// throw exception if token is expired or invalid
-		throwException(401, 'Refresh token expired or invalid. Please login again.');
+	// get user from database by id to check if user is active and not banned
+	const user = await User.findById(decoded.id).lean();
+	if (!user) {
+		UnauthorizedException('User associated with this token no longer exists.', 'refreshAccessTokenService-user-not-found');
 	}
+
+	// generate access token
+	const { accessToken } = generateTokens(user, TOKEN_TYPES_ENUM.ACCESS);
+
+	return { accessToken };
+	// } catch (error) {
+	// 	// throw exception if token is expired or invalid
+	// 	UnauthorizedException(
+	// 		'Refresh token expired or invalid. Please login again.',
+	// 		'refreshAccessTokenService-token-expired',
+	// 	);
+	// }
 };
 
 export const socialLoginService = async (provider, idToken) => {
 	if (!provider || !Object.values(PROVIDERS_ENUM).includes(provider)) {
-		throwException(400, 'Invalid provider');
+		BadRequestException('Invalid provider', 'socialLoginService-invalid-provider');
 	}
 
 	let payload = {};
@@ -109,16 +113,16 @@ export const socialLoginService = async (provider, idToken) => {
 
 	const { email_verified, email, given_name, family_name, picture, ...rest } = payload;
 
-	if (!email_verified) throwException(400, 'Email not verified, Use another account', 'socialLogin-google');
+	if (!email_verified) BadRequestException('Email not verified, Use another account', 'socialLogin-google');
 
 	const user = await User.findOne({ email }).lean();
 	if (user) {
 		// login existing user ->> generate access token
 		if (user.provider !== PROVIDERS_ENUM.GOOGLE) {
 			if (user.provider === PROVIDERS_ENUM.SYSTEM) {
-				throwException(400, 'User already exists, please login with your password');
+				BadRequestException('User already exists, please login with your password', 'socialLogin-user-exists-system');
 			} else {
-				throwException(400, 'User already exists with different provider');
+				BadRequestException('User already exists with different provider', 'socialLogin-user-exists-different-provider');
 			}
 		}
 		// generate access token

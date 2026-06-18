@@ -3,11 +3,11 @@ import { jwtSignatureLevel } from '../../../config/env.js';
 import User from '../../../DB/models/user.model.js';
 import { TOKEN_TYPES_ENUM } from '../../enums/security,enum.js';
 import { ADMIN_ROLES, USER_ROLES_ENUM } from '../../enums/user.enum.js';
-import { throwException } from '../../response/throw.exceptions.js';
+import { throwInternalException } from '../../response/throw.exceptions.js';
 
 export const generateToken = (payload, secretKey, options = {}) => {
 	if (!secretKey) {
-		throw new Error('JWT Secret key is missing or undefined.');
+		throwInternalException('JWT Secret key is missing or undefined.');
 	}
 	const appOptions = {
 		// algorithm: 'HS256',
@@ -21,7 +21,7 @@ export const generateToken = (payload, secretKey, options = {}) => {
 
 export const verifyToken = (token, secretKey) => {
 	if (!secretKey) {
-		throw new Error('JWT Secret key is missing or undefined.');
+		throwInternalException('JWT Secret key is missing or undefined.');
 	}
 	return jwt.verify(token, secretKey);
 };
@@ -33,7 +33,7 @@ export const getSignature = (role) => {
 	} else if (Number(role) === USER_ROLES_ENUM.USER) {
 		signature = jwtSignatureLevel.user;
 	} else {
-		throwException('Invalid token');
+		throwInternalException(500, 'Invalid token Signature', 'getSignature');
 	}
 	return signature;
 };
@@ -47,13 +47,12 @@ export const getSignature = (role) => {
  */
 export const generateTokens = (user, type = 'BOTH', customPayload) => {
 	if (!user || user.role === undefined) {
-		throw new Error('Token generation failed: User role is missing or undefined');
+		throwInternalException('Token generation failed: User role is missing or undefined');
 	}
 
 	const signature = getSignature(user.role);
-	console.log('signature', signature);
 	if (!signature) {
-		throw new Error('Unauthorized or Invalid role');
+		throwInternalException('Unauthorized or Invalid role');
 	}
 	const payload = {
 		id: user._id,
@@ -91,36 +90,28 @@ export const generateTokens = (user, type = 'BOTH', customPayload) => {
  * @throws {Error} If token is invalid or missing
  */
 export const decodeToken = async (authorization, isRefreshToken = false) => {
-	try {
-		console.log('authorization', authorization);
-		if (!authorization) {
-			throwException('Authorization header is required');
-		}
-		const token = authorization.split(' ')[1];
-
-		if (!token) {
-			throwException('Token not found');
-		}
-
-		const decodedPayload = jwt.decode(token) || {};
-
-		if (!decodedPayload.aud || !decodedPayload.id) {
-			throwException('Invalid token structure or corrupted payload');
-		}
-
-		// Determine signature based on audience
-		const signature = getSignature(decodedPayload.aud);
-
-		// use try catch to handle token expiration exception
-		// Verify token using the appropriate secret
-		const decoded = await verifyToken(
-			token,
-			isRefreshToken ? signature.REFRESH_TOKEN_SECRET : signature.ACCESS_TOKEN_SECRET,
-		);
-
-		const user = await User.findById(decoded.id).lean();
-		return { user, decoded };
-	} catch (error) {
-		throwException(401, 'Token expired.');
+	if (!authorization) {
+		throwInternalException(500, 'Authorization header is required', 'decodeToken');
 	}
+	const token = authorization.split(' ')[1];
+
+	if (!token) {
+		throwInternalException(500, 'Token is required', 'decodeToken');
+	}
+
+	const decodedPayload = jwt.decode(token) || {};
+
+	if (!decodedPayload.aud || !decodedPayload.id) {
+		throwInternalException(500, 'Invalid token structure or corrupted payload', 'decodeToken');
+	}
+
+	// Determine signature based on audience
+	const signature = getSignature(decodedPayload.aud);
+
+	// use try catch to handle token expiration exception
+	// Verify token using the appropriate secret
+	const decoded = await verifyToken(token, isRefreshToken ? signature.REFRESH_TOKEN_SECRET : signature.ACCESS_TOKEN_SECRET);
+
+	const user = await User.findById(decoded.id).lean();
+	return { user, decoded };
 };

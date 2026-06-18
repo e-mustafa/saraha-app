@@ -5,7 +5,7 @@ import connectDB from './DB/connection.js';
 import { authRouter, authRoutes, userRouter, userRoutes } from './modules/index.js';
 import { globalErrorHandler } from './utils/error-handler/index.js';
 import { successResponse } from './utils/response/success.response.js';
-import { throwException } from './utils/response/throw.exceptions.js';
+import { NotFoundException } from './utils/response/throw.exceptions.js';
 
 export default async function bootstrap(app, express) {
 	// middlewares
@@ -26,7 +26,7 @@ export default async function bootstrap(app, express) {
 
 	// handle not found routes
 	app.all('*all', (_, __, next) => {
-		next(throwException(404, `❌ This route not exist!`));
+		next(NotFoundException('❌ This route not exist!'));
 	});
 
 	// global error handler middleware

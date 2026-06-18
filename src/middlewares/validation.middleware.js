@@ -1,23 +1,37 @@
-import { throwException } from '../utils/response/throw.exceptions.js';
+import { throwInternalException, ValidationFieldsException } from '../utils/response/throw.exceptions.js';
 
-const validation = (schema, req) => {
+export const validateFields = (schema, data) => {
+	if (!schema || !data) throwInternalException('Schema and data are required to validate data.');
+
+	const schemaRes = schema?.validate(data || {}, { abortEarly: false });
+	if (schemaRes?.error) {
+		const errors = {};
+		schemaRes.error.details.forEach((error) => {
+			const key = error.path.join('.');
+			errors[key] = error.message;
+		});
+		return { success: false, errors };
+	}
+	return { success: true, values: schemaRes.value };
+};
+
+const validation = (schema) => {
 	return (req, res, next) => {
-		if (!schema || !req) throw new Error('Schema and req are required to validate data.');
+		if (!schema || !req) throwInternalException('Schema and req are required to validate data.');
 		const existSchemas = Object.keys(schema);
 		const ValidationErrors = {};
 
 		existSchemas.forEach((key) => {
-			const schemaRes = schema[key]?.validate(req?.[key] || {}, { abortEarly: false });
-			if (schemaRes?.error) {
-				const errors = {};
-				schemaRes.error.details.forEach((error) => {
-					errors[error.path[0]] = error.message;
-				});
-				ValidationErrors[key] = errors;
+			const result = validateFields(schema[key], req[key]);
+			if (!result.success) {
+				ValidationErrors[key] = result.errors;
+			} else {
+				req[key] = result.values; // Overwrite req with sanitized and casted data
 			}
 		});
+		
 		if (Object.keys(ValidationErrors).length > 0) {
-			throwException(400, 'Validation Error', 'ValidationError', ValidationErrors);
+			ValidationFieldsException(ValidationErrors, 'Validation Error');
 		}
 		next();
 	};
