@@ -51,7 +51,7 @@ const handleMongooseDuplicateFields = (err) => {
 
 // Transformer for schema validation failures (e.g., age out of bounds)
 const handleMongooseValidationError = (err) => {
-	let errors = {};
+	const errors = {};
 
 	// Extract field-specific validation messages
 	Object.values(err.errors).forEach((el) => {
@@ -63,7 +63,7 @@ const handleMongooseValidationError = (err) => {
 };
 
 // Main Express global error handling middleware
-export default function globalErrorHandler(err, req, res, next) {
+export default function globalErrorHandler(err, req, res, _next) {
 	// Set default values if not explicitly provided
 	err.statusCode = err.statusCode || 500;
 	err.isOperational = err.isOperational || false;

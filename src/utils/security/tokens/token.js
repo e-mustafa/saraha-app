@@ -13,8 +13,8 @@ export const generateToken = (payload, secretKey, options = {}) => {
 		// algorithm: 'HS256',
 		issuer: 'Saraha App',
 		subject: 'User Authentication',
+		audience: Number(options.audience ?? USER_ROLES_ENUM.USER),
 		...options,
-		audience: String(options.audience) ?? USER_ROLES_ENUM.USER,
 	};
 	return jwt.sign(payload, secretKey, appOptions);
 };

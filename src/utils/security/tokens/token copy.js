@@ -82,8 +82,8 @@ export const generateTokens = (user, type = 'BOTH', customPayload) => {
 	}
 };
 
-const adminBearer = 'ADMIN';
-const userBearer = 'Bearer';
+// const adminBearer = 'ADMIN';
+// const userBearer = 'Bearer';
 
 // /**
 //  * Decodes a JWT token based on the bearer type (admin or user)
