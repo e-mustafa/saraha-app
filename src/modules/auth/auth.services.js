@@ -109,9 +109,9 @@ export const socialLoginService = async (provider, idToken) => {
 		payload = await verifyOAuth2Google(idToken);
 	}
 
-	payload = await verifyOAuth2Google(idToken);
+	// payload = await verifyOAuth2Google(idToken);
 
-	const { email_verified, email, given_name, family_name, picture, ...rest } = payload;
+	const { email_verified, email, given_name, family_name, picture } = payload;
 
 	if (!email_verified) BadRequestException('Email not verified, Use another account', 'socialLogin-google');
 
