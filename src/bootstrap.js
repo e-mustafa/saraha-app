@@ -17,7 +17,7 @@ export default async function bootstrap(app, express) {
 	await connectDB();
 
 	app.get('/', (_, res) => {
-		successResponse({ res, message: 'Hello in Saraha App Api!' });
+		successResponse({ res, message: `Hello in ${configEnv.appName} Api!` });
 	});
 
 	// routers

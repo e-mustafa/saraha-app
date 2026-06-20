@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { jwtSignatureLevel } from '../../../config/env.js';
+import { configEnv, jwtSignatureLevel } from '../../../config/env.js';
 import User from '../../../DB/models/user.model.js';
 import { TOKEN_TYPES_ENUM } from '../../enums/security,enum.js';
 import { ADMIN_ROLES, USER_ROLES_ENUM } from '../../enums/user.enum.js';
@@ -11,7 +11,7 @@ export const generateToken = (payload, secretKey, options = {}) => {
 	}
 	const appOptions = {
 		// algorithm: 'HS256',
-		issuer: 'Saraha App',
+		issuer: configEnv.appName,
 		audience: ['web', 'mobile'],
 		subject: 'User Authentication',
 		...options,
