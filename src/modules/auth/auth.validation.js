@@ -94,3 +94,17 @@ export const loginSchema = {
 		}),
 	}),
 };
+
+export const verifyAccountSchema = {
+	body: joi.object({
+		email: joi.string().email().trim().required().messages({
+			'string.email': 'Please provide a valid email address',
+			'any.required': 'Email is required',
+		}),
+
+		otp: joi.string().length(6).required().messages({
+			'string.length': 'OTP must be 6 characters',
+			'any.required': 'OTP is required',
+		}),
+	}),
+};

@@ -3,6 +3,7 @@ import { configDotenv } from 'dotenv';
 configDotenv();
 
 export const configEnv = {
+	appName: process.env.APP_NAME || 'Saraha App',
 	port: process.env.APP_PORT,
 	environment: process.env.NODE_APP,
 	urlApiBase: process.env.URL_API_BASE || '/api/v2',
@@ -44,6 +45,24 @@ export const providersAuth = {
 		clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
 		redirectUri: process.env.GOOGLE_REDIRECT_URI || '',
 	},
+};
+
+
+export const emailConfig = {
+	googleAppPassword: process.env.GOOGLE_APP_PASSWORD || '',
+	googleEmail: process.env.GOOGLE_APP_EMAIL || '',
+	
+	// from: process.env.EMAIL_FROM || 'Saraha App <no-reply@saraha-app.com>',
+
+	// smtp: {
+	// 	host: process.env.SMTP_HOST || '',
+	// 	port: process.env.SMTP_PORT || '',
+	// 	secure: process.env.SMTP_SECURE || false,
+	// 	auth: {
+	// 		user: process.env.SMTP_USER || '',
+	// 		pass: process.env.SMTP_PASS || '',
+	// 	},
+	// },
 };
 
 

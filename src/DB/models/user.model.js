@@ -44,14 +44,6 @@ const userSchema = new Schema(
 			lowercase: true,
 			match: [/^\w+([-.]?\w+)*@\w+([-.]?\w+)*(\.\w{2,3})+$/, 'Please add a valid email'],
 		},
-		confirmedEmail: {
-			type: Date,
-			default: null,
-		},
-		isActive: {
-			type: Boolean,
-			default: true,
-		},
 		password: {
 			type: String,
 			required: [
@@ -101,7 +93,21 @@ const userSchema = new Schema(
 			enum: PROVIDERS,
 			default: PROVIDERS_ENUM.LOCAL,
 		},
+		verified: {
+			type: Date,
+			default: null,
+			nullify: true,
+		},
+		otp: {
+			type: String,
+			default: null,
+			nullify: true,
+		},
 
+		isActive: {
+			type: Boolean,
+			default: true,
+		},
 		// deletedAt: {
 		// 	type: Date,
 		// 	default: null,

@@ -112,6 +112,6 @@ export const decodeToken = async (authorization, isRefreshToken = false) => {
 	// Verify token using the appropriate secret
 	const decoded = await verifyToken(token, isRefreshToken ? signature.REFRESH_TOKEN_SECRET : signature.ACCESS_TOKEN_SECRET);
 
-	const user = await User.findById(decoded.id).lean();
+	const user = await User.findById(decoded.id).select('-password -verified -otp').lean();
 	return { user, decoded };
 };

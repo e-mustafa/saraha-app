@@ -11,6 +11,7 @@ import {
 import { verifyHash } from '../../utils/security/hash.security.js';
 import { verifyOAuth2Google } from '../../utils/security/tokens/providers/google.token.js';
 import { generateTokens, getSignature } from '../../utils/security/tokens/token.js';
+import { sendEmail } from '../../utils/sendEmail.js';
 
 export const signupService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
 	if (!firstName || !lastName || !username || !email || !password || !phone || gender === undefined || !birthdate) {
@@ -28,6 +29,8 @@ export const signupService = async ({ firstName, lastName, username, email, pass
 	// 	encryptedPhone = await encrypt(phone);
 	// }
 
+	const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
 	const user = await User.create({
 		firstName,
 		lastName,
@@ -37,6 +40,13 @@ export const signupService = async ({ firstName, lastName, username, email, pass
 		phone, //: encryptedPhone, in user model phone is encrypted automatically with pre save middleware
 		gender,
 		birthdate,
+		otp,
+	});
+
+	await sendEmail({
+		to: email,
+		subject: 'Verify your email',
+		html: `<p>Your verification code is ${otp}</p>`,
 	});
 
 	return user;
@@ -142,4 +152,33 @@ export const socialLoginService = async (provider, idToken) => {
 	// generate access token
 	const tokens = generateTokens(newUser);
 	return { isNew: true, tokens }; // message: 'User created successfully'
+};
+
+export const verifyEmailService = async (email, otp) => {
+	// if (!email || !otp) {
+	// 	BadRequestException('Email and OTP are required', 'verifyEmailService-missing-params');
+	// }
+
+	const user = await User.findOne({ email });
+	if (!user) {
+		NotFoundException('User not found', 'verifyEmailService-user-not-found');
+	}
+
+	if (!user.isActive || user.deletedAt) {
+		BadRequestException('User is not active or deleted', 'verifyEmailService-user-not-active');
+	}
+
+	if (user.verified) {
+		BadRequestException('User already verified', 'verifyEmailService-user-already-verified');
+	}
+	
+	if (user.otp != otp) {
+		BadRequestException('Invalid OTP', 'verifyEmailService-invalid-otp');
+	}
+
+	user.verified = Date.now().toString();
+	user.otp = null;
+	await user.save();
+
+	return true;
 };

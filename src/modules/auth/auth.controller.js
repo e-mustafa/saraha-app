@@ -4,8 +4,14 @@ import validation from '../../middlewares/validation.middleware.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
-import { loginService, refreshAccessTokenService, signupService, socialLoginService } from './auth.services.js';
-import { loginSchema, registerSchema } from './auth.validation.js';
+import {
+	loginService,
+	refreshAccessTokenService,
+	signupService,
+	socialLoginService,
+	verifyEmailService,
+} from './auth.services.js';
+import { loginSchema, registerSchema, verifyAccountSchema } from './auth.validation.js';
 
 const router = Router();
 
@@ -16,6 +22,7 @@ export const routes = {
 	register: '/signup',
 	refreshToken: '/refresh-token',
 	socialLogin: '/social-login',
+	verifyAccount: '/verify-account',
 };
 
 router.post(
@@ -59,3 +66,14 @@ router.post(
 	}),
 );
 export default router;
+
+router.post(
+	routes.verifyAccount,
+	validation(verifyAccountSchema),
+	asyncHandler(async (req, res) => {
+		const { email, otp } = req.body || {};
+		await verifyEmailService(email, otp);
+
+		successResponse({ res, message: 'Account verified successfully' });
+	}),
+);
