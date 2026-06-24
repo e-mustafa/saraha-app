@@ -4,7 +4,7 @@ import { throwInternalException } from '../../../response/throw.exceptions.js';
 
 export async function verifyOAuth2Google(idToken) {
 	if (!idToken) {
-		throwInternalException(500, 'ID token is required', 'verifyOAuth2Google');
+		throwInternalException('ID token is required', 500, 'verifyOAuth2Google');
 	}
 	const client = new OAuth2Client();
 
@@ -20,7 +20,6 @@ export async function verifyOAuth2Google(idToken) {
 	// const userid = payload['sub'];
 	// If the request specified a Google Workspace domain:
 	// const domain = payload['hd'];
-
 
 	return payload;
 }

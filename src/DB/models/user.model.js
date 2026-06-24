@@ -80,9 +80,6 @@ const userSchema = new Schema(
 			},
 		},
 
-		avatar: String,
-		description: String,
-
 		role: {
 			type: String,
 			enum: USER_ROLES,
@@ -140,6 +137,9 @@ const userSchema = new Schema(
 		timestamps: true,
 		toJSON: { virtuals: true },
 		toObject: { virtuals: true },
+		strict: true,
+		strictQuery: true,
+		optimisticConcurrency: true,
 	},
 );
 

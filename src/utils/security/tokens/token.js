@@ -3,7 +3,7 @@ import { configEnv, jwtSignatureLevel } from '../../../config/env.js';
 import User from '../../../DB/models/user.model.js';
 import { TOKEN_TYPES_ENUM } from '../../enums/security,enum.js';
 import { ADMIN_ROLES, USER_ROLES_ENUM } from '../../enums/user.enum.js';
-import { throwInternalException } from '../../response/throw.exceptions.js';
+import { throwInternalException, UnauthorizedException } from '../../response/throw.exceptions.js';
 
 export const generateToken = (payload, secretKey, options = {}) => {
 	if (!secretKey) {
@@ -33,7 +33,7 @@ export const getSignature = (role) => {
 	} else if (Number(role) === USER_ROLES_ENUM.USER) {
 		signature = jwtSignatureLevel.user;
 	} else {
-		throwInternalException(500, 'Invalid token Signature', 'getSignature');
+		throwInternalException('Invalid token Signature', 500, 'getSignature');
 	}
 	return signature;
 };
@@ -45,7 +45,7 @@ export const getSignature = (role) => {
  * @param {Object} customPayload - Custom payload to include in the token, Default payload is { id, email, role }
  * @returns {Object} - Object containing accessToken and refreshToken
  */
-export const generateTokens = (user, type = 'BOTH', customPayload) => {
+export const generateTokens = (user, rememberMe = false, type = 'BOTH', customPayload) => {
 	if (!user || user.role === undefined) {
 		throwInternalException('Token generation failed: User role is missing or undefined');
 	}
@@ -74,7 +74,7 @@ export const generateTokens = (user, type = 'BOTH', customPayload) => {
 
 	if (type === 'BOTH' || type === TOKEN_TYPES_ENUM.REFRESH) {
 		tokens.refreshToken = generateToken(payload, signature.REFRESH_TOKEN_SECRET, {
-			expiresIn: signature.REFRESH_TOKEN_EXPIRES,
+			expiresIn: rememberMe ? signature.REFRESH_TOKEN_EXPIRES * 2 : signature.REFRESH_TOKEN_EXPIRES,
 			audience: user.role,
 		});
 	}
@@ -91,18 +91,17 @@ export const generateTokens = (user, type = 'BOTH', customPayload) => {
  */
 export const decodeToken = async (authorization, isRefreshToken = false) => {
 	if (!authorization) {
-		throwInternalException(500, 'Authorization header is required', 'decodeToken');
+		throwInternalException('Authorization header is required', 500, 'decodeToken');
 	}
 	const token = authorization.split(' ')[1];
-
 	if (!token) {
-		throwInternalException(500, 'Token is required', 'decodeToken');
+		throwInternalException('Token is required', 500, 'decodeToken');
 	}
 
 	const decodedPayload = jwt.decode(token) || {};
 
 	if (!decodedPayload.aud || !decodedPayload.id) {
-		throwInternalException(500, 'Invalid token structure or corrupted payload', 'decodeToken');
+		throwInternalException('Invalid token structure or corrupted payload', 500, 'decodeToken');
 	}
 
 	// Determine signature based on audience
@@ -110,8 +109,16 @@ export const decodeToken = async (authorization, isRefreshToken = false) => {
 
 	// use try catch to handle token expiration exception
 	// Verify token using the appropriate secret
-	const decoded = await verifyToken(token, isRefreshToken ? signature.REFRESH_TOKEN_SECRET : signature.ACCESS_TOKEN_SECRET);
-
+	let decoded;
+	try {
+		decoded = await verifyToken(token, isRefreshToken ? signature.REFRESH_TOKEN_SECRET : signature.ACCESS_TOKEN_SECRET);
+	} catch (error) {
+		if (isRefreshToken) {
+			UnauthorizedException('Token expired! Please login again.', 'decodeToken');
+		} else {
+			UnauthorizedException('Token expired! Please ask for a new one', 'decodeToken');
+		}
+	}
 	const user = await User.findById(decoded.id).select('-password -verified -otp').lean();
 	return { user, decoded };
 };

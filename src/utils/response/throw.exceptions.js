@@ -41,8 +41,8 @@ export const BadRequestException = (message = 'Bad request', context = 'BadReque
 	throwException(400, message, context);
 };
 
-export const ConflictException = (message = 'Conflict', context = 'ConflictException') => {
-	throwException(409, message, context);
+export const ConflictException = (message = 'Conflict', context = 'ConflictException', errors) => {
+	throwException(409, message, context, errors);
 };
 
 export const GoneException = (message = 'Gone', context = 'GoneException') => {

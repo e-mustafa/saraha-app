@@ -2,7 +2,9 @@ import User from '../../DB/models/user.model.js';
 import { decrypt } from '../../utils/security/encryption.security.js';
 
 export const getProfileService = async (user) => {
-	user.phone = decrypt(user.phone);
+	if (user.phone) {
+		user.phone = decrypt(user.phone);
+	}
 	return user;
 };
 

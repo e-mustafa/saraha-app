@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../../DB/models/user.model.js';
+import { sendOtpEmail } from '../../utils/emails/otp.email.js';
 import { TOKEN_TYPES_ENUM } from '../../utils/enums/security,enum.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
 import {
@@ -9,18 +10,20 @@ import {
 	UnauthorizedException,
 } from '../../utils/response/throw.exceptions.js';
 import { verifyHash } from '../../utils/security/hash.security.js';
+import { generateOTP } from '../../utils/security/otp.security.js';
 import { verifyOAuth2Google } from '../../utils/security/tokens/providers/google.token.js';
 import { generateTokens, getSignature } from '../../utils/security/tokens/token.js';
-import { sendEmail } from '../../utils/sendEmail.js';
 
 export const signupService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
-	if (!firstName || !lastName || !username || !email || !password || !phone || gender === undefined || !birthdate) {
-		NotFoundException('Please enter required fields', 'signupService');
-	}
+	// if (!firstName || !lastName || !username || !email || !password || !phone || gender === undefined || !birthdate) {
+	// 	NotFoundException('Please enter required fields', 'signupService');
+	// }
 	// check if user already exists
 	const isExist = await User.findOne({ email });
 	if (isExist) {
-		ConflictException('This email is already registered', 'signupService');
+		ConflictException('This email is already registered', 'signupService', {
+			body: { email: 'This email is already registered' },
+		});
 	}
 
 	// const hashedPassword = await generateHash(password);
@@ -29,7 +32,7 @@ export const signupService = async ({ firstName, lastName, username, email, pass
 	// 	encryptedPhone = await encrypt(phone);
 	// }
 
-	const otp = Math.floor(100000 + Math.random() * 900000).toString();
+	const otp = generateOTP();
 
 	const user = await User.create({
 		firstName,
@@ -37,25 +40,21 @@ export const signupService = async ({ firstName, lastName, username, email, pass
 		username,
 		email,
 		password, //: hashedPassword, in user model password is hashed automatically with pre save middleware
-		phone, //: encryptedPhone, in user model phone is encrypted automatically with pre save middleware
-		gender,
-		birthdate,
+		// phone, //: encryptedPhone, in user model phone is encrypted automatically with pre save middleware
+		// gender,
+		// birthdate,
 		otp,
 	});
 
-	await sendEmail({
-		to: email,
-		subject: 'Verify your email',
-		html: `<p>Your verification code is ${otp}</p>`,
-	});
+	await sendOtpEmail(email, otp);
 
 	return user;
 };
 
-export const loginService = async ({ email, password }) => {
-	if (!email || !password) {
-		BadRequestException('Please enter required fields email and password', 'loginService-missing-fields');
-	}
+export const loginService = async ({ email, password, rememberMe = false }) => {
+	// if (!email || !password) {
+	// 	BadRequestException('Please enter required fields email and password', 'loginService-missing-fields');
+	// }
 
 	const user = await User.findOne({ email });
 	if (!user) {
@@ -67,7 +66,7 @@ export const loginService = async ({ email, password }) => {
 		UnauthorizedException('Invalid email or password', 'loginService-invalid-password');
 	}
 
-	const tokens = generateTokens(user);
+	const tokens = generateTokens(user, rememberMe);
 	return tokens;
 };
 
@@ -88,7 +87,16 @@ export const refreshAccessTokenService = async (refreshToken) => {
 
 	// try {
 	// verify refresh token
-	const decoded = jwt.verify(refreshToken, signature.REFRESH_TOKEN_SECRET);
+	let decoded;
+	try {
+		decoded = jwt.verify(refreshToken, signature.REFRESH_TOKEN_SECRET);
+	} catch (error) {
+		UnauthorizedException(
+			// error.message ||
+			'Refresh token is expired or invalid.',
+			'refreshAccessTokenService-invalid-token',
+		);
+	}
 
 	// get user from database by id to check if user is active and not banned
 	const user = await User.findById(decoded.id).lean();
@@ -171,7 +179,7 @@ export const verifyEmailService = async (email, otp) => {
 	if (user.verified) {
 		BadRequestException('User already verified', 'verifyEmailService-user-already-verified');
 	}
-	
+
 	if (user.otp != otp) {
 		BadRequestException('Invalid OTP', 'verifyEmailService-invalid-otp');
 	}
@@ -179,6 +187,33 @@ export const verifyEmailService = async (email, otp) => {
 	user.verified = Date.now().toString();
 	user.otp = null;
 	await user.save();
+
+	return true;
+};
+
+export const resendOtpService = async (email) => {
+	// if (!email || !otp) {
+	// 	BadRequestException('Email and OTP are required', 'verifyEmailService-missing-params');
+	// }
+
+	const user = await User.findOne({ email });
+	if (!user) {
+		NotFoundException('User not found', 'verifyEmailService-user-not-found');
+	}
+
+	if (!user.isActive || user.deletedAt) {
+		BadRequestException('User is not active or deleted', 'verifyEmailService-user-not-active');
+	}
+
+	if (user.verified) {
+		BadRequestException('User already verified', 'verifyEmailService-user-already-verified');
+	}
+
+	const otp = generateOTP();
+	user.otp = otp;
+	await user.save();
+
+	await sendOtpEmail(email, otp);
 
 	return true;
 };

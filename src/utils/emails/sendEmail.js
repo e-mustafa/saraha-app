@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
-import { configEnv, emailConfig } from '../config/env.js';
-import asyncHandler from './error-handler/async-handler.js';
+import { configEnv, emailConfig } from '../../config/env.js';
+import asyncHandler from '../error-handler/async-handler.js';
 
 const transporter = nodemailer.createTransport({
 	// host: emailConfig.smtp.host,

@@ -31,7 +31,7 @@ const validation = (schema) => {
 		});
 		
 		if (Object.keys(ValidationErrors).length > 0) {
-			ValidationFieldsException(ValidationErrors, 'Validation Error');
+			ValidationFieldsException(ValidationErrors);
 		}
 		next();
 	};

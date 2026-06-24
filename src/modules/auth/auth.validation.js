@@ -36,31 +36,31 @@ export const registerSchema = {
 			'any.required': 'Confirm password is required',
 		}),
 
-		phone: joi
-			.string()
-			.pattern(/^01[0125][0-9]{8}$/)
-			.required()
-			.messages({
-				'string.pattern.base': 'Please provide a valid Egyptian phone number',
-				'any.required': 'Phone number is required',
-			}),
+		// phone: joi
+		// 	.string()
+		// 	.pattern(/^01[0125][0-9]{8}$/)
+		// 	.required()
+		// 	.messages({
+		// 		'string.pattern.base': 'Please provide a valid Egyptian phone number',
+		// 		'any.required': 'Phone number is required',
+		// 	}),
 
-		gender: joi
-			.number()
-			.valid(...GENDERS)
-			.required()
-			.messages({
-				'any.only': 'Invalid gender selection',
-				'any.required': 'Gender is required',
-			}),
+		// gender: joi
+		// 	.number()
+		// 	.valid(...GENDERS)
+		// 	.required()
+		// 	.messages({
+		// 		'any.only': 'Invalid gender selection',
+		// 		'any.required': 'Gender is required',
+		// 	}),
 
-		birthdate: joi.string().required().messages({
-			'any.required': 'Birthdate is required',
-		}),
+		// birthdate: joi.string().required().messages({
+		// 	'any.required': 'Birthdate is required',
+		// }),
 
-		avatar: joi.string().uri().optional().messages({
-			'string.uri': 'Avatar must be a valid URL',
-		}),
+		// avatar: joi.string().uri().optional().messages({
+		// 	'string.uri': 'Avatar must be a valid URL',
+		// }),
 
 		description: joi.string().optional(),
 
@@ -92,6 +92,7 @@ export const loginSchema = {
 			'string.min': 'Password must be at least 6 characters',
 			'any.required': 'Password is required',
 		}),
+		rememberMe: joi.boolean().optional(),
 	}),
 };
 
@@ -105,6 +106,15 @@ export const verifyAccountSchema = {
 		otp: joi.string().length(6).required().messages({
 			'string.length': 'OTP must be 6 characters',
 			'any.required': 'OTP is required',
+		}),
+	}),
+};
+
+export const resendOtpSchema = {
+	body: joi.object({
+		email: joi.string().email().trim().required().messages({
+			'string.email': 'Please provide a valid email address',
+			'any.required': 'Email is required',
 		}),
 	}),
 };
