@@ -46,7 +46,8 @@ export const signupService = async ({ firstName, lastName, username, email, pass
 		otp,
 	});
 
-	await sendOtpEmail(email, otp);
+	// send otp email, don't wait for it to finish
+	sendOtpEmail(email, otp);
 
 	return user;
 };
@@ -85,7 +86,6 @@ export const refreshAccessTokenService = async (refreshToken) => {
 	// get signature by audience
 	const signature = getSignature(decodedPayload.aud);
 
-	// try {
 	// verify refresh token
 	let decoded;
 	try {
@@ -213,7 +213,7 @@ export const resendOtpService = async (email) => {
 	user.otp = otp;
 	await user.save();
 
-	await sendOtpEmail(email, otp);
+	sendOtpEmail(email, otp);
 
 	return true;
 };
