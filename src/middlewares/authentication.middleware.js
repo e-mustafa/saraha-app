@@ -5,7 +5,11 @@ import { decodeToken } from '../utils/security/tokens/token.js';
 
 export const authentication = (isRefreshToken = false) => {
 	return asyncHandler(async (req, res, next) => {
-		const { user, decoded } = (await decodeToken(req.headers.authorization, isRefreshToken)) || {};
+		const authorization = req.headers.authorization;
+		if (!authorization) {
+			UnauthorizedException(401, 'Authorization header is required');
+		}
+		const { user, decoded } = (await decodeToken(authorization, isRefreshToken)) || {};
 		req.user = user;
 		req.decoded = decoded;
 		return next();

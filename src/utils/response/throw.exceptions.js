@@ -13,8 +13,8 @@ export const throwException = (
 
 export const throwInternalException = (
 	message = 'Sorry, Something went wrong.',
-	statusCode = 500,
 	context,
+	statusCode = 500,
 	isOperational = false,
 	originalError,
 ) => {

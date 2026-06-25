@@ -4,7 +4,7 @@ import { throwInternalException } from '../../../response/throw.exceptions.js';
 
 export async function verifyOAuth2Google(idToken) {
 	if (!idToken) {
-		throwInternalException('ID token is required', 500, 'verifyOAuth2Google');
+		throwInternalException('ID token is required', 'verifyOAuth2Google');
 	}
 	const client = new OAuth2Client();
 
