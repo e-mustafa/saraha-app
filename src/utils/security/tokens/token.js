@@ -33,7 +33,7 @@ export const getSignature = (role) => {
 	} else if (Number(role) === USER_ROLES_ENUM.USER) {
 		signature = jwtSignatureLevel.user;
 	} else {
-		throwInternalException('Invalid token Signature', 500, 'getSignature');
+		throwInternalException('Invalid token Signature', 'getSignature');
 	}
 	return signature;
 };
@@ -74,7 +74,7 @@ export const generateTokens = (user, rememberMe = false, type = 'BOTH', customPa
 
 	if (type === 'BOTH' || type === TOKEN_TYPES_ENUM.REFRESH) {
 		tokens.refreshToken = generateToken(payload, signature.REFRESH_TOKEN_SECRET, {
-			expiresIn: rememberMe ? signature.REFRESH_TOKEN_EXPIRES * 2 : signature.REFRESH_TOKEN_EXPIRES,
+			expiresIn: rememberMe ? Number(signature.REFRESH_TOKEN_EXPIRES) * 2 : Number(signature.REFRESH_TOKEN_EXPIRES),
 			audience: user.role,
 		});
 	}
@@ -91,17 +91,17 @@ export const generateTokens = (user, rememberMe = false, type = 'BOTH', customPa
  */
 export const decodeToken = async (authorization, isRefreshToken = false) => {
 	if (!authorization) {
-		throwInternalException('Authorization header is required', 500, 'decodeToken');
+		throwInternalException('Authorization header is required', 'decodeToken');
 	}
 	const token = authorization.split(' ')[1];
 	if (!token) {
-		throwInternalException('Token is required', 500, 'decodeToken');
+		throwInternalException('Token is required', 'decodeToken');
 	}
 
 	const decodedPayload = jwt.decode(token) || {};
 
 	if (!decodedPayload.aud || !decodedPayload.id) {
-		throwInternalException('Invalid token structure or corrupted payload', 500, 'decodeToken');
+		throwInternalException('Invalid token structure or corrupted payload', 'decodeToken');
 	}
 
 	// Determine signature based on audience
@@ -114,9 +114,9 @@ export const decodeToken = async (authorization, isRefreshToken = false) => {
 		decoded = await verifyToken(token, isRefreshToken ? signature.REFRESH_TOKEN_SECRET : signature.ACCESS_TOKEN_SECRET);
 	} catch (error) {
 		if (isRefreshToken) {
-			UnauthorizedException('Token expired! Please login again.', 'decodeToken');
+			UnauthorizedException(`${error.message || 'Token expired!'}, Please login again.`, 'decodeToken');
 		} else {
-			UnauthorizedException('Token expired! Please ask for a new one', 'decodeToken');
+			UnauthorizedException(`${error.message || 'Token expired!'}, Please ask for a new one`, 'decodeToken');
 		}
 	}
 	const user = await User.findById(decoded.id).select('-password -verified -otp').lean();
