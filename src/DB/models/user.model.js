@@ -7,9 +7,9 @@ import {
 	USER_ROLES,
 	USER_ROLES_ENUM,
 } from '../../utils/enums/user.enum.js';
+import { calcAge } from '../../utils/general/date.utils.js';
 import { encrypt } from '../../utils/security/encryption.security.js';
 import { generateHash } from '../../utils/security/hash.security.js';
-import { calcAge } from '../../utils/utils.js';
 
 const userSchema = new Schema(
 	{
@@ -78,6 +78,14 @@ const userSchema = new Schema(
 				},
 				message: 'Age must be at least 18 years old!',
 			},
+		},
+
+		bio: String,
+		avatar: String,
+		coverImgs: {
+			type: Array,
+			maxLength: 2,
+			default: [],
 		},
 
 		role: {

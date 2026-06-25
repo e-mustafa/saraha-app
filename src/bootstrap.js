@@ -21,6 +21,7 @@ export default async function bootstrap(app, express) {
 	});
 
 	// routers
+	app.use('/uploads', express.static('./uploads'));
 	app.use(configEnv.urlApiBase + authRoutes.base, authRouter);
 	app.use(configEnv.urlApiBase + userRoutes.base, userRouter);
 
