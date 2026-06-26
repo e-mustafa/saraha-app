@@ -124,7 +124,8 @@ export const visitUserService = async (user, username) => {
 		targetUser = await User.findById(user._id).select('-visitCount -password -__v -role -provider -otp').lean();
 	} else {
 		targetUser = await User.findOneAndUpdate({ username }, { $inc: { visitCount: 1 } }, { returnDocument: 'after' })
-			.select('-visitCount -password -__v -role -provider -otp')
+			// .select('-visitCount -password -phone -__v -role -provider -otp')
+			.select('firstName lastName username gender')
 			.lean();
 	}
 	if (!targetUser) {
@@ -139,6 +140,6 @@ export const visitUserService = async (user, username) => {
 
 // Get all users
 export const getUsersService = async () => {
-	const users = await User.find(); // .select('-password -__v');
+	const users = await User.find().select('-password -__v');
 	return users;
 };

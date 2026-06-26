@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { auth, authOptional } from '../../middlewares/authentication.middleware.js';
+import { auth, authOptional, requireAuthAdmins } from '../../middlewares/authentication.middleware.js';
 import validation from '../../middlewares/validation.middleware.js';
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
@@ -91,7 +91,7 @@ router.delete(
 );
 
 // visit user
-router.post(
+router.get(
 	routes.visitUser,
 	validation(visitUserSchema),
 	authOptional(),
@@ -102,8 +102,12 @@ router.post(
 	}),
 );
 
+// get all users - for admins (can see visit count)
 router.get(
 	routes.getUsers,
+	auth(),
+	// authorization(ADMIN_ROLES),
+	requireAuthAdmins(),
 	asyncHandler(async (req, res) => {
 		const data = await getUsersService();
 		successResponse({ res, data });
