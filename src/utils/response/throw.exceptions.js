@@ -21,6 +21,18 @@ export const throwInternalException = (
 	throw new AppError({ statusCode, message, context, isOperational, originalError });
 };
 
+// create exception to use in external service like multer
+export const createException = (
+	statusCode = 500,
+	message = 'Sorry, Something went wrong.',
+	context,
+	errors = null,
+	isOperational = true,
+	originalError = null,
+) => {
+	return new AppError({ statusCode, message, context, isOperational, errors, originalError });
+};
+
 export const ValidationFieldsException = (errors, message = 'Validation fields error', statusCode = 400) => {
 	throwException(statusCode, message, 'ValidationFieldsError', errors);
 };

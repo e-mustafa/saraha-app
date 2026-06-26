@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { requireAuth } from '../../middlewares/authentication.middleware.js';
 import validation from '../../middlewares/validation.middleware.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
 import asyncHandler from '../../utils/error-handler/async-handler.js';
@@ -27,6 +26,7 @@ export const routes = {
 	resendOtp: '/resend-otp',
 };
 
+// register
 router.post(
 	routes.register,
 	validation(registerSchema),
@@ -37,6 +37,7 @@ router.post(
 	}),
 );
 
+// login
 router.post(
 	routes.login,
 	validation(loginSchema),
@@ -47,15 +48,17 @@ router.post(
 	}),
 );
 
+// refresh token
 router.post(
 	routes.refreshToken,
-	// requireAuth(),
+	// auth(),
 	asyncHandler(async (req, res) => {
 		const data = await refreshAccessTokenService(req.cookies?.refreshToken || '');
 		successResponse({ res, message: 'Token refreshed successfully', data });
 	}),
 );
 
+// social login
 router.post(
 	routes.socialLogin,
 	asyncHandler(async (req, res) => {
@@ -69,6 +72,7 @@ router.post(
 );
 export default router;
 
+// verify account
 router.post(
 	routes.verifyAccount,
 	validation(verifyAccountSchema),
@@ -80,6 +84,7 @@ router.post(
 	}),
 );
 
+// resend otp
 router.post(
 	routes.resendOtp,
 	validation(resendOtpSchema),

@@ -11,28 +11,35 @@ export const getProfileService = async (user) => {
 	return user;
 };
 
-// Upload and update profile avatar
+// Upload and Update Profile Avatar
 export const uploadAvatarService = async (user, file) => {
 	if (!file) {
 		throwInternalException('No file provided');
 	}
 
 	const oldAvatar = user.avatar;
+	try {
+		// Update only the avatar field with the new file path
+		const updatedUser = await User.findByIdAndUpdate(
+			user._id,
+			{ avatar: file.filePath },
+			{ returnDocument: 'after' },
+		).select('-password -__v -role -provider -otp');
 
-	// Update only the avatar field with the new file path
-	const updatedUser = await User.findByIdAndUpdate(user._id, { avatar: file.filePath }, { returnDocument: 'after' }).select(
-		'-password -__v -role -provider -otp',
-	);
+		// Delete the old avatar from the disk in the background safely
+		if (oldAvatar) {
+			deleteFileHelper(oldAvatar);
+		}
 
-	// Delete the old avatar from the disk in the background
-	if (oldAvatar) {
-		deleteFileHelper(oldAvatar).catch((e) => console.error('Avatar deletion failed:', e));
+		return updatedUser;
+	} catch (error) {
+		// If database operation fails, rollback and delete the newly uploaded file immediately
+		deleteFileHelper(file.filePath);
+		throw error;
 	}
-
-	return updatedUser;
 };
 
-// Delete profile avatar
+// Delete Profile Avatar
 export const deleteAvatarService = async (user) => {
 	const oldAvatar = user.avatar;
 
@@ -45,12 +52,12 @@ export const deleteAvatarService = async (user) => {
 	);
 
 	// Delete the physical file from the disk in the background
-	deleteFileHelper(oldAvatar).catch((e) => console.error('Avatar file deletion failed:', e));
+	deleteFileHelper(oldAvatar);
 
 	return updatedUser;
 };
 
-// Upload cover images (cumulative up to a limit of 2)
+// Upload Cover Images (Cumulative up to 2)
 export const uploadCoversService = async (user, files) => {
 	if (!files || files.length === 0) {
 		throwInternalException('No files provided');
@@ -59,46 +66,53 @@ export const uploadCoversService = async (user, files) => {
 	const oldCoverImgs = user.coverImgs || [];
 	const totalCoversCount = oldCoverImgs.length + files.length;
 
-	// If the total count exceeds 2, clean up the files and throw an exception
-	if (totalCoversCount > 2) {
-		files.forEach((path) => {
-			if (path) deleteFileHelper(path);
-		});
-		ConflictException(`Upload failed. Total covers cannot exceed 2. You currently have ${oldCoverImgs.length}.`);
+	// Extract only the filePaths into a flat array of strings to avoid DB pollution
+	const newFilePaths = files.map((file) => file.filePath).filter(Boolean);
+
+	try {
+		// If the cumulative total exceeds the business rule limit of 2
+		if (totalCoversCount > 2) {
+			// Leverage our updated helper to delete all new files at once in the background
+			deleteFileHelper(newFilePaths);
+
+			ConflictException(`Upload failed. Total covers cannot exceed 2. You currently have ${oldCoverImgs.length}.`);
+		}
+
+		// Perform cumulative update saving only clean string paths
+		const updatedUser = await User.findByIdAndUpdate(
+			user._id,
+			{ $push: { coverImgs: { $each: newFilePaths } } },
+			{ returnDocument: 'after' },
+		).select('-password -__v -role -provider -otp');
+
+		return updatedUser;
+	} catch (error) {
+		// If database fails, rollback and purge all newly written files atomically
+		deleteFileHelper(newFilePaths);
+		throw error;
 	}
-
-	// Perform cumulative update using $push and $each, $each to save as flat array
-	const updatedUser = await User.findByIdAndUpdate(
-		user._id,
-		{ $push: { coverImgs: { $each: files } } },
-		{ returnDocument: 'after' },
-	).select('-password -__v -role -provider -otp');
-
-	return updatedUser;
 };
 
-// Delete a specific single cover image
+// Delete a Specific Single Cover Image
 export const deleteSingleCoverService = async (user, imagePath) => {
 	if (!imagePath) {
 		throwInternalException('No image path provided');
 	}
 
-	// Validate that the image actually belongs to the user
+	// Validate that the image actually belongs to the requesting user
 	if (!user.coverImgs || !user.coverImgs.includes(imagePath)) {
 		NotFoundException('Image not found in your profile');
 	}
 
-	// Update the database first to remove the path from the array
+	// Update the database first to pull the specific string path from the array
 	const updatedUser = await User.findByIdAndUpdate(
 		user._id,
 		{ $pull: { coverImgs: imagePath } },
 		{ returnDocument: 'after' },
 	).select('-password -__v -role -provider -otp');
 
-	// Delete the actual file from disk after successful database update
-	deleteFileHelper(imagePath).catch((e) => {
-		console.error('Failed to delete cover file from disk:', e);
-	});
+	// Delete the actual physical file from disk after successful database update
+	deleteFileHelper(imagePath);
 
 	return updatedUser;
 };
