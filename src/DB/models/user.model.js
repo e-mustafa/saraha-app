@@ -113,6 +113,9 @@ const userSchema = new Schema(
 			type: Boolean,
 			default: true,
 		},
+
+		visitCount: { type: Number, default: 0 },
+
 		// deletedAt: {
 		// 	type: Date,
 		// 	default: null,

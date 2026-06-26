@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { auth } from '../../middlewares/authentication.middleware.js';
+import { auth, authOptional } from '../../middlewares/authentication.middleware.js';
 import validation from '../../middlewares/validation.middleware.js';
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
@@ -11,8 +11,9 @@ import {
 	getUsersService,
 	uploadAvatarService,
 	uploadCoversService,
+	visitUserService,
 } from './user.services.js';
-import { deleteImageSchema } from './user.validation.js';
+import { deleteImageSchema, visitUserSchema } from './user.validation.js';
 
 const router = Router();
 
@@ -86,6 +87,18 @@ router.delete(
 		const data = await deleteSingleCoverService(req.user, req.body.image);
 
 		successResponse({ res, message: 'Cover Image deleted successfully', data });
+	}),
+);
+
+// visit user
+router.post(
+	routes.visitUser,
+	validation(visitUserSchema),
+	authOptional(),
+	asyncHandler(async (req, res) => {
+		const { username } = req.params || {};
+		const data = await visitUserService(req.user, username);
+		successResponse({ res, data });
 	}),
 );
 

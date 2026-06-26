@@ -17,3 +17,8 @@ export const avatarUserSchema = {
 	}),
 };
 
+export const visitUserSchema = {
+	params: joi.object({
+		username: attributesSchema.username,
+	}),
+};
