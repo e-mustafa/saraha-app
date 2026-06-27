@@ -13,7 +13,7 @@ import {
 	uploadCoversService,
 	visitUserService,
 } from './user.services.js';
-import { deleteImageSchema, visitUserSchema } from './user.validation.js';
+import { coverUserSchema, deleteImageSchema, visitUserSchema } from './user.validation.js';
 
 const router = Router();
 
@@ -69,6 +69,7 @@ router.patch(
 	routes.uploadCovers,
 	auth(),
 	localUpload({ dir: 'users' }).array('coverImages', 2),
+	validation(coverUserSchema),
 	asyncHandler(async (req, res) => {
 		const { user, files } = req;
 		const filePaths = files ? files.map((file) => file.filePath) : [];
