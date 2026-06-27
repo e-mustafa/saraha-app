@@ -10,6 +10,7 @@ export const configEnv = {
 	db: {
 		dbUrl: process.env.DATABASE_URL,
 		dbName: process.env.DATABASE_Name,
+		redisUrl: process.env.REDIS_URL,
 	},
 	security: {
 		salt: process.env.SALT_ROUND,

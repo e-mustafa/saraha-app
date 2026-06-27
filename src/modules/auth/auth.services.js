@@ -3,6 +3,7 @@ import User from '../../DB/models/user.model.js';
 import { sendOtpEmail } from '../../utils/emails/otp.email.js';
 import { TOKEN_TYPES_ENUM } from '../../utils/enums/security,enum.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
+import { otpServices } from '../../utils/redis/otp-service.redis.js';
 import {
 	BadRequestException,
 	ConflictException,
@@ -14,23 +15,17 @@ import { generateOTP } from '../../utils/security/otp.security.js';
 import { verifyOAuth2Google } from '../../utils/security/tokens/providers/google.token.js';
 import { generateTokens, getSignature } from '../../utils/security/tokens/token.js';
 
-export const signupService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
+export const registerService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
 	// if (!firstName || !lastName || !username || !email || !password || !phone || gender === undefined || !birthdate) {
-	// 	NotFoundException('Please enter required fields', 'signupService');
+	// 	NotFoundException('Please enter required fields', 'registerService');
 	// }
 	// check if user already exists
 	const isExist = await User.findOne({ email });
 	if (isExist) {
-		ConflictException('This email is already registered', 'signupService', {
+		ConflictException('This email is already registered', 'registerService', {
 			body: { email: 'This email is already registered' },
 		});
 	}
-
-	// const hashedPassword = await generateHash(password);
-	// let encryptedPhone = null;
-	// if (phone) {
-	// 	encryptedPhone = await encrypt(phone);
-	// }
 
 	const otp = generateOTP();
 
@@ -43,8 +38,11 @@ export const signupService = async ({ firstName, lastName, username, email, pass
 		// phone, //: encryptedPhone, in user model phone is encrypted automatically with pre save middleware
 		// gender,
 		// birthdate,
-		otp,
+		// otp,
 	});
+
+	// save otp in redis with expiration of 5 minutes
+	await otpServices.set(user._id, otp);
 
 	// send otp email, don't wait for it to finish
 	sendOtpEmail(email, otp);
@@ -180,13 +178,19 @@ export const verifyEmailService = async (email, otp) => {
 		BadRequestException('User already verified', 'verifyEmailService-user-already-verified');
 	}
 
-	if (user.otp != otp) {
-		BadRequestException('Invalid OTP', 'verifyEmailService-invalid-otp');
+	const userOtp = await otpServices.get(user._id);
+	if (userOtp !== otp) {
+		BadRequestException('Invalid or expired OTP', 'verifyEmailService-invalid-otp');
+	}
+
+	if (userOtp != otp) {
+		BadRequestException('Invalid or expired OTP', 'verifyEmailService-invalid-otp');
 	}
 
 	user.verified = Date.now().toString();
-	user.otp = null;
 	await user.save();
+
+	await otpServices.delete(user._id);
 
 	return true;
 };
@@ -209,10 +213,18 @@ export const resendOtpService = async (email) => {
 		BadRequestException('User already verified', 'verifyEmailService-user-already-verified');
 	}
 
-	const otp = generateOTP();
-	user.otp = otp;
-	await user.save();
+	const existOtp = await otpServices.get(user._id);
+	if (existOtp) {
+		const otpTtl = await otpServices.tll(user._id);
+		if (otpTtl > 0) {
+			// only wait 1m before sending new otp, no need to wait 5 minutes
+			BadRequestException('OTP is still valid, please wait one minute', 'verifyEmailService-otp-still-valid');
+		}
+	}
 
+	const otp = generateOTP();
+
+	await otpServices.set(user._id, otp);
 	sendOtpEmail(email, otp);
 
 	return true;

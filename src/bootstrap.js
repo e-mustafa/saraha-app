@@ -4,6 +4,7 @@ import { configEnv } from './config/env.js';
 import connectDB from './DB/connection.js';
 import { authRouter, authRoutes, userRouter, userRoutes } from './modules/index.js';
 import { globalErrorHandler } from './utils/error-handler/index.js';
+import { connectRedis } from './utils/redis/client.redis.js';
 import { successResponse } from './utils/response/success.response.js';
 import { NotFoundException } from './utils/response/throw.exceptions.js';
 
@@ -15,6 +16,7 @@ export default async function bootstrap(app, express) {
 
 	// connect to Database
 	await connectDB();
+	await connectRedis();
 
 	app.get('/', (_, res) => {
 		successResponse({ res, message: `Hello in ${configEnv.appName} Api!` });

@@ -22,7 +22,7 @@ export const auth = (isOptional = false) => {
 export const authorization = (allowedRoles = []) => {
 	return asyncHandler(async (req, res, next) => {
 		if (!allowedRoles?.includes(req.user?.role || '')) {
-			UnauthorizedException(403, 'Unauthorized Access!!');
+			UnauthorizedException('Unauthorized Access!!');
 		}
 		return next();
 	});

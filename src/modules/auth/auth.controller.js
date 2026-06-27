@@ -6,12 +6,12 @@ import { successResponse } from '../../utils/response/success.response.js';
 import {
 	loginService,
 	refreshAccessTokenService,
+	registerService,
 	resendOtpService,
-	signupService,
 	socialLoginService,
 	verifyEmailService,
 } from './auth.services.js';
-import { loginSchema, registerSchema, resendOtpSchema, verifyAccountSchema } from './auth.validation.js';
+import { loginSchema, refreshTokenSchema, registerSchema, resendOtpSchema, verifyAccountSchema } from './auth.validation.js';
 
 const router = Router();
 
@@ -24,6 +24,8 @@ export const routes = {
 	socialLogin: '/social-login',
 	verifyAccount: '/verify-account',
 	resendOtp: '/resend-otp',
+	forgetPassword: '/forget-password',
+	resetPassword: '/reset-password',
 };
 
 // register
@@ -32,7 +34,7 @@ router.post(
 	validation(registerSchema),
 	asyncHandler(async (req, res) => {
 		const { firstName, lastName, username, email, password, phone, gender, birthdate } = req.body || {};
-		const data = await signupService({ firstName, lastName, username, email, password, phone, gender, birthdate });
+		const data = await registerService({ firstName, lastName, username, email, password, phone, gender, birthdate });
 		successResponse({ res, message: 'Account created successfully, please verify your account', data });
 	}),
 );
@@ -52,6 +54,7 @@ router.post(
 router.post(
 	routes.refreshToken,
 	// auth(),
+	validation(refreshTokenSchema),
 	asyncHandler(async (req, res) => {
 		const data = await refreshAccessTokenService(req.cookies?.refreshToken || '');
 		successResponse({ res, message: 'Token refreshed successfully', data });

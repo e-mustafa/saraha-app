@@ -103,11 +103,6 @@ const userSchema = new Schema(
 			default: null,
 			nullify: true,
 		},
-		otp: {
-			type: String,
-			default: null,
-			nullify: true,
-		},
 
 		isActive: {
 			type: Boolean,
@@ -155,7 +150,7 @@ const userSchema = new Schema(
 );
 
 userSchema.pre('save', async function () {
-	if (this.provider === PROVIDERS_ENUM.LOCAL && this.isModified('password')) {
+	if (this.provider === PROVIDERS_ENUM.SYSTEM && this.isModified('password')) {
 		this.password = await generateHash(this.password);
 	}
 
