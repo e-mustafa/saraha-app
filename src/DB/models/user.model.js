@@ -103,6 +103,11 @@ const userSchema = new Schema(
 			default: null,
 			nullify: true,
 		},
+		passwordChangedAt: {
+			type: Date,
+			default: null,
+			nullify: true,
+		},
 
 		isActive: {
 			type: Boolean,

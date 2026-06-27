@@ -1,9 +1,13 @@
 import jwt from 'jsonwebtoken';
+import { createHash, randomBytes } from 'node:crypto';
+import { configEnv } from '../../config/env.js';
 import User from '../../DB/models/user.model.js';
 import { sendOtpEmail } from '../../utils/emails/otp.email.js';
+import { sendResetPasswordEmail } from '../../utils/emails/reset-password.email.js';
 import { TOKEN_TYPES_ENUM } from '../../utils/enums/security,enum.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
 import { otpServices } from '../../utils/redis/otp-service.redis.js';
+import { resetPasswordServices } from '../../utils/redis/reset-password-service.redis.js';
 import {
 	BadRequestException,
 	ConflictException,
@@ -226,6 +230,45 @@ export const resendOtpService = async (email) => {
 
 	await otpServices.set(user._id, otp);
 	sendOtpEmail(email, otp);
+
+	return true;
+};
+
+export const forgetPasswordService = async (email) => {
+	const user = await User.findOne({ email });
+	if (!user) {
+		return false;
+	}
+
+	const resetToken = randomBytes(32)?.toString('hex');
+	const hashedToken = createHash('sha256').update(resetToken).digest('hex');
+
+	await resetPasswordServices.set(hashedToken, user._id.toString());
+
+	const link = `${configEnv.frontendUrl}/auth/reset-password?token=${resetToken}`;
+	sendResetPasswordEmail(user.email, link, `${user.firstName} ${user.lastName}`);
+
+	return true;
+};
+
+export const resetPasswordService = async (token, password) => {
+	const hashedToken = createHash('sha256').update(token).digest('hex');
+
+	const userId = await resetPasswordServices.get(hashedToken);
+	if (!userId) {
+		BadRequestException('This link is invalid or expired!', 'resetPasswordService-invalid-token');
+	}
+
+	const user = await User.findById(userId);
+	if (!user) {
+		BadRequestException('This link is invalid or expired!', 'resetPasswordService-user-not-found');
+	}
+
+	user.password = password;
+	user.passwordChangedAt = Date.now();
+	await user.save();
+
+	await resetPasswordServices.delete(hashedToken);
 
 	return true;
 };

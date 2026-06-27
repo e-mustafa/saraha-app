@@ -4,14 +4,24 @@ import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
 import {
+	forgetPasswordService,
 	loginService,
 	refreshAccessTokenService,
 	registerService,
 	resendOtpService,
+	resetPasswordService,
 	socialLoginService,
 	verifyEmailService,
 } from './auth.services.js';
-import { loginSchema, refreshTokenSchema, registerSchema, resendOtpSchema, verifyAccountSchema } from './auth.validation.js';
+import {
+	forgetPasswordSchema,
+	loginSchema,
+	refreshTokenSchema,
+	registerSchema,
+	resendOtpSchema,
+	resetPasswordSchema,
+	verifyAccountSchema,
+} from './auth.validation.js';
 
 const router = Router();
 
@@ -98,3 +108,28 @@ router.post(
 		successResponse({ res, message: 'OTP resent successfully' });
 	}),
 );
+
+	// forget password
+	router.post(
+		routes.forgetPassword,
+		validation(forgetPasswordSchema),
+		asyncHandler(async (req, res) => {
+			const { email } = req.body || {};
+			await forgetPasswordService(email);
+
+			successResponse({ res, message: 'If email exists, we will send you a link to reset your password.' });
+		}),
+);
+	
+// reset password
+router.post(
+	routes.resetPassword,
+	validation(resetPasswordSchema),
+	asyncHandler(async (req, res) => {
+		const { token, password } = req.body || {};
+		await resetPasswordService(token, password);
+
+		successResponse({ res, message: 'Password reset successfully' });
+	}),
+);
+	

@@ -46,3 +46,29 @@ export const resendOtpSchema = {
 		email: attributesSchema.email,
 	}),
 };
+
+export const refreshTokenSchema = {
+	cookies: joi.object({
+		refreshToken: joi.string().required().messages({
+			'string.required': 'Refresh token is required',
+		}),
+	}),
+};
+
+
+export const forgetPasswordSchema = {
+	body: joi.object({
+		email: attributesSchema.email,
+	}),
+};
+
+
+export const resetPasswordSchema = {
+	body: joi.object({
+		token: joi.string().required().messages({
+			'string.required': 'Token is required',
+		}),
+		password: attributesSchema.password,
+		// confirmPassword: attributesSchema.confirmPassword,
+	}),
+};
