@@ -157,7 +157,7 @@ export const sendOtpEmail = async (email, otp, language = 'en') => {
    </html>
    `;
 
-	await sendEmail({
+	return await sendEmail({
 		to: email,
 		subject: language === 'ar' ? emailOtpTitle_ar : emailOtpTitle_en,
 		html: language === 'ar' ? emailOtpTemplate_ar : emailOtpTemplate_en,

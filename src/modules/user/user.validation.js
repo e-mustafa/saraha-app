@@ -11,10 +11,30 @@ export const deleteImageSchema = {
 
 export const avatarUserSchema = {
 	file: joi.object({
-		avatar: joi.string().required().messages({
-			'any.required': 'Avatar is required',
+		filePath: joi.string().required().messages({
+			'any.required': 'ProfileImage is required',
 		}),
 	}),
+};
+
+export const coverUserSchema = {
+	files: joi
+		.array()
+		.items(
+			joi
+				.object({
+					filePath: joi.string().required(),
+				})
+				.unknown(true), // allow other fields like filename to pass without validation errors
+		)
+		.min(1)
+		.max(2)
+		.required()
+		.messages({
+			'any.required': 'Cover images are required',
+			'array.min': 'Please upload at least one cover image',
+			'array.max': 'You can upload a maximum of 2 cover images',
+		}),
 };
 
 export const visitUserSchema = {

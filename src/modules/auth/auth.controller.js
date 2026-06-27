@@ -109,18 +109,18 @@ router.post(
 	}),
 );
 
-	// forget password
-	router.post(
-		routes.forgetPassword,
-		validation(forgetPasswordSchema),
-		asyncHandler(async (req, res) => {
-			const { email } = req.body || {};
-			await forgetPasswordService(email);
+// forget password
+router.post(
+	routes.forgetPassword,
+	validation(forgetPasswordSchema),
+	asyncHandler(async (req, res) => {
+		const { email } = req.body || {};
+		await forgetPasswordService(email);
 
-			successResponse({ res, message: 'If email exists, we will send you a link to reset your password.' });
-		}),
+		successResponse({ res, message: 'If email exists, we will send you a link to reset your password.' });
+	}),
 );
-	
+
 // reset password
 router.post(
 	routes.resetPassword,
@@ -132,4 +132,3 @@ router.post(
 		successResponse({ res, message: 'Password reset successfully' });
 	}),
 );
-	

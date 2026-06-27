@@ -44,7 +44,7 @@ router.get(
 router.patch(
 	routes.uploadAvatar,
 	auth(),
-	localUpload({ dir: 'users' }).single('avatar'),
+	localUpload({ dir: 'users' }).single('profileImage'),
 	asyncHandler(async (req, res) => {
 		const { user, file } = req;
 		const data = await uploadAvatarService(user, file);
@@ -68,7 +68,7 @@ router.delete(
 router.patch(
 	routes.uploadCovers,
 	auth(),
-	localUpload({ dir: 'users' }).array('coverImgs', 2),
+	localUpload({ dir: 'users' }).array('coverImages', 2),
 	asyncHandler(async (req, res) => {
 		const { user, files } = req;
 		const filePaths = files ? files.map((file) => file.filePath) : [];

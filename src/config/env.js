@@ -6,6 +6,7 @@ export const configEnv = {
 	appName: process.env.APP_NAME || 'Saraha App',
 	port: process.env.APP_PORT,
 	environment: process.env.NODE_APP,
+	appUrl: `${process.env.APP_URL}:${process.env.APP_PORT}`,
 	urlApiBase: process.env.URL_API_BASE || '/api/v2',
 	frontendUrl: process.env.FRONTEND_URL,
 	db: {

@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { configEnv } from '../../config/env.js';
 import {
 	GENDERS,
 	GENDERS_ENUM,
@@ -32,7 +33,7 @@ const userSchema = new Schema(
 		username: {
 			type: String,
 			required: [true, 'Username required.'],
-			unique: [true, 'Entered username already in use, please choose another username.'],
+			unique: true,
 			trim: true,
 			lowercase: true,
 		},
@@ -48,7 +49,7 @@ const userSchema = new Schema(
 			type: String,
 			required: [
 				function () {
-					return this.provider === PROVIDERS_ENUM.LOCAL;
+					return this.provider === PROVIDERS_ENUM.SYSTEM;
 				},
 				'Password required.',
 			],
@@ -81,8 +82,8 @@ const userSchema = new Schema(
 		},
 
 		bio: String,
-		avatar: String,
-		coverImgs: {
+		profileImage: String,
+		coverImages: {
 			type: Array,
 			maxLength: 2,
 			default: [],
@@ -92,6 +93,10 @@ const userSchema = new Schema(
 			type: String,
 			enum: USER_ROLES,
 			default: USER_ROLES_ENUM.USER,
+			// save as number in database
+			transform: function (value) {
+				return Number(value);
+			},
 		},
 		provider: {
 			type: String,
@@ -125,24 +130,6 @@ const userSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: 'message',
 		},
-
-		virtuals: {
-			fullName: {
-				type: String,
-				virtual: true,
-				get() {
-					return `${this.firstName} ${this.lastName}`;
-				},
-			},
-			age: {
-				type: Number,
-				virtual: true,
-				get() {
-					console.log('calcAge(this)', calcAge(this.birthdate));
-					return calcAge(this.birthdate);
-				},
-			},
-		},
 	},
 	{
 		timestamps: true,
@@ -154,6 +141,45 @@ const userSchema = new Schema(
 	},
 );
 
+// Virtuals --------------------------------------------------------------
+userSchema.virtual('fullName').get(function () {
+	return `${this.firstName} ${this.lastName}`;
+});
+
+userSchema.virtual('age').get(function () {
+	return calcAge(this.birthdate);
+});
+
+userSchema
+	.virtual('avatar')
+	.get(function () {
+		if (!this.profileImage) return null;
+
+		// if the profileImage starts with http:// or https:// return it as is
+		if (this.profileImage.startsWith('http://') || this.profileImage.startsWith('https://')) {
+			return this.profileImage;
+		}
+
+		// if the profileImage is a local file, return it with the appUrl
+		return `${configEnv.appUrl}/${this.profileImage.replace(/\\/g, '/')}`;
+	})
+	.set(function (value) {
+		// the Setter makes Mongoose understand where to store the value when writing User.create({ avatar: ... })
+		this.profileImage = value;
+	});
+
+userSchema
+	.virtual('covers')
+	.get(function () {
+		return this.coverImages && this.coverImages?.length > 0
+			? this.coverImages.map((image) => `${configEnv.appUrl}/${image.replace(/\\/g, '/')}`)
+			: [];
+	})
+	.set(function (value) {
+		this.coverImages = value;
+	});
+
+// Hooks -----------------------------------------------------------------------------------------
 userSchema.pre('save', async function () {
 	if (this.provider === PROVIDERS_ENUM.SYSTEM && this.isModified('password')) {
 		this.password = await generateHash(this.password);

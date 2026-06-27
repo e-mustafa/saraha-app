@@ -17,7 +17,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"firstName\": \"aya\",\r\n    \"lastName\": \"mohamed\",\r\n    \"username\": \"Aya_10\",\r\n    \"email\":\"Aya@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"confirmPassword\": \"123456\",\r\n    \"gender\": 0,\r\n    \"birthdate\": \"2006-10-19\",\r\n    \"phone\": \"01112223335\"\r\n}",
+              "raw": "{\r\n    \"firstName\": \"aya\",\r\n    \"lastName\": \"mohamed\",\r\n    \"username\": \"Aya200\",\r\n    \"email\":\"ooyvwdf380@yzcalo.com\",\r\n    \"password\": \"Ahmed@123\",\r\n    \"confirmPassword\": \"Ahmed@123\"\r\n\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -404,7 +404,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"email\": \"hind@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+              "raw": "{\r\n    \"email\": \"n2nbiczj5o@lnovic.com\",\r\n    \"password\": \"Password@123\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -617,27 +617,27 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "// // 1. Validate response status code\r",
-                  "// pm.test(\"Check if the response status code is 200\", function () { \r",
-                  "//     pm.response.to.have.status(200);\r",
-                  "// });\r",
+                  "// 1. Validate response status code\r",
+                  "pm.test(\"Check if the response status code is 200\", function () { \r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
                   "\r",
-                  "// // 2. Safely validate response structure and automate token storage\r",
-                  "// pm.test(\"Check and store access and refresh tokens\", function () { \r",
-                  "//     // Parse JSON response once to optimize performance\r",
-                  "//     const responseBody = pm.response.json();\r",
+                  "// 2. Safely validate response structure and automate token storage\r",
+                  "pm.test(\"Check and store access and refresh tokens\", function () { \r",
+                  "    // Parse JSON response once to optimize performance\r",
+                  "    const responseBody = pm.response.json();\r",
                   "    \r",
-                  "//     // Ensure the response contains the expected data structure\r",
-                  "//     pm.expect(responseBody).to.have.property('data');\r",
-                  "//     pm.expect(responseBody.data.accessToken).to.not.be.null;\r",
+                  "    // Ensure the response contains the expected data structure\r",
+                  "    pm.expect(responseBody).to.have.property('data');\r",
+                  "    pm.expect(responseBody.data.accessToken).to.not.be.null;\r",
                   "\r",
                   "\r",
-                  "//     // 3. Environment variables are set only if the assertions above pass successfully\r",
-                  "//     pm.environment.set(\"accessToken\", responseBody.data.accessToken);\r",
+                  "    // 3. Environment variables are set only if the assertions above pass successfully\r",
+                  "    pm.environment.set(\"accessToken\", responseBody.data.accessToken);\r",
                   "\r",
                   "    \r",
-                  "//     console.log(\"accessToken have been automatically updated in Environment!\");\r",
-                  "// });\r",
+                  "    console.log(\"accessToken have been automatically updated in Environment!\");\r",
+                  "});\r",
                   "\r",
                   "\r",
                   ""
@@ -799,6 +799,541 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Verify user account",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\r\n    \"email\":\"n2nbiczj5o@lnovic.com\",\r\n    \"otp\": \"709119\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-account",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-account"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Verify user account",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n\r\n    \"email\":\"8dyodxflyd@bwmyga.com\",\r\n    \"opt\": \"85658\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/verify-account",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "verify-account"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "902"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"386-FRCyU4SfVzbJdPm3RuKTug7VQko\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 20 Jun 2026 00:41:28 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Invalid OTP\",\n    \"timestamp\": \"2026-06-20T00:41:28.065Z\",\n    \"path\": \"/api/v1/auth/verify-account\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"verifyEmailService-invalid-otp\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Invalid OTP\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at BadRequestException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:41:2)\\n    at verifyEmailService (file:///D:/Programing/route-projects/saraha-app/src/modules/auth/auth.services.js:168:3)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\\n    at async file:///D:/Programing/route-projects/saraha-app/src/modules/auth/auth.controller.js:74:3\\n    at async file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:4\"\n    }\n}"
+            },
+            {
+              "name": "Verify user account",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n\r\n    \"email\":\"8dyodxflyd@bwmyga.com\",\r\n    \"otp\": \"856583\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/verify-account",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "verify-account"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "932"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"3a4-SV2AmhTa9hZ4LavhT+CyRX+zFek\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 20 Jun 2026 16:18:43 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"User already verified\",\n    \"timestamp\": \"2026-06-20T16:18:43.315Z\",\n    \"path\": \"/api/v1/auth/verify-account\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"verifyEmailService-user-already-verified\",\n        \"isOperational\": true,\n        \"stack\": \"Error: User already verified\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at BadRequestException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:41:2)\\n    at verifyEmailService (file:///D:/Programing/route-projects/saraha-app/src/modules/auth/auth.services.js:168:3)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\\n    at async file:///D:/Programing/route-projects/saraha-app/src/modules/auth/auth.controller.js:75:3\\n    at async file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:4\"\n    }\n}"
+            },
+            {
+              "name": "Verify user account",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n\r\n    \"email\":\"8dyodxflyd@bwmyga.com\",\r\n    \"otp\": \"856583\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/verify-account",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "verify-account"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "58"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"3a-za2eoVbnkmh4IKLUs/dQa8kd1gI\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 20 Jun 2026 16:22:33 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Account verified successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "refreshToken",
+                "value": "{{refreshToken}}",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "Cookie",
+                "value": "refreshToken={{refreshToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Cookie",
+                "value": "{{json_web_token_02zf}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"n2nbiczj5o@lnovic.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "resend-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forget password - send reset email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"n2nbiczj5o@lnovic.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forget-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forget-password"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Forget password - send reset email",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\":\"ooyvwdf380@yzcalo.com\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/forget-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "forget-password"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "93"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"5d-jrgUWMw7SoPug/l524XDRvv/TeU\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 26 Jun 2026 23:00:13 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"If email exists, we will send you a link to reset your password.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reset password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"token\": \"bec6780afd768d22f5f7c11fae1997915d7f3d9c5aa97048b1f39077d47351d6\", \r\n  \"password\": \"Password@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Reset password",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"token\": \"ae55f2382acfff48483b759cdc1fab300f4de43d2eed089562cdfbcd63531cb5\", \r\n  \"password\": \"New@pass123\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/reset-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-password"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "951"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"3b7-KXEFbPEXnTJHgJj10s5KGSVWMhc\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 26 Jun 2026 23:34:31 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"This link is invalid or expired!\",\n    \"timestamp\": \"2026-06-26T23:34:31.098Z\",\n    \"path\": \"/api/v1/auth/reset-password\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"resetPasswordService-invalid-token\",\n        \"isOperational\": true,\n        \"stack\": \"Error: This link is invalid or expired!\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at BadRequestException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:53:2)\\n    at resetPasswordService (file:///D:/Programing/route-projects/saraha-app/src/modules/auth/auth.services.js:268:3)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\\n    at async file:///D:/Programing/route-projects/saraha-app/src/modules/auth/auth.controller.js:130:3\\n    at async file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:4\"\n    }\n}"
+            },
+            {
+              "name": "Reset password",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"token\": \"30806a87a4fa98e5b64120c32201e731ca3006f8a9ad3221c0f1b186f53fa6d2\", \r\n  \"password\": \"New@pass123\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/reset-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-password"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "56"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"38-2Gib5CWmd6iCx7e709n4PLv/myk\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 26 Jun 2026 23:34:48 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Password reset successfully\"\n}"
+            }
+          ]
         }
       ]
     },
@@ -839,8 +1374,942 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Upload user Avatar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{json_web_token_0zim}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "profileImage",
+                  "type": "file",
+                  "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                  "src": "/D:/MUSTAFA-User/Downloads/a2cb8eb590911f6ffd6b0f3ac90e787b.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/profile-avatar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile-avatar"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Upload user Avatar",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "avatar",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": "/D:/MUSTAFA-User/Downloads/اهم 400 جملة انجليزية.pdf"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-avatar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-avatar"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1511"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"5e7-GdG2bKKvbfvRB/UQ0bL0090iBok\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 26 Jun 2026 14:21:45 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Invalid file format! Allowed formats for this field are: JPG, PNG, WebP, SVG, GIF, AVIF\",\n    \"timestamp\": \"2026-06-26T14:21:45.815Z\",\n    \"path\": \"/api/v1/users/profile-avatar\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"User File Type Verification\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Invalid file format! Allowed formats for this field are: JPG, PNG, WebP, SVG, GIF, AVIF\\n    at fileFilter (file:///D:/Programing/route-projects/saraha-app/src/utils/multer/local.multer.js:130:5)\\n    at wrappedFileFilter (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\index.js:45:7)\\n    at Multipart.<anonymous> (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:193:7)\\n    at Multipart.emit (node:events:508:28)\\n    at HeaderParser.cb (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\busboy\\\\lib\\\\types\\\\multipart.js:358:14)\\n    at HeaderParser.push (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\busboy\\\\lib\\\\types\\\\multipart.js:162:20)\\n    at SBMH.ssCb [as _cb] (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\busboy\\\\lib\\\\types\\\\multipart.js:394:37)\\n    at feed (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\streamsearch\\\\lib\\\\sbmh.js:200:10)\\n    at SBMH.push (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\streamsearch\\\\lib\\\\sbmh.js:104:16)\\n    at Multipart._write (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\busboy\\\\lib\\\\types\\\\multipart.js:567:19)\"\n    }\n}"
+            },
+            {
+              "name": "Upload user Avatar",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "avatar",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": "/D:/MUSTAFA-User/Downloads/wmremove-transformed (2).png"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-avatar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-avatar"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1358"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"54e-ao/7VgkM3A8jxcpQBH+jIViKKb4\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 26 Jun 2026 14:35:05 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"File size too large. Maximum file size is 2MB.\",\n    \"timestamp\": \"2026-06-26T14:35:05.445Z\",\n    \"path\": \"/api/v1/users/profile-avatar\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"multer_error_file_size\",\n        \"isOperational\": true,\n        \"stack\": \"Error: File size too large. Maximum file size is 2MB.\\n    at handleMulterError (file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/global-error.js:70:10)\\n    at globalErrorHandler (file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/global-error.js:91:42)\\n    at Layer.handleError (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:116:17)\\n    at trimPrefix (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:340:13)\\n    at D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:297:9\\n    at processParams (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:582:12)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:291:5)\\n    at D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:688:15\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\index.js:276:14)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:132:14)\"\n    }\n}"
+            },
+            {
+              "name": "Upload user Avatar",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "avatar",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": [
+                        "/D:/MUSTAFA-User/Downloads/user-avatar-placeholder-male.webp",
+                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_ymy289ymy289ymy223.png"
+                      ]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-avatar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-avatar"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "896"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"380-i968bhOgbFRQKlViwqGoFEmPy7c\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 26 Jun 2026 17:05:10 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Only 1 file is allowed to be uploaded.\",\n    \"timestamp\": \"2026-06-26T17:05:10.173Z\",\n    \"path\": \"/api/v1/users/profile-avatar\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"multer_limit_file_count\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Only 1 file is allowed to be uploaded.\\n    at createException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:32:9)\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/upload-files/local.multer.js:89:20\\n    at IncomingMessage.onFinished (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:45:9)\\n    at Object.onceWrapper (node:events:622:28)\\n    at IncomingMessage.emit (node:events:508:28)\\n    at endReadableNT (node:internal/streams/readable:1701:12)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)\"\n    }\n}"
+            },
+            {
+              "name": "Upload user Avatar",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "profileImage",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": "/D:/MUSTAFA-User/Downloads/a2cb8eb590911f6ffd6b0f3ac90e787b.png"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-avatar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-avatar"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1130"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"46a-WN/+DSclsGMlEGtC4Itg/JJFeQw\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Jun 2026 17:23:38 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Avatar updated successfully\",\n    \"data\": {\n        \"verified\": null,\n        \"passwordChangedAt\": null,\n        \"_id\": \"6a315f9df0198ff64e403d55\",\n        \"firstName\": \"hind\",\n        \"lastName\": \"mohamed\",\n        \"username\": \"hind10\",\n        \"email\": \"n2nbiczj5o@lnovic.com\",\n        \"isActive\": true,\n        \"phone\": \"48c4a1cf98f9d576a9f595a35cc2f71c:c06cdbafa092655af41b24d9b11f8f07\",\n        \"gender\": 1,\n        \"birthdate\": \"2006-10-19T00:00:00.000Z\",\n        \"createdAt\": \"2026-06-16T14:37:17.422Z\",\n        \"updatedAt\": \"2026-06-27T17:23:38.567Z\",\n        \"visitCount\": 0,\n        \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782581018563-891519514.png\",\n        \"coverImages\": [\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"fullName\": \"hind mohamed\",\n        \"age\": 19,\n        \"avatar\": \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/profileImage-1782581018563-891519514.png\",\n        \"covers\": [\n            \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"id\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete user Avatar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{json_web_token_0zim}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/profile-avatar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile-avatar"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Delete user Avatar",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-avatar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-avatar"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "954"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"3ba-vwjtUFF5Cd0B7xxzJzd5DSehp+o\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Jun 2026 17:24:45 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Avatar deleted successfully\",\n    \"data\": {\n        \"verified\": null,\n        \"passwordChangedAt\": null,\n        \"_id\": \"6a315f9df0198ff64e403d55\",\n        \"firstName\": \"hind\",\n        \"lastName\": \"mohamed\",\n        \"username\": \"hind10\",\n        \"email\": \"n2nbiczj5o@lnovic.com\",\n        \"isActive\": true,\n        \"phone\": \"48c4a1cf98f9d576a9f595a35cc2f71c:c06cdbafa092655af41b24d9b11f8f07\",\n        \"gender\": 1,\n        \"birthdate\": \"2006-10-19T00:00:00.000Z\",\n        \"createdAt\": \"2026-06-16T14:37:17.422Z\",\n        \"updatedAt\": \"2026-06-27T17:24:45.561Z\",\n        \"visitCount\": 0,\n        \"profileImage\": null,\n        \"coverImages\": [\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"fullName\": \"hind mohamed\",\n        \"age\": 19,\n        \"avatar\": null,\n        \"covers\": [\n            \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"id\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
+            },
+            {
+              "name": "Delete user Avatar",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-avatar",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-avatar"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1231"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"4cf-+Dl3YXni9kVbJQqMnd0S8XgGeR8\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Jun 2026 17:24:52 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 500,\n    \"message\": \"You do not have an avatar to delete\",\n    \"timestamp\": \"2026-06-27T17:24:52.743Z\",\n    \"path\": \"/api/v1/users/profile-avatar\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"\",\n        \"isOperational\": false,\n        \"stack\": \"Error: You do not have an avatar to delete\\n    at throwInternalException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:21:8)\\n    at deleteAvatarService (file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.services.js:47:3)\\n    at file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.controller.js:61:22\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at file:///D:/Programing/route-projects/saraha-app/src/middlewares/authentication.middleware.js:18:10\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\\n    at async file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:4\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Upload user Covers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{json_web_token_0zim}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "coverImages",
+                  "type": "file",
+                  "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/profile-covers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile-covers"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Upload user Covers",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "coverImgs",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": [
+                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png",
+                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_7dju9p7dju9p7dju.png"
+                      ]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-covers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-covers"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1457"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"5b1-ZNlpDQS67PWopHN3EcjwpLE5MqQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 25 Jun 2026 19:22:46 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 409,\n    \"message\": \"Upload failed. Total covers cannot exceed 2. You currently have 2.\",\n    \"timestamp\": \"2026-06-25T19:22:46.230Z\",\n    \"path\": \"/api/v1/users/profile-covers\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"ConflictException\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Upload failed. Total covers cannot exceed 2. You currently have 2.\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at ConflictException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:45:2)\\n    at uploadCoversService (file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.services.js:69:3)\\n    at file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.controller.js:70:22\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at done (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:70:7)\\n    at indicateDone (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:74:68)\\n    at D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:247:11\"\n    }\n}"
+            },
+            {
+              "name": "Upload user Covers",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "coverImgs",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-covers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-covers"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "708"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2c4-I0so49KWfujspmIogeJhfXmFv+c\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 25 Jun 2026 19:30:58 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Covers updated successfully\",\n    \"data\": {\n        \"verified\": null,\n        \"_id\": \"6a315f9df0198ff64e403d55\",\n        \"firstName\": \"hind\",\n        \"lastName\": \"mohamed\",\n        \"username\": \"hind10\",\n        \"email\": \"hind@gmail.com\",\n        \"isActive\": true,\n        \"phone\": \"48c4a1cf98f9d576a9f595a35cc2f71c:c06cdbafa092655af41b24d9b11f8f07\",\n        \"gender\": 0,\n        \"birthdate\": \"2006-10-19T00:00:00.000Z\",\n        \"createdAt\": \"2026-06-16T14:37:17.422Z\",\n        \"updatedAt\": \"2026-06-25T19:30:58.305Z\",\n        \"avatar\": \"uploads/users/6a315f9df0198ff64e403d55/avatar-1782415253384-690857324.png\",\n        \"coverImgs\": [\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"id\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete single cover image",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"image\":\"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359345-349644413.png\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/profile-covers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile-covers"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Delete single cover image",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"image\":\"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359345-349644413.png\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-covers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-covers"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "634"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"27a-lKHmt7aAJhcR0OQi8X/OiDNZIVw\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 25 Jun 2026 19:29:29 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Cover Image deleted successfully\",\n    \"data\": {\n        \"verified\": null,\n        \"_id\": \"6a315f9df0198ff64e403d55\",\n        \"firstName\": \"hind\",\n        \"lastName\": \"mohamed\",\n        \"username\": \"hind10\",\n        \"email\": \"hind@gmail.com\",\n        \"isActive\": true,\n        \"phone\": \"48c4a1cf98f9d576a9f595a35cc2f71c:c06cdbafa092655af41b24d9b11f8f07\",\n        \"gender\": 0,\n        \"birthdate\": \"2006-10-19T00:00:00.000Z\",\n        \"createdAt\": \"2026-06-16T14:37:17.422Z\",\n        \"updatedAt\": \"2026-06-25T19:29:29.598Z\",\n        \"avatar\": \"uploads/users/6a315f9df0198ff64e403d55/avatar-1782415253384-690857324.png\",\n        \"coverImgs\": [\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\"\n        ],\n        \"id\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Visit account someone",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{json_web_token_0zim}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/visit/:username",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "visit",
+                ":username"
+              ],
+              "variable": [
+                {
+                  "key": "username",
+                  "value": "aya100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin - Get all user",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{json_web_token_0zim}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ""
+              ]
+            }
+          },
+          "response": []
         }
       ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
     }
   ],
   "variable": [

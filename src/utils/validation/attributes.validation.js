@@ -77,8 +77,8 @@ export const attributesSchema = {
 	}),
 
 	// Kept as string to support both absolute URLs (CDNs) and local server relative paths
-	avatar: joi.string().max(2048).optional().messages({
-		'string.max': 'Avatar path is too long',
+	profileImage: joi.string().max(2048).optional().messages({
+		'string.max': 'profileImage path is too long',
 	}),
 
 	bio: joi.string().max(500).optional(),
