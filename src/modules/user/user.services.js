@@ -1,5 +1,5 @@
 import User from '../../DB/models/user.model.js';
-import { deleteFileHelper } from '../../utils/general/file.util.js';
+import { deleteFileHelper, moveFileHelper } from '../../utils/general/file.util.js';
 import { ConflictException, NotFoundException, throwInternalException } from '../../utils/response/throw.exceptions.js';
 import { decrypt } from '../../utils/security/encryption.security.js';
 
@@ -18,6 +18,7 @@ export const uploadAvatarService = async (user, file) => {
 	}
 
 	const oldAvatar = user.profileImage;
+	console.log('oldAvatar', oldAvatar);
 	try {
 		// Update only the avatar field with the new file path
 		const updatedUser = await User.findByIdAndUpdate(
@@ -28,7 +29,11 @@ export const uploadAvatarService = async (user, file) => {
 
 		// Delete the old avatar from the disk in the background safely
 		if (oldAvatar) {
-			deleteFileHelper(oldAvatar);
+			// deleteFileHelper(oldAvatar); // delete old avatar if exists
+			// move old avatar to gallery
+			moveFileHelper(oldAvatar, ['uploads', 'users', user._id.toString(), 'gallery']).catch((err) => {
+				console.error('❌ Background task [moveFileHelper] failed:', err.message);
+			});
 		}
 
 		return updatedUser;
@@ -68,7 +73,7 @@ export const uploadCoversService = async (user, files) => {
 
 	// Extract only the file into a flat array of strings to avoid DB pollution
 	const newFilePaths = files.map((file) => file).filter(Boolean);
-	
+
 	try {
 		// If the cumulative total exceeds the business rule limit of 2
 		if (totalCoversCount > 2) {
