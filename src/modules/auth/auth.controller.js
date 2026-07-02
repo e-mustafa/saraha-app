@@ -1,9 +1,11 @@
 import { Router } from 'express';
+import { auth } from '../../middlewares/authentication.middleware.js';
 import validation from '../../middlewares/validation.middleware.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
 import {
+	changePasswordService,
 	forgetPasswordService,
 	loginService,
 	refreshAccessTokenService,
@@ -14,6 +16,7 @@ import {
 	verifyEmailService,
 } from './auth.services.js';
 import {
+	changePasswordSchema,
 	forgetPasswordSchema,
 	loginSchema,
 	refreshTokenSchema,
@@ -36,6 +39,7 @@ export const routes = {
 	resendOtp: '/resend-otp',
 	forgetPassword: '/forget-password',
 	resetPassword: '/reset-password',
+	changePassword: '/change-password',
 };
 
 // register
@@ -130,5 +134,18 @@ router.post(
 		await resetPasswordService(token, password);
 
 		successResponse({ res, message: 'Password reset successfully' });
+	}),
+);
+
+// change password
+router.post(
+	routes.changePassword,
+	auth(),
+	validation(changePasswordSchema),
+	asyncHandler(async (req, res) => {
+		const { oldPassword, newPassword, isConfirmed } = req.body || {};
+		await changePasswordService({ userId: req.user._id, oldPassword, newPassword, isConfirmed });
+
+		successResponse({ res, message: 'Password changed successfully' });
 	}),
 );

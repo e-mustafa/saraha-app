@@ -70,3 +70,14 @@ export const resetPasswordSchema = {
 		// confirmPassword: generalFields.confirmPassword,
 	}),
 };
+
+export const changePasswordSchema = {
+	body: joi.object({
+		oldPassword: generalFields.password,
+		newPassword: generalFields.password,
+		isConfirmed: joi.boolean().required().messages({
+			'boolean.required': 'isConfirmed is required',
+		}),
+		// confirmPassword: generalFields.confirmPassword,
+	}),
+};

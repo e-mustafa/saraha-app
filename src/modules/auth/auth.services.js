@@ -12,6 +12,7 @@ import {
 	BadRequestException,
 	ConflictException,
 	NotFoundException,
+	throwException,
 	UnauthorizedException,
 } from '../../utils/response/throw.exceptions.js';
 import { generateHash, verifyHash } from '../../utils/security/hash.security.js';
@@ -170,6 +171,7 @@ export const verifyEmailService = async (email, otp) => {
 	// 	BadRequestException('Email and OTP are required', 'verifyEmailService-missing-params');
 	// }
 
+	// const user = await User.findOne({ email, deletedAt: null });
 	const user = await User.findOne({ email });
 	if (!user) {
 		NotFoundException('User not found', 'verifyEmailService-user-not-found');
@@ -269,6 +271,42 @@ export const resetPasswordService = async (token, password) => {
 	await user.save();
 
 	await resetPasswordServices.delete(hashedToken);
+
+	return true;
+};
+
+export const changePasswordService = async ({ userId, oldPassword, newPassword, isConfirmed }) => {
+	
+	if(oldPassword == newPassword){
+		BadRequestException('New password cannot be the same as the current password', 'changePasswordService-same-password');
+	}
+
+	if(!isConfirmed){
+		BadRequestException('New Password must be confirmed', 'changePasswordService-password-confirmation-required');
+	}
+
+	const user = await User.findById(userId);
+	if (!user) {
+		NotFoundException('User not found', 'changePasswordService-user-not-found');
+	}
+
+	if (!user.isActive || user.deletedAt) {
+		BadRequestException('User is not active or deleted', 'changePasswordService-user-not-active');
+	}
+
+	if (!user.verified) {
+		BadRequestException('User not verified', 'changePasswordService-user-not-verified');
+	}
+
+	const isPasswordCorrect = await verifyHash(oldPassword, user.password);
+	if (!isPasswordCorrect) {
+		// BadRequestException('Invalid old password', 'changePasswordService-invalid-old-password');
+		throwException(400, 'Invalid old password', 'changePasswordService-invalid-old-password', {oldPassword:'Invalid old password'});
+	}
+
+	user.password = newPassword;
+	user.passwordChangedAt = Date.now();
+	await user.save();
 
 	return true;
 };
