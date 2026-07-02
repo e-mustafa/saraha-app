@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { auth, authOptional, requireAuthAdmins } from '../../middlewares/authentication.middleware.js';
+import { auth, authOptional } from '../../middlewares/authentication.middleware.js';
 import validation from '../../middlewares/validation.middleware.js';
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
@@ -85,7 +85,7 @@ router.delete(
 	auth(),
 	validation(deleteImageSchema),
 	asyncHandler(async (req, res) => {
-		const data = await deleteSingleCoverService(req.user, req.body.image);
+		const data = await deleteSingleCoverService(req.user, req?.body?.image ||'');
 
 		successResponse({ res, message: 'Cover Image deleted successfully', data });
 	}),
@@ -108,7 +108,7 @@ router.get(
 	routes.getUsers,
 	auth(),
 	// authorization(ADMIN_ROLES),
-	requireAuthAdmins(),
+	// requireAuthAdmins(),
 	asyncHandler(async (req, res) => {
 		const data = await getUsersService();
 		successResponse({ res, data });

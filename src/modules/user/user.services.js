@@ -1,3 +1,4 @@
+import { configEnv } from '../../config/env.js';
 import User from '../../DB/models/user.model.js';
 import { deleteFileHelper, moveFileHelper } from '../../utils/general/file.util.js';
 import { ConflictException, NotFoundException, throwInternalException } from '../../utils/response/throw.exceptions.js';
@@ -5,10 +6,11 @@ import { decrypt } from '../../utils/security/encryption.security.js';
 
 // Get user profile data
 export const getProfileService = async (user) => {
-	if (user.phone) {
-		user.phone = decrypt(user.phone);
+	const userData = await User.findById(user._id).select('-password -__v -role -provider');
+	if (userData.phone) {
+		userData.phone = decrypt(userData.phone);
 	}
-	return user;
+	return userData;
 };
 
 // Upload and Update Profile Avatar
@@ -25,7 +27,12 @@ export const uploadAvatarService = async (user, file) => {
 			user._id,
 			{ profileImage: file.filePath },
 			{ returnDocument: 'after' },
-		).select('-password -__v -role -provider -otp');
+		// ).select('-password -__v -role -provider -otp');
+		).select('profileImage');
+
+		// if (updatedUser.phone) {
+		// 	updatedUser.phone = decrypt(updatedUser.phone);
+		// }
 
 		// Delete the old avatar from the disk in the background safely
 		if (oldAvatar) {
@@ -52,9 +59,13 @@ export const deleteAvatarService = async (user) => {
 		throwInternalException('You do not have an avatar to delete');
 	}
 
-	const updatedUser = await User.findByIdAndUpdate(user._id, { profileImage: null }, { returnDocument: 'after' }).select(
-		'-password -__v -role -provider -otp',
-	);
+	const updatedUser = await User.findByIdAndUpdate(
+		user._id,
+		{ profileImage: null },
+		{ returnDocument: 'after' },
+
+		// ).select('-password -__v -role -provider -otp')
+	).select('profileImage');
 
 	// Delete the physical file from the disk in the background
 	deleteFileHelper(oldAvatar);
@@ -88,7 +99,8 @@ export const uploadCoversService = async (user, files) => {
 			user._id,
 			{ $push: { coverImages: { $each: newFilePaths } } },
 			{ returnDocument: 'after' },
-		).select('-password -__v -visitCount -role -provider -otp');
+			// ).select('-password -__v -visitCount -role -provider -otp');
+		).select('coverImages');
 
 		return updatedUser;
 	} catch (error) {
@@ -103,21 +115,25 @@ export const deleteSingleCoverService = async (user, imagePath) => {
 	if (!imagePath) {
 		throwInternalException('No image path provided');
 	}
+	console.log('imagePath', imagePath);
+
+	const relativePath = imagePath?.startsWith(configEnv.appUrl) ? imagePath.replace(`${configEnv.appUrl}/`, '') : imagePath;
 
 	// Validate that the image actually belongs to the requesting user
-	if (!user.coverImages || !user.coverImages.includes(imagePath)) {
+	if (!user.coverImages || !user.coverImages.includes(relativePath)) {
 		NotFoundException('Image not found in your profile');
 	}
 
 	// Update the database first to pull the specific string path from the array
 	const updatedUser = await User.findByIdAndUpdate(
 		user._id,
-		{ $pull: { coverImages: imagePath } },
+		{ $pull: { coverImages: relativePath } },
 		{ returnDocument: 'after' },
-	).select('-password -__v -visitCount -role -provider -otp');
+		// ).select('-password -__v -visitCount -role -provider -otp');
+	).select('coverImages');
 
 	// Delete the actual physical file from disk after successful database update
-	deleteFileHelper(imagePath);
+	deleteFileHelper(relativePath);
 
 	return updatedUser;
 };
