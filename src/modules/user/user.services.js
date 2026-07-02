@@ -1,6 +1,6 @@
 import { configEnv } from '../../config/env.js';
 import User from '../../DB/models/user.model.js';
-import { deleteFileHelper, moveFileHelper } from '../../utils/general/file.util.js';
+import { deleteFileHelper } from '../../utils/general/file.util.js';
 import { ConflictException, NotFoundException, throwInternalException } from '../../utils/response/throw.exceptions.js';
 import { decrypt } from '../../utils/security/encryption.security.js';
 
@@ -27,7 +27,7 @@ export const uploadAvatarService = async (user, file) => {
 			user._id,
 			{ profileImage: file.filePath },
 			{ returnDocument: 'after' },
-		// ).select('-password -__v -role -provider -otp');
+			// ).select('-password -__v -role -provider -otp');
 		).select('profileImage');
 
 		// if (updatedUser.phone) {
@@ -36,11 +36,12 @@ export const uploadAvatarService = async (user, file) => {
 
 		// Delete the old avatar from the disk in the background safely
 		if (oldAvatar) {
-			// deleteFileHelper(oldAvatar); // delete old avatar if exists
+			// delete old avatar if exists
+			deleteFileHelper(oldAvatar);
 			// move old avatar to gallery
-			moveFileHelper(oldAvatar, ['uploads', 'users', user._id.toString(), 'gallery']).catch((err) => {
-				console.error('❌ Background task [moveFileHelper] failed:', err.message);
-			});
+			// moveFileHelper(oldAvatar, ['uploads', 'users', user._id.toString(), 'gallery']).catch((err) => {
+			// 	console.error('❌ Background task [moveFileHelper] failed:', err.message);
+			// });
 		}
 
 		return updatedUser;

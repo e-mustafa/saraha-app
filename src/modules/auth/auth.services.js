@@ -186,7 +186,7 @@ export const verifyEmailService = async (email, otp) => {
 	}
 
 	const userOtp = await otpServices.get(user._id);
-	const isValidOtp = await verifyHash(otp, userOtp)
+	const isValidOtp = await verifyHash(otp, userOtp);
 	if (isValidOtp) {
 		BadRequestException('Invalid or expired OTP', 'verifyEmailService-invalid-otp');
 	}
@@ -276,12 +276,11 @@ export const resetPasswordService = async (token, password) => {
 };
 
 export const changePasswordService = async ({ userId, oldPassword, newPassword, isConfirmed }) => {
-	
-	if(oldPassword == newPassword){
+	if (oldPassword == newPassword) {
 		BadRequestException('New password cannot be the same as the current password', 'changePasswordService-same-password');
 	}
 
-	if(!isConfirmed){
+	if (!isConfirmed) {
 		BadRequestException('New Password must be confirmed', 'changePasswordService-password-confirmation-required');
 	}
 
@@ -301,7 +300,9 @@ export const changePasswordService = async ({ userId, oldPassword, newPassword, 
 	const isPasswordCorrect = await verifyHash(oldPassword, user.password);
 	if (!isPasswordCorrect) {
 		// BadRequestException('Invalid old password', 'changePasswordService-invalid-old-password');
-		throwException(400, 'Invalid old password', 'changePasswordService-invalid-old-password', {oldPassword:'Invalid old password'});
+		throwException(400, 'Invalid old password', 'changePasswordService-invalid-old-password', {
+			oldPassword: 'Invalid old password',
+		});
 	}
 
 	user.password = newPassword;
