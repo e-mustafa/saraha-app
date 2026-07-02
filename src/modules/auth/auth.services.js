@@ -14,7 +14,7 @@ import {
 	NotFoundException,
 	UnauthorizedException,
 } from '../../utils/response/throw.exceptions.js';
-import { verifyHash } from '../../utils/security/hash.security.js';
+import { generateHash, verifyHash } from '../../utils/security/hash.security.js';
 import { generateOTP } from '../../utils/security/otp.security.js';
 import { verifyOAuth2Google } from '../../utils/security/tokens/providers/google.token.js';
 import { generateTokens, getSignature } from '../../utils/security/tokens/token.js';
@@ -32,6 +32,7 @@ export const registerService = async ({ firstName, lastName, username, email, pa
 	}
 
 	const otp = generateOTP();
+	const hashedOtp = await generateHash(otp, null, true);
 
 	const user = await User.create({
 		firstName,
@@ -46,7 +47,7 @@ export const registerService = async ({ firstName, lastName, username, email, pa
 	});
 
 	// save otp in redis with expiration of 5 minutes
-	await otpServices.set(user._id, otp);
+	await otpServices.set(user._id, hashedOtp); // save in redis hashed otp
 
 	// send otp email, don't wait for it to finish
 	sendOtpEmail(email, otp);
@@ -183,11 +184,8 @@ export const verifyEmailService = async (email, otp) => {
 	}
 
 	const userOtp = await otpServices.get(user._id);
-	if (userOtp !== otp) {
-		BadRequestException('Invalid or expired OTP', 'verifyEmailService-invalid-otp');
-	}
-
-	if (userOtp != otp) {
+	const isValidOtp = await verifyHash(otp, userOtp)
+	if (isValidOtp) {
 		BadRequestException('Invalid or expired OTP', 'verifyEmailService-invalid-otp');
 	}
 
@@ -227,8 +225,10 @@ export const resendOtpService = async (email) => {
 	}
 
 	const otp = generateOTP();
+	const hashedOtp = await generateHash(otp, null, true);
+	console.log('otp', otp);
 
-	await otpServices.set(user._id, otp);
+	await otpServices.set(user._id, hashedOtp);
 	sendOtpEmail(email, otp);
 
 	return true;

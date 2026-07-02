@@ -10,7 +10,7 @@ export const auth = (isOptional = false) => {
 			if (isOptional) {
 				return next();
 			}
-			UnauthorizedException(401, 'Authorization header is required');
+			UnauthorizedException('Authorization header is required', 'Auth-middleware');
 		}
 		const { user, decoded } = (await decodeToken(authorization)) || {};
 		req.user = user;

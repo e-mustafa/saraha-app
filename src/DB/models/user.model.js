@@ -181,7 +181,7 @@ userSchema
 
 // Hooks -----------------------------------------------------------------------------------------
 userSchema.pre('save', async function () {
-	if (this.provider === PROVIDERS_ENUM.SYSTEM && this.isModified('password')) {
+	if (this.isModified('password')) {
 		this.password = await generateHash(this.password);
 	}
 

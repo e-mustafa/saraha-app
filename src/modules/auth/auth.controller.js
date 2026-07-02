@@ -20,7 +20,7 @@ import {
 	registerSchema,
 	resendOtpSchema,
 	resetPasswordSchema,
-	verifyAccountSchema,
+	verifyEmailSchema,
 } from './auth.validation.js';
 
 const router = Router();
@@ -32,7 +32,7 @@ export const routes = {
 	register: '/signup',
 	refreshToken: '/refresh-token',
 	socialLogin: '/social-login',
-	verifyAccount: '/verify-account',
+	verifyEmail: '/verify-account',
 	resendOtp: '/resend-otp',
 	forgetPassword: '/forget-password',
 	resetPassword: '/reset-password',
@@ -87,8 +87,8 @@ export default router;
 
 // verify account
 router.post(
-	routes.verifyAccount,
-	validation(verifyAccountSchema),
+	routes.verifyEmail,
+	validation(verifyEmailSchema),
 	asyncHandler(async (req, res) => {
 		const { email, otp } = req.body || {};
 		await verifyEmailService(email, otp);
