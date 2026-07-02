@@ -1,0 +1,23 @@
+import { redisDB } from './client.redis.js';
+
+export const tokenServices = {
+	set: async (userId, token, expiresInSeconds = 60 * 60 * 24 * 7) => {
+		await redisDB.set(`users:refreshTokens:${token}`, userId, {
+			expiration: {
+				type: 'EX',
+				value: expiresInSeconds, // 7 days
+			},
+		});
+	},
+	tll: async (token) => {
+		return await redisDB.ttl(`users:refreshTokens:${token}`);
+	},
+
+	get: async (token) => {
+		return await redisDB.get(`users:refreshTokens:${token}`);
+	},
+
+	delete: async (token) => {
+		await redisDB.del(`users:refreshTokens:${token}`);
+	},
+};

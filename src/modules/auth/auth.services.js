@@ -1,13 +1,12 @@
-import jwt from 'jsonwebtoken';
 import { createHash, randomBytes } from 'node:crypto';
 import { configEnv } from '../../config/env.js';
 import User from '../../DB/models/user.model.js';
 import { sendOtpEmail } from '../../utils/emails/otp.email.js';
 import { sendResetPasswordEmail } from '../../utils/emails/reset-password.email.js';
-import { TOKEN_TYPES_ENUM } from '../../utils/enums/security,enum.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
 import { otpServices } from '../../utils/redis/otp-service.redis.js';
 import { resetPasswordServices } from '../../utils/redis/reset-password-service.redis.js';
+import { tokenServices } from '../../utils/redis/token-service.redis.js';
 import {
 	BadRequestException,
 	ConflictException,
@@ -18,12 +17,9 @@ import {
 import { generateHash, verifyHash } from '../../utils/security/hash.security.js';
 import { generateOTP } from '../../utils/security/otp.security.js';
 import { verifyOAuth2Google } from '../../utils/security/tokens/providers/google.token.js';
-import { generateTokens, getSignature } from '../../utils/security/tokens/token.js';
+import { decodeToken, generateTokens } from '../../utils/security/tokens/token.js';
 
 export const registerService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
-	// if (!firstName || !lastName || !username || !email || !password || !phone || gender === undefined || !birthdate) {
-	// 	NotFoundException('Please enter required fields', 'registerService');
-	// }
 	// check if user already exists
 	const isExist = await User.findOne({ email });
 	if (isExist) {
@@ -57,10 +53,6 @@ export const registerService = async ({ firstName, lastName, username, email, pa
 };
 
 export const loginService = async ({ email, password, rememberMe = false }) => {
-	// if (!email || !password) {
-	// 	BadRequestException('Please enter required fields email and password', 'loginService-missing-fields');
-	// }
-
 	const user = await User.findOne({ email });
 	if (!user) {
 		NotFoundException('Invalid email or password', 'loginService-invalid-email');
@@ -72,6 +64,10 @@ export const loginService = async ({ email, password, rememberMe = false }) => {
 	}
 
 	const tokens = generateTokens(user, rememberMe);
+
+	// add refresh token it (jwt id) in redis
+	await tokenServices.set(user._id.toString(), tokens.tokenId, tokens.refreshExpiration);
+
 	return tokens;
 };
 
@@ -79,26 +75,15 @@ export const refreshAccessTokenService = async (refreshToken) => {
 	if (!refreshToken) {
 		UnauthorizedException('Refresh token is required, please login again.', 'refreshAccessTokenService-missing-token');
 	}
-
-	// decode token to get role and id
-	const decodedPayload = jwt.decode(refreshToken) || {};
-
-	if (!decodedPayload.aud || !decodedPayload.id) {
-		UnauthorizedException('Refresh token is corrupted.', 'refreshAccessTokenService-invalid-token');
-	}
-
-	// get signature by audience
-	const signature = getSignature(decodedPayload.aud);
-
 	// verify refresh token
-	let decoded;
-	try {
-		decoded = jwt.verify(refreshToken, signature.REFRESH_TOKEN_SECRET);
-	} catch (error) {
+	const decoded = await decodeToken(refreshToken, true);
+
+	// check if refresh token id exists in redis (not expired or revoked)
+	const isTokenIdExists = await tokenServices.get(decoded.jti);
+	if (!isTokenIdExists) {
 		UnauthorizedException(
-			// error.message ||
-			'Refresh token is expired or invalid.',
-			'refreshAccessTokenService-invalid-token',
+			'Refresh token is invalid or has been revoked, please login again.',
+			'refreshAccessTokenService-token-not-found',
 		);
 	}
 
@@ -108,10 +93,30 @@ export const refreshAccessTokenService = async (refreshToken) => {
 		UnauthorizedException('User associated with this token no longer exists.', 'refreshAccessTokenService-user-not-found');
 	}
 
-	// generate access token
-	const { accessToken } = generateTokens(user, TOKEN_TYPES_ENUM.ACCESS);
+	if (user.loggedOutAllAt) {
+		const tokenIssuedAt = decoded.iat * 1000; // convert seconds to milliseconds
+		const globalLogOutTime = new Date(user.loggedOutAllAt).getTime();
 
-	return { accessToken };
+		if (tokenIssuedAt < globalLogOutTime) {
+			await tokenServices.delete(decoded.jti);
+			UnauthorizedException('User has logged out all devices, please login again.', 'refresh-logged-out-all');
+		}
+	}
+
+	// generate access token
+	// const { accessToken } = generateTokens(user, TOKEN_TYPES_ENUM.ACCESS);
+
+	//* (refresh token valid only for one time use)
+	// generate access and refresh tokens with the same rememberMe value
+	const tokens = generateTokens(user, decoded.remembered);
+
+	// remove old refresh token from redis
+	await tokenServices.delete(decoded.jti);
+
+	// add new refresh token id (jwt id) to redis
+	await tokenServices.set(user._id.toString(), tokens.tokenId, tokens.refreshExpiration);
+
+	return tokens;
 	// } catch (error) {
 	// 	// throw exception if token is expired or invalid
 	// 	UnauthorizedException(
@@ -228,7 +233,6 @@ export const resendOtpService = async (email) => {
 
 	const otp = generateOTP();
 	const hashedOtp = await generateHash(otp, null, true);
-	console.log('otp', otp);
 
 	await otpServices.set(user._id, hashedOtp);
 	sendOtpEmail(email, otp);
@@ -308,6 +312,29 @@ export const changePasswordService = async ({ userId, oldPassword, newPassword, 
 	user.password = newPassword;
 	user.passwordChangedAt = Date.now();
 	await user.save();
+
+	return true;
+};
+
+export const logoutService = async (refreshToken) => {
+	if (!refreshToken) BadRequestException('No refresh token');
+
+	const decoded = await decodeToken(refreshToken, true);
+	await tokenServices.delete(decoded.jti);
+
+	return true;
+};
+
+export const logoutAllService = async (user, refreshToken) => {
+	if (!refreshToken) BadRequestException('No refresh token');
+
+	const decoded = await decodeToken(refreshToken, true);
+	await tokenServices.delete(decoded.jti);
+
+	const updatedUser = await User.findByIdAndUpdate(user._id, { loggedOutAllAt: Date.now() });
+	if (!updatedUser) {
+		NotFoundException('User not found', 'logoutAllService-user-not-found');
+	}
 
 	return true;
 };

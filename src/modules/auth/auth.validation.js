@@ -52,7 +52,7 @@ export const refreshTokenSchema = {
 		refreshToken: joi.string().required().messages({
 			'string.required': 'Refresh token is required',
 		}),
-	}),
+	}).unknown(),
 };
 
 export const forgetPasswordSchema = {

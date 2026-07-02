@@ -7,3 +7,8 @@ export const TOKEN_TYPES_ENUM = {
 	ACCESS: 'ACCESS',
 	REFRESH: 'REFRESH',
 };
+
+export const cookiesKeysEnum = {
+	accessToken: 'access-token',
+	refreshToken: 'refresh-token',
+};

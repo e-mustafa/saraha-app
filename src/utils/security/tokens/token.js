@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
+import { randomUUID } from 'node:crypto';
 import { configEnv, jwtSignatureLevel } from '../../../config/env.js';
-import User from '../../../DB/models/user.model.js';
 import { TOKEN_TYPES_ENUM } from '../../enums/security,enum.js';
 import { ADMIN_ROLES, USER_ROLES_ENUM } from '../../enums/user.enum.js';
 import { throwInternalException, UnauthorizedException } from '../../response/throw.exceptions.js';
@@ -56,7 +56,11 @@ export const generateTokens = (user, rememberMe = false, type = 'BOTH', customPa
 	}
 	const payload = {
 		id: user._id,
-		// email: user.email,
+		_id: user._id,
+		email: user.email,
+		name: user.firstName,
+		role: user.role,
+		remembered: rememberMe ? 1 : 0,
 		// firstName: user.firstName,
 		// lastName: user.lastName,
 		// avatar: user.avatar,
@@ -66,16 +70,28 @@ export const generateTokens = (user, rememberMe = false, type = 'BOTH', customPa
 	const tokens = {};
 
 	if (type === 'BOTH' || type === TOKEN_TYPES_ENUM.ACCESS) {
+		tokens.accessExpiration = Number(signature.ACCESS_TOKEN_EXPIRES);
+
 		tokens.accessToken = generateToken(payload, signature.ACCESS_TOKEN_SECRET, {
-			expiresIn: signature.ACCESS_TOKEN_EXPIRES,
+			expiresIn: tokens.accessExpiration,
 			audience: user.role,
 		});
 	}
 
 	if (type === 'BOTH' || type === TOKEN_TYPES_ENUM.REFRESH) {
+		// create token id to use in refresh token for invalidation by (jwtid)
+		tokens.tokenId = randomUUID();
+
+		// calculate refresh token expiration -> if rememberMe is true, double the expiration time
+		tokens.refreshExpiration = rememberMe
+			? Number(signature.REFRESH_TOKEN_EXPIRES) * 2
+			: Number(signature.REFRESH_TOKEN_EXPIRES);
+
 		tokens.refreshToken = generateToken(payload, signature.REFRESH_TOKEN_SECRET, {
-			expiresIn: rememberMe ? Number(signature.REFRESH_TOKEN_EXPIRES) * 2 : Number(signature.REFRESH_TOKEN_EXPIRES),
+			expiresIn: tokens.refreshExpiration,
 			audience: user.role,
+			jwtid: tokens.tokenId,
+			// remembered: rememberMe,
 		});
 	}
 
@@ -93,7 +109,7 @@ export const decodeToken = async (authorization, isRefreshToken = false) => {
 	if (!authorization) {
 		throwInternalException('Authorization header is required', 'decodeToken');
 	}
-	const token = authorization.split(' ')[1];
+	const token = authorization?.startsWith('Bearer') ? authorization.split(' ')[1] : authorization;
 	if (!token) {
 		throwInternalException('Token is required', 'decodeToken');
 	}
@@ -119,6 +135,6 @@ export const decodeToken = async (authorization, isRefreshToken = false) => {
 			UnauthorizedException(`${error.message || 'Token expired!'}, Please ask for a new one`, 'decodeToken');
 		}
 	}
-	const user = await User.findById(decoded.id).select('-password -verified -otp').lean();
-	return { user, decoded };
+	// const user = await User.findById(decoded.id).select('-password -verified -otp').lean();
+	return decoded;
 };
