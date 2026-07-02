@@ -16,7 +16,9 @@ const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za
 // Regex for Egyptian phone number: 01[0125][0-9]{8} -> 01012345678
 const phoneRegex = /^01[0125][0-9]{8}$/;
 
-export const attributesSchema = {
+const otpRegex = /^\d{6}$/;
+
+export const generalFields = {
 	id: joi.string().required().custom(isObjectId).messages({
 		'any.required': 'ID is required',
 	}),
@@ -90,6 +92,7 @@ export const attributesSchema = {
 			'any.only': 'Invalid user role',
 		}),
 
+	// otp: joi.string().pattern(otpRegex).required().messages({
 	otp: joi.string().length(6).required().messages({
 		'string.length': 'OTP must be 6 characters',
 		'any.required': 'OTP is required',

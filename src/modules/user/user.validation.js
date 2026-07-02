@@ -1,5 +1,5 @@
 import joi from 'joi';
-import { attributesSchema } from '../../utils/validation/attributes.validation.js';
+import { generalFields } from '../../utils/validation/general-fields.validation.js';
 
 export const deleteImageSchema = {
 	body: joi.object({
@@ -39,6 +39,6 @@ export const coverUserSchema = {
 
 export const visitUserSchema = {
 	params: joi.object({
-		username: attributesSchema.username,
+		username: generalFields.username,
 	}),
 };

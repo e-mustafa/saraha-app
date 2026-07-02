@@ -1,24 +1,24 @@
 import joi from 'joi';
-import { attributesSchema } from '../../utils/validation/attributes.validation.js';
+import { generalFields } from '../../utils/validation/general-fields.validation.js';
 
 export const objectIdSchema = {
 	params: joi.object({
-		id: attributesSchema.id,
+		id: generalFields.id,
 	}),
 };
 
 export const registerSchema = {
 	body: joi.object({
-		firstName: attributesSchema.firstName,
-		lastName: attributesSchema.lastName,
-		username: attributesSchema.username,
-		email: attributesSchema.email,
-		password: attributesSchema.password,
-		confirmPassword: attributesSchema.confirmPassword,
+		firstName: generalFields.firstName,
+		lastName: generalFields.lastName,
+		username: generalFields.username,
+		email: generalFields.email,
+		password: generalFields.password,
+		confirmPassword: generalFields.confirmPassword,
 	}),
 
 	// params: joi.object({
-	// 	id: attributesSchema.id,
+	// 	id: generalFields.id,
 	// }),
 	// query: joi.object({
 	// 	page: joi.number().integer().min(1).default(1),
@@ -28,22 +28,22 @@ export const registerSchema = {
 
 export const loginSchema = {
 	body: joi.object({
-		email: attributesSchema.email,
-		password: attributesSchema.password,
+		email: generalFields.email,
+		password: generalFields.password,
 		rememberMe: joi.boolean().optional(),
 	}),
 };
 
-export const verifyAccountSchema = {
+export const verifyEmailSchema = {
 	body: joi.object({
-		email: attributesSchema.email,
-		otp: attributesSchema.otp,
+		email: generalFields.email,
+		otp: generalFields.otp,
 	}),
 };
 
 export const resendOtpSchema = {
 	body: joi.object({
-		email: attributesSchema.email,
+		email: generalFields.email,
 	}),
 };
 
@@ -55,20 +55,18 @@ export const refreshTokenSchema = {
 	}),
 };
 
-
 export const forgetPasswordSchema = {
 	body: joi.object({
-		email: attributesSchema.email,
+		email: generalFields.email,
 	}),
 };
-
 
 export const resetPasswordSchema = {
 	body: joi.object({
 		token: joi.string().required().messages({
 			'string.required': 'Token is required',
 		}),
-		password: attributesSchema.password,
-		// confirmPassword: attributesSchema.confirmPassword,
+		password: generalFields.password,
+		// confirmPassword: generalFields.confirmPassword,
 	}),
 };
