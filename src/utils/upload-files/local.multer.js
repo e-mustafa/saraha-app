@@ -12,7 +12,7 @@ export const localUpload = ({ dir = 'general', type = fileTypes.images, size = 2
 
 	// 1. Setup shared Storage Engine
 	const storage = multer.diskStorage({
-		destination: async (req, _file, cb) => {
+		destination: async (req, file, cb) => {
 			let userBasePath = basePathname;
 			if (req?.user?._id) userBasePath += `${req.user._id}/`;
 			const fullPathname = path.resolve(process.cwd(), 'src', userBasePath);

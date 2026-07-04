@@ -145,6 +145,7 @@ const userSchema = new Schema(
 
 // Virtuals --------------------------------------------------------------
 userSchema.virtual('fullName').get(function () {
+	if (!this.firstName || !this.lastName) return undefined;
 	return `${this.firstName} ${this.lastName}`;
 });
 
@@ -155,7 +156,7 @@ userSchema.virtual('age').get(function () {
 userSchema
 	.virtual('avatar')
 	.get(function () {
-		if (!this.profileImage) return null;
+		if (!this.profileImage) return undefined;
 
 		// if the profileImage starts with http:// or https:// return it as is
 		if (this.profileImage.startsWith('http://') || this.profileImage.startsWith('https://')) {

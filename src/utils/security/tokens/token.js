@@ -59,7 +59,7 @@ export const generateTokens = (user, rememberMe = false, type = 'BOTH', customPa
 		_id: user._id,
 		email: user.email,
 		name: user.firstName,
-		role: user.role,
+		role: Number(user.role),
 		remembered: rememberMe ? 1 : 0,
 		// firstName: user.firstName,
 		// lastName: user.lastName,

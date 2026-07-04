@@ -20,7 +20,6 @@ export const uploadAvatarService = async (user, file) => {
 	}
 
 	const oldAvatar = user.profileImage;
-	console.log('oldAvatar', oldAvatar);
 	try {
 		// Update only the avatar field with the new file path
 		const updatedUser = await User.findByIdAndUpdate(
@@ -116,7 +115,6 @@ export const deleteSingleCoverService = async (user, imagePath) => {
 	if (!imagePath) {
 		throwInternalException('No image path provided');
 	}
-	console.log('imagePath', imagePath);
 
 	const relativePath = imagePath?.startsWith(configEnv.appUrl) ? imagePath.replace(`${configEnv.appUrl}/`, '') : imagePath;
 

@@ -35,10 +35,9 @@ export const generalFields = {
 		'any.required': 'Last name is required',
 	}),
 
-	username: joi.string().trim().alphanum().min(6).max(30).required().messages({
+	username: joi.string().trim().min(6).max(30).required().messages({
 		'string.min': 'Username must be at least 6 characters',
 		'string.max': 'Username must be at most 30 characters',
-		'string.alphanum': 'Username must only contain alphanumeric characters',
 		'any.required': 'Username is required',
 	}),
 
