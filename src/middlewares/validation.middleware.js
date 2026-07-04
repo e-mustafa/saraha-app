@@ -1,8 +1,4 @@
-import {
-	BadRequestException,
-	throwInternalException,
-	ValidationFieldsException,
-} from '../utils/response/throw.exceptions.js';
+import { throwInternalException, ValidationFieldsException } from '../utils/response/throw.exceptions.js';
 import { validateFields } from '../utils/validation/validate-fields.validation.js';
 
 const validation = (schema) => {
@@ -13,7 +9,8 @@ const validation = (schema) => {
 
 		existSchemas.forEach((key) => {
 			if (!req[key]) {
-				BadRequestException(`Missing data in ${key}, please provide required data.`);
+				req[key] = key == 'files' ? [] : {};
+				// BadRequestException(`Missing data in ${key}, please provide required data.`);
 			}
 			const result = validateFields(schema[key], req[key]);
 			if (!result.success) {

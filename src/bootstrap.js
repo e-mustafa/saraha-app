@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { configEnv } from './config/env.js';
 import connectDB from './DB/connection.js';
-import { authRouter, authRoutes, userRouter, userRoutes } from './modules/index.js';
+import { authRouter, authRoutes, messageRouter, messageRoutes, userRouter, userRoutes } from './modules/index.js';
 import { globalErrorHandler } from './utils/error-handler/index.js';
 import { connectRedis } from './utils/redis/client.redis.js';
 import { successResponse } from './utils/response/success.response.js';
@@ -31,6 +31,7 @@ export default async function bootstrap(app, express) {
 	app.use('/uploads', express.static(path.join(__dirname, './uploads')));
 	app.use(configEnv.urlApiBase + authRoutes.base, authRouter);
 	app.use(configEnv.urlApiBase + userRoutes.base, userRouter);
+	app.use(configEnv.urlApiBase + messageRoutes.base, messageRouter);
 
 	// handle not found routes
 	app.all('*all', (_, __, next) => {

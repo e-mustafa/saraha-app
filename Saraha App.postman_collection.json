@@ -634,6 +634,7 @@
                   "\r",
                   "    // 3. Environment variables are set only if the assertions above pass successfully\r",
                   "    pm.environment.set(\"accessToken\", responseBody.data.accessToken);\r",
+                  "    pm.environment.set(\"refreshToken\", responseBody.data.refreshToken);\r",
                   "\r",
                   "    \r",
                   "    console.log(\"accessToken have been automatically updated in Environment!\");\r",
@@ -2904,6 +2905,720 @@
             }
           },
           "response": []
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "refreshToken={{refreshToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"content\": \"no saveToMyMessages hello message 22\",\r\n//   \"from\": \"6a315f9df0198ff64e403d55\",\r\n  \"isConfidential\": false,\r\n  \"isAnonymous\": false,\r\n  \"saveToMyMessages\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/messages/ahmed10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "messages",
+                "ahmed10"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "send Message",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Cookie",
+                    "value": "refreshToken={{refreshToken}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"content\": \"hello message\",\r\n  \"from\": \"6a315f9df0198ff64e403d55\",\r\n  \"isConfidential\": false,\r\n  \"isAnonymous\": false,\r\n  \"saveToMyMessages\": true\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/messages/ahmed10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "messages",
+                    "ahmed10"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1231"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"4cf-6q50ScMAm4EaRFPTbvnte5hDVCA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 03 Jul 2026 15:40:05 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Missing data in body, please provide required data.\",\n    \"timestamp\": \"2026-07-03T15:40:05.714Z\",\n    \"path\": \"/api/v1/messages/ahmed10\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"BadRequestException\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Missing data in body, please provide required data.\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at BadRequestException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:53:2)\\n    at file:///D:/Programing/route-projects/saraha-app/src/middlewares/validation.middleware.js:16:5\\n    at Array.forEach (<anonymous>)\\n    at file:///D:/Programing/route-projects/saraha-app/src/middlewares/validation.middleware.js:14:16\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at file:///D:/Programing/route-projects/saraha-app/src/middlewares/authentication.middleware.js:20:10\\n    at async file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:4\"\n    }\n}"
+            },
+            {
+              "name": "send Message",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Cookie",
+                    "value": "refreshToken={{refreshToken}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "content",
+                      "value": " hello message hind 7",
+                      "type": "text"
+                    },
+                    {
+                      "key": "from",
+                      "value": " \"6a315f9df0198ff64e403d55\",",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "isConfidential",
+                      "value": " true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "isAnonymous",
+                      "value": " false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "saveToMyMessages",
+                      "value": " true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "attachments",
+                      "type": "file",
+                      "src": "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_2ehc592ehc592ehc (1).png"
+                    },
+                    {
+                      "key": "",
+                      "value": "",
+                      "type": "text",
+                      "disabled": true
+                    }
+                  ],
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/messages/hind10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "messages",
+                    "hind10"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "552"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"228-96XoEqzHfxHhFMmvSjUtD+SwYMU\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 04 Jul 2026 22:09:21 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Message sent successfully\",\n    \"data\": {\n        \"content\": \" hello message hind 7\",\n        \"attachments\": [\n            {\n                \"url\": \"uploads/messages/6a315f9df0198ff64e403d55/attachments-1783202961091-288282194.png\",\n                \"fileType\": \"image/png\",\n                \"_id\": \"6a4984915f35f1c85cffac8f\",\n                \"id\": \"6a4984915f35f1c85cffac8f\"\n            }\n        ],\n        \"to\": \"6a315f9df0198ff64e403d55\",\n        \"from\": \"6a315f9df0198ff64e403d55\",\n        \"isAnonymous\": false,\n        \"isConfidential\": true,\n        \"_id\": \"6a4984915f35f1c85cffac8e\",\n        \"createdAt\": \"2026-07-04T22:09:21.135Z\",\n        \"updatedAt\": \"2026-07-04T22:09:21.135Z\",\n        \"__v\": 0,\n        \"id\": \"6a4984915f35f1c85cffac8e\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get my Inbox messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/inbox",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "messages",
+                "inbox"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get my messages Inbox",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/messages/inbox",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "messages",
+                    "inbox"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "2762"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"aca-4cCxCu7q10VWsvFLHF5zgN5L+Rg\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 04 Jul 2026 21:22:50 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"metadata\": {\n            \"totalItems\": 10,\n            \"totalPages\": 1,\n            \"currentPage\": 1,\n            \"limit\": 10,\n            \"hasNextPage\": false,\n            \"hasPrevPage\": false\n        },\n        \"data\": [\n            {\n                \"id\": \"6a494a97d555fa00415e9ee3\",\n                \"content\": \" hello message hind 7\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:59.107Z\",\n                \"from\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                },\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            },\n            {\n                \"id\": \"6a494a92d555fa00415e9ee2\",\n                \"content\": \" hello message hind 6\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:54.851Z\",\n                \"from\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                },\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            },\n            {\n                \"id\": \"6a494a89d555fa00415e9ee1\",\n                \"content\": \" hello message hind 6\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:45.371Z\",\n                \"from\": null,\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            },\n            {\n                \"id\": \"6a494a84d555fa00415e9ee0\",\n                \"content\": \" hello message hind 5\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:40.103Z\",\n                \"from\": null,\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            },\n            {\n                \"id\": \"6a494a7bd555fa00415e9edf\",\n                \"content\": \" hello message hind 5\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:31.264Z\",\n                \"from\": null,\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            },\n            {\n                \"id\": \"6a494a77d555fa00415e9ede\",\n                \"content\": \" hello message hind 4\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:27.386Z\",\n                \"from\": null,\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            },\n            {\n                \"id\": \"6a494a69d555fa00415e9edd\",\n                \"content\": \" hello message hind 3\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:13.942Z\",\n                \"from\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                },\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            },\n            {\n                \"id\": \"6a494a65d555fa00415e9edc\",\n                \"content\": \" hello message hind 2\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:09.262Z\",\n                \"from\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                },\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            },\n            {\n                \"id\": \"6a494a59d555fa00415e9edb\",\n                \"content\": \" hello message hind\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:00:57.739Z\",\n                \"from\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                },\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            },\n            {\n                \"id\": \"6a494a27d555fa00415e9eda\",\n                \"content\": \" no saveToMyMessages hello message 22\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:00:07.016Z\",\n                \"to\": \"6a315f9df0198ff64e403d55\"\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get my sent messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/sent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "messages",
+                "sent"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get my sent messages",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/messages/sent",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "messages",
+                    "sent"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "3494"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"da6-0VvRrse89+soZ4Ki9SChSUEy+c8\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 04 Jul 2026 21:24:18 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"metadata\": {\n            \"totalItems\": 14,\n            \"totalPages\": 2,\n            \"currentPage\": 1,\n            \"limit\": 10,\n            \"hasNextPage\": true,\n            \"hasPrevPage\": false\n        },\n        \"data\": [\n            {\n                \"id\": \"6a494a97d555fa00415e9ee3\",\n                \"content\": \" hello message hind 7\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:59.107Z\",\n                \"from\": \"6a315f9df0198ff64e403d55\",\n                \"to\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                }\n            },\n            {\n                \"id\": \"6a494a92d555fa00415e9ee2\",\n                \"content\": \" hello message hind 6\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:54.851Z\",\n                \"from\": \"6a315f9df0198ff64e403d55\",\n                \"to\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                }\n            },\n            {\n                \"id\": \"6a494a89d555fa00415e9ee1\",\n                \"content\": \" hello message hind 6\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:45.371Z\",\n                \"from\": null,\n                \"to\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                }\n            },\n            {\n                \"id\": \"6a494a84d555fa00415e9ee0\",\n                \"content\": \" hello message hind 5\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:40.103Z\",\n                \"from\": null,\n                \"to\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                }\n            },\n            {\n                \"id\": \"6a494a7bd555fa00415e9edf\",\n                \"content\": \" hello message hind 5\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:31.264Z\",\n                \"from\": null,\n                \"to\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                }\n            },\n            {\n                \"id\": \"6a494a77d555fa00415e9ede\",\n                \"content\": \" hello message hind 4\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:27.386Z\",\n                \"from\": null,\n                \"to\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                }\n            },\n            {\n                \"id\": \"6a494a69d555fa00415e9edd\",\n                \"content\": \" hello message hind 3\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:13.942Z\",\n                \"from\": \"6a315f9df0198ff64e403d55\",\n                \"to\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                }\n            },\n            {\n                \"id\": \"6a494a65d555fa00415e9edc\",\n                \"content\": \" hello message hind 2\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:01:09.262Z\",\n                \"from\": \"6a315f9df0198ff64e403d55\",\n                \"to\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                }\n            },\n            {\n                \"id\": \"6a494a59d555fa00415e9edb\",\n                \"content\": \" hello message hind\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-04T18:00:57.739Z\",\n                \"from\": \"6a315f9df0198ff64e403d55\",\n                \"to\": {\n                    \"_id\": \"6a315f9df0198ff64e403d55\",\n                    \"firstName\": \"hind\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"hind10\",\n                    \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n                }\n            },\n            {\n                \"id\": \"6a47e58fdd83efae63f42c37\",\n                \"content\": \"isAnonymous hello message 22\",\n                \"attachments\": [],\n                \"createdAt\": \"2026-07-03T16:38:39.162Z\",\n                \"from\": null,\n                \"to\": {\n                    \"_id\": \"6a3324df23fc683ccd4bdff2\",\n                    \"firstName\": \"Ahmed\",\n                    \"lastName\": \"mohamed\",\n                    \"username\": \"ahmed10\"\n                }\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get my favorites messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "messages",
+                "favorites"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get my favorites messages",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/messages/favorites",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "messages",
+                    "favorites"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "145"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"91-4CJNU5+M7DZR2iDk8LCwcSRix28\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 04 Jul 2026 21:25:24 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"metadata\": {\n            \"totalItems\": 0,\n            \"totalPages\": 0,\n            \"currentPage\": 1,\n            \"limit\": 10,\n            \"hasNextPage\": false,\n            \"hasPrevPage\": false\n        },\n        \"data\": []\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Single message",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/6a49853fc39999c1e2526182",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "messages",
+                "6a49853fc39999c1e2526182"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Single message",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/messages/6a494a59d555fa00415e9edb",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "messages",
+                    "6a494a59d555fa00415e9edb"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "376"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"178-wpo0wkgZcmmqr19Ceqb1VFM/zJw\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 04 Jul 2026 21:27:06 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": \"6a494a59d555fa00415e9edb\",\n        \"content\": \" hello message hind\",\n        \"attachments\": [],\n        \"createdAt\": \"2026-07-04T18:00:57.739Z\",\n        \"from\": {\n            \"_id\": \"6a315f9df0198ff64e403d55\",\n            \"firstName\": \"hind\",\n            \"lastName\": \"mohamed\",\n            \"username\": \"hind10\",\n            \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n        },\n        \"to\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
+            },
+            {
+              "name": "Get Single message",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/messages/6a49853fc39999c1e2526182",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "messages",
+                    "6a49853fc39999c1e2526182"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "510"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1fe-pzj/xn+r9F+742l/jrk+0azkNOo\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 04 Jul 2026 22:16:07 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": \"6a49853fc39999c1e2526182\",\n        \"content\": \" hello message hind 7\",\n        \"attachments\": [\n            {\n                \"url\": \"http://localhost:3000/uploads/messages/6a315f9df0198ff64e403d55/attachments-1783203135887-560436898.png\",\n                \"fileType\": \"image\"\n            }\n        ],\n        \"createdAt\": \"2026-07-04T22:12:15.932Z\",\n        \"from\": {\n            \"_id\": \"6a315f9df0198ff64e403d55\",\n            \"firstName\": \"hind\",\n            \"lastName\": \"mohamed\",\n            \"username\": \"hind10\",\n            \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782869889146-222575440.png\"\n        },\n        \"to\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/6a494a59d555fa00415e9edb",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "messages",
+                "6a494a59d555fa00415e9edb"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "New Request",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/messages/6a494a59d555fa00415e9edb",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "messages",
+                    "6a494a59d555fa00415e9edb"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "353"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"161-6jByF3ozw2FaRan/x7TdErFlKLk\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 04 Jul 2026 21:29:34 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Message deleted successfully\",\n    \"data\": {\n        \"_id\": \"6a494a59d555fa00415e9edb\",\n        \"content\": \" hello message hind\",\n        \"attachments\": [],\n        \"to\": \"6a315f9df0198ff64e403d55\",\n        \"from\": null,\n        \"isAnonymous\": false,\n        \"isConfidential\": false,\n        \"createdAt\": \"2026-07-04T18:00:57.739Z\",\n        \"updatedAt\": \"2026-07-04T21:29:34.388Z\",\n        \"__v\": 1,\n        \"id\": \"6a494a59d555fa00415e9edb\"\n    }\n}"
+            }
+          ]
         }
       ]
     }

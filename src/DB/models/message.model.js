@@ -1,24 +1,56 @@
 import { Schema, model } from 'mongoose';
+import { appConfig } from '../../config/app.config.js';
+
+const maxLength = appConfig.messages.maxMessageLength;
 
 const messageSchema = new Schema(
 	{
 		content: {
 			type: String,
 			required: [true, 'Message content is required'],
+			minlength: [5, 'Message content must be at least 5 character'],
+			maxlength: [maxLength, `Message content must be less than ${maxLength} characters`],
 		},
 
-		image: String,
+		attachments: [
+			{
+				url: String,
+				fileType: String,
+			},
+		],
 
-		from: {
-			type: Schema.Types.ObjectId,
-			ref: 'user',
-			required: [true, 'Message must have a sender'],
-		},
 		to: {
 			type: Schema.Types.ObjectId,
 			ref: 'user',
 			required: [true, 'Message must have a receiver'],
 		},
+
+		// extra ----------------------------------------------------------
+		from: {
+			type: Schema.Types.ObjectId,
+			ref: 'user',
+			// required: [true, 'Message must have a sender'],
+		},
+
+		// extra fields for message
+		isAnonymous: {
+			// Messages are sent without revealing sender's identity
+			type: Boolean,
+			default: true,
+		},
+		isConfidential: {
+			// Messages are encrypted and only visible to sender and receiver
+			type: Boolean,
+			default: true,
+		},
+
+		isFavorite: {
+			type: Boolean,
+		},
+
+		// readAt: Date,
+		// deletedAt: Date,
+		// expiresAt: Date,
 	},
 	{
 		timestamps: true,
@@ -29,6 +61,11 @@ const messageSchema = new Schema(
 		optimisticConcurrency: true,
 	},
 );
+
+// indexes for better query performance - Covered Query instead Collection Scan (COLLSCAN)
+messageSchema.index({ to: 1, createdAt: -1 });
+messageSchema.index({ from: 1, createdAt: -1 });
+messageSchema.index({ to: 1, isFavorite: 1, createdAt: -1 });
 
 const Message = model('Message', messageSchema);
 export default Message;
