@@ -78,8 +78,8 @@ export const generalFields = {
 	}),
 
 	// Kept as string to support both absolute URLs (CDNs) and local server relative paths
-	profileImage: joi.string().max(2048).optional().messages({
-		'string.max': 'profileImage path is too long',
+	avatar: joi.string().max(2048).optional().messages({
+		'string.max': 'avatar path is too long',
 	}),
 
 	bio: joi.string().max(500).optional(),

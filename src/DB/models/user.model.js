@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose';
-import { configEnv } from '../../config/env.js';
 import {
 	GENDERS,
 	GENDERS_ENUM,
@@ -82,8 +81,8 @@ const userSchema = new Schema(
 		},
 
 		bio: String,
-		profileImage: String,
-		coverImages: {
+		avatar: String,
+		covers: {
 			type: Array,
 			maxLength: 2,
 			default: [],
@@ -127,11 +126,6 @@ const userSchema = new Schema(
 		// 	type: Date,
 		// 	default: null,
 		// },
-
-		messages: {
-			type: Schema.Types.ObjectId,
-			ref: 'message',
-		},
 	},
 	{
 		timestamps: true,
@@ -153,34 +147,52 @@ userSchema.virtual('age').get(function () {
 	return calcAge(this.birthdate);
 });
 
-userSchema
-	.virtual('avatar')
-	.get(function () {
-		if (!this.profileImage) return undefined;
+// userSchema.virtual('messages', {
+// 	ref: 'message',
+// 	localField: '_id',
+// 	foreignField: 'to',
+// });
 
-		// if the profileImage starts with http:// or https:// return it as is
-		if (this.profileImage.startsWith('http://') || this.profileImage.startsWith('https://')) {
-			return this.profileImage;
-		}
+userSchema.virtual('sentMessages', {
+	ref: 'message',
+	localField: '_id',
+	foreignField: 'from',
+});
 
-		// if the profileImage is a local file, return it with the appUrl
-		return `${configEnv.appUrl}/${this.profileImage.replace(/\\/g, '/')}`;
-	})
-	.set(function (value) {
-		// the Setter makes Mongoose understand where to store the value when writing User.create({ avatar: ... })
-		this.profileImage = value;
-	});
+userSchema.virtual('receivedMessages', {
+	ref: 'message',
+	localField: '_id',
+	foreignField: 'to',
+});
 
-userSchema
-	.virtual('covers')
-	.get(function () {
-		return this.coverImages && this.coverImages?.length > 0
-			? this.coverImages.map((image) => `${configEnv.appUrl}/${image.replace(/\\/g, '/')}`)
-			: [];
-	})
-	.set(function (value) {
-		this.coverImages = value;
-	});
+// userSchema
+// 	.virtual('avatar')
+// 	.get(function () {
+// 		if (!this.profileImage) return undefined;
+
+// 		// if the profileImage starts with http:// or https:// return it as is
+// 		if (this.profileImage.startsWith('http://') || this.profileImage.startsWith('https://')) {
+// 			return this.profileImage;
+// 		}
+
+// 		// if the profileImage is a local file, return it with the appUrl
+// 		return `${configEnv.appUrl}/${this.profileImage.replace(/\\/g, '/')}`;
+// 	})
+// 	.set(function (value) {
+// 		// the Setter makes Mongoose understand where to store the value when writing User.create({ avatar: ... })
+// 		this.profileImage = value;
+// 	});
+
+// userSchema
+// 	.virtual('covers')
+// 	.get(function () {
+// 		return this.coverImages && this.coverImages?.length > 0
+// 			? this.coverImages.map((image) => `${configEnv.appUrl}/${image.replace(/\\/g, '/')}`)
+// 			: [];
+// 	})
+// 	.set(function (value) {
+// 		this.coverImages = value;
+// 	});
 
 // Hooks -----------------------------------------------------------------------------------------
 userSchema.pre('save', async function () {

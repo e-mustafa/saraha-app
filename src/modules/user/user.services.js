@@ -1,6 +1,7 @@
 import { configEnv } from '../../config/env.js';
 import User from '../../DB/models/user.model.js';
 import { deleteFileHelper } from '../../utils/general/file.util.js';
+import { getDataWithPagination } from '../../utils/queries/get-data-with pagination.js';
 import { ConflictException, NotFoundException, throwInternalException } from '../../utils/response/throw.exceptions.js';
 import { decrypt } from '../../utils/security/encryption.security.js';
 
@@ -19,15 +20,15 @@ export const uploadAvatarService = async (user, file) => {
 		throwInternalException('No file provided');
 	}
 
-	const oldAvatar = user.profileImage;
+	const oldAvatar = user.avatar;
 	try {
 		// Update only the avatar field with the new file path
 		const updatedUser = await User.findByIdAndUpdate(
 			user._id,
-			{ profileImage: file.filePath },
+			{ avatar: file.filePath },
 			{ returnDocument: 'after' },
 			// ).select('-password -__v -role -provider -otp');
-		).select('profileImage');
+		).select('avatar');
 
 		// if (updatedUser.phone) {
 		// 	updatedUser.phone = decrypt(updatedUser.phone);
@@ -53,7 +54,7 @@ export const uploadAvatarService = async (user, file) => {
 
 // Delete Profile Avatar
 export const deleteAvatarService = async (user) => {
-	const oldAvatar = user.profileImage;
+	const oldAvatar = user.avatar;
 
 	if (!oldAvatar) {
 		throwInternalException('You do not have an avatar to delete');
@@ -61,11 +62,11 @@ export const deleteAvatarService = async (user) => {
 
 	const updatedUser = await User.findByIdAndUpdate(
 		user._id,
-		{ profileImage: null },
+		{ avatar: null },
 		{ returnDocument: 'after' },
 
 		// ).select('-password -__v -role -provider -otp')
-	).select('profileImage');
+	).select('avatar');
 
 	// Delete the physical file from the disk in the background
 	deleteFileHelper(oldAvatar);
@@ -79,8 +80,8 @@ export const uploadCoversService = async (user, files) => {
 		throwInternalException('No files provided');
 	}
 
-	const oldCoverImages = user.coverImages || [];
-	const totalCoversCount = oldCoverImages.length + files?.length;
+	const oldcovers = user.covers || [];
+	const totalCoversCount = oldcovers.length + files?.length;
 
 	// Extract only the file into a flat array of strings to avoid DB pollution
 	const newFilePaths = files.map((file) => file).filter(Boolean);
@@ -91,16 +92,16 @@ export const uploadCoversService = async (user, files) => {
 			// Leverage our updated helper to delete all new files at once in the background
 			deleteFileHelper(newFilePaths);
 
-			ConflictException(`Upload failed. Total covers cannot exceed 2. You currently have ${oldCoverImages.length}.`);
+			ConflictException(`Upload failed. Total covers cannot exceed 2. You currently have ${oldcovers.length}.`);
 		}
 
 		// Perform cumulative update saving only clean string paths
 		const updatedUser = await User.findByIdAndUpdate(
 			user._id,
-			{ $push: { coverImages: { $each: newFilePaths } } },
+			{ $push: { covers: { $each: newFilePaths } } },
 			{ returnDocument: 'after' },
 			// ).select('-password -__v -visitCount -role -provider -otp');
-		).select('coverImages');
+		).select('covers');
 
 		return updatedUser;
 	} catch (error) {
@@ -119,17 +120,17 @@ export const deleteSingleCoverService = async (user, imagePath) => {
 	const relativePath = imagePath?.startsWith(configEnv.appUrl) ? imagePath.replace(`${configEnv.appUrl}/`, '') : imagePath;
 
 	// Validate that the image actually belongs to the requesting user
-	if (!user.coverImages || !user.coverImages.includes(relativePath)) {
+	if (!user.covers || !user.covers.includes(relativePath)) {
 		NotFoundException('Image not found in your profile');
 	}
 
 	// Update the database first to pull the specific string path from the array
 	const updatedUser = await User.findByIdAndUpdate(
 		user._id,
-		{ $pull: { coverImages: relativePath } },
+		{ $pull: { covers: relativePath } },
 		{ returnDocument: 'after' },
 		// ).select('-password -__v -visitCount -role -provider -otp');
-	).select('coverImages');
+	).select('covers');
 
 	// Delete the actual physical file from disk after successful database update
 	deleteFileHelper(relativePath);
@@ -159,7 +160,16 @@ export const visitUserService = async (user, username) => {
 };
 
 // Get all users
-export const getUsersService = async () => {
-	const users = await User.find().select('-password -__v');
-	return users;
+export const getUsersService = async ({ search, page, limit, sort }) => {
+	const data = getDataWithPagination({
+		Model: User,
+		search: search || '',
+		searchField: 'username',
+		page: page,
+		limit: limit,
+		sort: sort,
+		select: '-password -__v',
+		populate: ['receivedMessages', 'sentMessages'],
+	});
+	return data;
 };

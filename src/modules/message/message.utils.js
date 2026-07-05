@@ -53,9 +53,7 @@ export class MessageDTO {
 			message.from = {
 				id: message.from._id,
 				name: `${message.from.firstName} ${message.from.lastName}`,
-				avatar: message.from.profileImage
-					? `${configEnv.appUrl}/${message.from.profileImage.replace(/\\/g, '/')}`
-					: null,
+				avatar: message.from.avatar ? `${configEnv.appUrl}/${message.from.avatar.replace(/\\/g, '/')}` : null,
 			};
 		}
 
@@ -68,12 +66,16 @@ export class MessageDTO {
 			isFavorite: message.isFavorite,
 			from: !isAdmin && message.isAnonymous ? null : message.from,
 			to: message.to ? message.to : null,
+
+			isConfidential: message.isConfidential,
+			isAnonymous: message.isAnonymous,
 		};
 	}
 
 	static list = function (messages, isAdmin = false) {
 		// console.log('messages', messages);
+		if (!messages || !Array.isArray(messages)) return [];
 
-		return messages.map((message) => this.single(message, isAdmin));
+		return messages.map((message) => this.single(message, isAdmin)) || [];
 	};
 }

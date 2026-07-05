@@ -13,6 +13,7 @@ import {
 	uploadCoversService,
 	visitUserService,
 } from './user.services.js';
+import { UserDTO } from './user.utils.js';
 import { coverUserSchema, deleteImageSchema, visitUserSchema } from './user.validation.js';
 
 const router = Router();
@@ -36,7 +37,7 @@ router.get(
 		const { user } = req;
 		const data = await getProfileService(user);
 
-		successResponse({ res, data });
+		successResponse({ res, data: UserDTO.single(data) });
 	}),
 );
 
@@ -44,7 +45,7 @@ router.get(
 router.patch(
 	routes.uploadAvatar,
 	auth(),
-	localUpload({ dir: 'users' }).single('profileImage'),
+	localUpload({ dir: 'users' }).single('avatar'),
 	asyncHandler(async (req, res) => {
 		const { user, file } = req;
 		const data = await uploadAvatarService(user, file);
@@ -68,7 +69,7 @@ router.delete(
 router.patch(
 	routes.uploadCovers,
 	auth(),
-	localUpload({ dir: 'users' }).array('coverImages', 2),
+	localUpload({ dir: 'users' }).array('covers', 2),
 	validation(coverUserSchema),
 	asyncHandler(async (req, res) => {
 		const { user, files } = req;
@@ -85,7 +86,7 @@ router.delete(
 	auth(),
 	validation(deleteImageSchema),
 	asyncHandler(async (req, res) => {
-		const data = await deleteSingleCoverService(req.user, req?.body?.image ||'');
+		const data = await deleteSingleCoverService(req.user, req?.body?.image || '');
 
 		successResponse({ res, message: 'Cover Image deleted successfully', data });
 	}),
@@ -110,7 +111,8 @@ router.get(
 	// authorization(ADMIN_ROLES),
 	// requireAuthAdmins(),
 	asyncHandler(async (req, res) => {
-		const data = await getUsersService();
+		const data = await getUsersService(req.query || {});
+		data.data = UserDTO.list(data.data, true);
 		successResponse({ res, data });
 	}),
 );

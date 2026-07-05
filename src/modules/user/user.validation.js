@@ -12,7 +12,7 @@ export const deleteImageSchema = {
 export const avatarUserSchema = {
 	file: joi.object({
 		filePath: joi.string().required().messages({
-			'any.required': 'ProfileImage is required',
+			'any.required': 'avatar is required',
 		}),
 	}),
 };

@@ -66,7 +66,7 @@ export const getMessagesService = async (userId, type = MESSAGE_TYPE_ENUM.INBOX,
 	const find = {
 		population: {
 			path: 'from',
-			select: 'username firstName lastName profileImage',
+			select: 'username firstName lastName avatar',
 		},
 	};
 
@@ -74,17 +74,17 @@ export const getMessagesService = async (userId, type = MESSAGE_TYPE_ENUM.INBOX,
 		case MESSAGE_TYPE_ENUM.INBOX:
 			find.filter = { to: userId };
 			find.population.path = 'from';
-			find.population.select = 'username firstName lastName profileImage';
+			find.population.select = 'username firstName lastName avatar';
 			break;
 		case MESSAGE_TYPE_ENUM.SENT:
 			find.filter = { from: userId };
 			find.population.path = 'to';
-			find.population.select = 'username firstName lastName profileImage';
+			find.population.select = 'username firstName lastName avatar';
 			break;
 		case MESSAGE_TYPE_ENUM.FAVORITES:
 			find.filter = { to: userId, isFavorite: true };
 			find.population.path = 'from';
-			find.population.select = 'username firstName lastName profileImage';
+			find.population.select = 'username firstName lastName avatar';
 			break;
 		default:
 			find.filter = {};
@@ -110,7 +110,7 @@ export const getMessagesService = async (userId, type = MESSAGE_TYPE_ENUM.INBOX,
 
 export const getMessageService = async (userId, messageId) => {
 	const message = await Message.findOne({ _id: messageId, $or: [{ to: userId }, { from: userId }] })
-		.populate('from', 'username firstName lastName profileImage')
+		.populate('from', 'username firstName lastName avatar')
 		.lean();
 	if (!message) {
 		NotFoundException('Message not found, or you not authorized to view this message', 'GET_MESSAGE.MESSAGE_NOT_FOUND');
