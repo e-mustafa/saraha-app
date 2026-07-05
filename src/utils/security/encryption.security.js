@@ -13,6 +13,8 @@ const IV_LENGTH = +configEnv.security.iv;
  */
 export const encrypt = (text) => {
 	try {
+		if (!text) return text;
+
 		const iv = randomBytes(IV_LENGTH);
 		const cipher = createCipheriv(algorithm, ENCRYPTION_SECRET_KEY, iv);
 

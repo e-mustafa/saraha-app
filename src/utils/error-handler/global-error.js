@@ -41,12 +41,12 @@ const handleMongooseCastError = (err) => {
 
 // Transformer for duplicate database keys (e.g., email already registered)
 const handleMongooseDuplicateFields = (err) => {
-	const value = Object.keys(err?.cause?.keyValue)[0];
-	const message = `Duplicate field value: ${value}. Please use another value.`;
+	const key = Object.keys(err?.cause?.keyValue || err.keyValue || {})[0] || '';
+	const message = `Duplicate field value: ${key}. Please use another value.`;
 	const errors = {
-		[value]: err.message || message,
+		[key]: `This ${key} is already taken.`, // err.message || message,
 	};
-	return new AppError({ statusCode: 409, message, context: 'duplicate_field_value', errors });
+	return new AppError({ statusCode: 409, message, context: 'db_duplicate_field_value', errors });
 };
 
 // Transformer for schema validation failures (e.g., age out of bounds)
