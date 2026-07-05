@@ -193,5 +193,13 @@ userSchema.pre('save', async function () {
 	}
 });
 
+// userSchema.set('toJSON', {
+// 	transform: function (doc, data) {
+// 		if (data.isConfidential) {
+// 			data.content = decrypt(data.content);
+// 		}
+// 	},
+// });
+
 const User = model('user', userSchema);
 export default User;

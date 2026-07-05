@@ -67,5 +67,49 @@ messageSchema.index({ to: 1, createdAt: -1 });
 messageSchema.index({ from: 1, createdAt: -1 });
 messageSchema.index({ to: 1, isFavorite: 1, createdAt: -1 });
 
+// messageSchema.pre('save', function (next) {
+// 	if (this.isModified('content') && this.isConfidential) {
+// 		this.content = encrypt(this.content);
+// 	}
+// 	next();
+// });
+
+// messageSchema.set('toJSON', {
+// 	virtuals: true,
+// 	transform: function (doc, data) {
+// 		// remove from (sender) data if message is anonymous
+// 		if (data.isAnonymous) {
+// 			data.from = null;
+// 		}
+
+// 		// decrypt content if message is confidential
+// 		if (data.isConfidential) {
+// 			// data.content = '🔒 This message is confidential';
+// 			data.content = decrypt(data.content);
+// 		}
+
+// 		if (data.attachments && data.attachments?.length > 0) {
+// 			data.attachments = data.attachments.map((attachment) => {
+// 				return {
+// 					url: `${configEnv.appUrl}/${attachment.url.replace(/\\/g, '/')}`,
+// 					fileType: attachment.fileType,
+// 				};
+// 			});
+// 		}
+
+// 		// return data;
+
+// 		return {
+// 			id: data._id,
+// 			content: data.content,
+// 			attachments: data.attachments,
+// 			createdAt: data.createdAt,
+// 			isFavorite: data.isFavorite,
+// 			from: data.isAnonymous ? null : data.from,
+// 			to: data.to ? data.to : null,
+// 		};
+// 	},
+// });
+
 const Message = model('Message', messageSchema);
 export default Message;
