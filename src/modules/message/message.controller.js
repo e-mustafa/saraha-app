@@ -1,23 +1,30 @@
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
 import { deleteMessageService, getMessageService, getMessagesService, sendMessageService } from './message.services.js';
+import { MessageDTO } from './message.utils.js';
 
 // @desc    Send an anonymous message
 // @route   POST /messages/:username
 export const sendMessages = asyncHandler(async (req, res) => {
 	const { user, body, params, files } = req || {};
-	const data = await sendMessageService({
+	const messages = await sendMessageService({
 		userId: user._id || null,
 		username: params.username,
 		files,
 		...body,
 	});
+
+	// format message and remove from field (sender) if message is anonymous
+	const data = MessageDTO.single(messages);
 	successResponse({ res, message: 'Message sent successfully', data });
 });
 
 export const getMessages = asyncHandler(async (req, res) => {
 	const { user } = req || {};
 	const data = await getMessagesService(user._id);
+
+	// format messages and remove from field (sender) if message is anonymous
+	data.data = MessageDTO.list(data.data, !!user.role);
 	successResponse({ res, message: 'Messages retrieved successfully', data });
 });
 
@@ -26,19 +33,22 @@ export const getMessagesType = (type) =>
 	asyncHandler(async (req, res) => {
 		const { user, query } = req || {};
 		const data = await getMessagesService(user._id, type, query);
+
+		// format messages and remove from field (sender) if message is anonymous
+		data.data = MessageDTO.list(data.data, !!user.role);
 		successResponse({ res, data });
 	});
 // get single message by id
 export const getMessage = asyncHandler(async (req, res) => {
 	const { user, params } = req || {};
-	const data = await getMessageService(user._id, params.id || '');
+	const message = await getMessageService(user._id, params.id || '');
+	const data = MessageDTO.single(message, !!user.role);
 	successResponse({ res, data });
 });
 
 // delete message by id
 export const deleteMessage = asyncHandler(async (req, res) => {
 	const { user, params } = req || {};
-	console.log(user);
 	await deleteMessageService(user._id, params.id || '');
 	successResponse({ res, message: 'Message deleted successfully' });
 });
