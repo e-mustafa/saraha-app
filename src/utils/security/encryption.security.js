@@ -12,12 +12,19 @@ const IV_LENGTH = +configEnv.security.iv;
  * @returns {string} - The encrypted text in the format "iv:encryptedText"
  */
 export const encrypt = (text) => {
-	const iv = randomBytes(IV_LENGTH);
-	const cipher = createCipheriv(algorithm, ENCRYPTION_SECRET_KEY, iv);
+	try {
+		const iv = randomBytes(IV_LENGTH);
+		const cipher = createCipheriv(algorithm, ENCRYPTION_SECRET_KEY, iv);
 
-	let encryptedText = cipher.update(text, 'utf8', 'hex');
-	encryptedText += cipher.final('hex');
-	return `${iv.toString('hex')}:${encryptedText}`;
+		let encryptedText = cipher.update(text, 'utf8', 'hex');
+		encryptedText += cipher.final('hex');
+		// return `${iv.toString('hex')}:${encryptedText}`;
+		// add prefix to identify encrypted data
+		return `enc:${iv.toString('hex')}:${encryptedText}`;
+	} catch (error) {
+		console.error('Error encrypting text:', error);
+		return text;
+	}
 };
 
 /**
@@ -26,13 +33,21 @@ export const encrypt = (text) => {
  * @returns {string} - The decrypted text
  */
 export const decrypt = (encryptedData = '') => {
-	const [iv, encryptedText] = encryptedData.split(':');
+	try {
+		if (!encryptedData.startsWith('enc:')) {
+			return encryptedData;
+		}
+		const [iv, encryptedText] = encryptedData.split(':');
 
-	const binaryLikeIv = Buffer.from(iv, 'hex');
+		const binaryLikeIv = Buffer.from(iv, 'hex');
 
-	const decipher = createDecipheriv(algorithm, ENCRYPTION_SECRET_KEY, binaryLikeIv);
+		const decipher = createDecipheriv(algorithm, ENCRYPTION_SECRET_KEY, binaryLikeIv);
 
-	let decryptedText = decipher.update(encryptedText, 'hex', 'utf8');
-	decryptedText += decipher.final('utf8');
-	return decryptedText;
+		let decryptedText = decipher.update(encryptedText, 'hex', 'utf8');
+		decryptedText += decipher.final('utf8');
+		return decryptedText;
+	} catch (error) {
+		console.error('Error decrypting text:', error);
+		return encryptedData;
+	}
 };
