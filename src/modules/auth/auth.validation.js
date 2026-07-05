@@ -7,6 +7,12 @@ export const objectIdSchema = {
 	}),
 };
 
+export const checkUsernameSchema = {
+	body: joi.object({
+		username: generalFields.username,
+	}),
+};
+
 export const registerSchema = {
 	body: joi.object({
 		firstName: generalFields.firstName,
@@ -48,11 +54,13 @@ export const resendOtpSchema = {
 };
 
 export const refreshTokenSchema = {
-	cookies: joi.object({
-		refreshToken: joi.string().required().messages({
-			'string.required': 'Refresh token is required',
-		}),
-	}).unknown(),
+	cookies: joi
+		.object({
+			refreshToken: joi.string().required().messages({
+				'string.required': 'Refresh token is required',
+			}),
+		})
+		.unknown(),
 };
 
 export const forgetPasswordSchema = {
@@ -68,16 +76,20 @@ export const resetPasswordSchema = {
 		}),
 		password: generalFields.password,
 		// confirmPassword: generalFields.confirmPassword,
+		logoutAll: joi.boolean().optional(),
 	}),
 };
 
 export const changePasswordSchema = {
 	body: joi.object({
 		oldPassword: generalFields.password,
-		newPassword: generalFields.password,
+		newPassword: generalFields.password.valid(joi.ref('oldPassword')).messages({
+			'any.only': 'New password must be different from old password',
+		}),
 		isConfirmed: joi.boolean().required().messages({
 			'boolean.required': 'isConfirmed is required',
 		}),
 		// confirmPassword: generalFields.confirmPassword,
+		logoutAll: joi.boolean().optional(),
 	}),
 };

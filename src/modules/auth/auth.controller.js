@@ -6,8 +6,10 @@ import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
 import { setCookies } from '../../utils/security/set-cookies.security.js';
+import { UserDTO } from '../user/user.utils.js';
 import {
 	changePasswordService,
+	checkIfUsernameExists,
 	forgetPasswordService,
 	loginService,
 	logoutAllService,
@@ -21,6 +23,7 @@ import {
 } from './auth.services.js';
 import {
 	changePasswordSchema,
+	checkUsernameSchema,
 	forgetPasswordSchema,
 	loginSchema,
 	refreshTokenSchema,
@@ -36,11 +39,13 @@ export const routes = {
 	base: '/auth',
 
 	login: '/login',
+	checkUsername: '/check-username',
 	register: '/signup',
 	refreshToken: '/refresh-token',
 	socialLogin: '/social-login',
 	verifyEmail: '/verify-account',
 	resendOtp: '/resend-otp',
+
 	forgetPassword: '/forget-password',
 	resetPassword: '/reset-password',
 	changePassword: '/change-password',
@@ -49,6 +54,17 @@ export const routes = {
 	logoutAll: '/logout-all',
 };
 
+// check if username already exists or available
+router.post(
+	routes.checkUsername,
+	validation(checkUsernameSchema),
+	asyncHandler(async (req, res) => {
+		const { username } = req.body || {};
+		const data = await checkIfUsernameExists(username);
+		successResponse({ res, message: 'Username is available', data });
+	}),
+);
+
 // register
 router.post(
 	routes.register,
@@ -56,7 +72,8 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const { firstName, lastName, username, email, password, phone, gender, birthdate } = req.body || {};
 		const data = await registerService({ firstName, lastName, username, email, password, phone, gender, birthdate });
-		successResponse({ res, message: 'Account created successfully, please verify your account', data });
+		const user = UserDTO.single(data.user);
+		successResponse({ res, message: 'Account created successfully, please verify your account', data: user });
 	}),
 );
 
@@ -102,7 +119,6 @@ router.post(
 		}
 	}),
 );
-export default router;
 
 // verify account
 router.post(
@@ -145,8 +161,8 @@ router.post(
 	routes.resetPassword,
 	validation(resetPasswordSchema),
 	asyncHandler(async (req, res) => {
-		const { token, password } = req.body || {};
-		await resetPasswordService(token, password);
+		const { token, password, logoutAll } = req.body || {};
+		await resetPasswordService(token, password, logoutAll);
 
 		successResponse({ res, message: 'Password reset successfully' });
 	}),
@@ -158,8 +174,8 @@ router.post(
 	auth(),
 	validation(changePasswordSchema),
 	asyncHandler(async (req, res) => {
-		const { oldPassword, newPassword, isConfirmed } = req.body || {};
-		await changePasswordService({ userId: req.user._id, oldPassword, newPassword, isConfirmed });
+		const { oldPassword, newPassword, isConfirmed, logoutAll } = req.body || {};
+		await changePasswordService({ userId: req.user._id, oldPassword, newPassword, isConfirmed, logoutAll });
 
 		successResponse({ res, message: 'Password changed successfully' });
 	}),
@@ -190,3 +206,5 @@ router.patch(
 		successResponse({ res, message: 'Logged out from all sessions successfully' });
 	}),
 );
+
+export default router;

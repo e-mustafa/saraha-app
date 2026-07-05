@@ -19,38 +19,53 @@ import { generateOTP } from '../../utils/security/otp.security.js';
 import { verifyOAuth2Google } from '../../utils/security/tokens/providers/google.token.js';
 import { decodeToken, generateTokens } from '../../utils/security/tokens/token.js';
 
-export const registerService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
-	// check if user already exists
-	const isExist = await User.findOne({ email });
+export const checkIfUsernameExists = async (username) => {
+	const isExist = await User.findOne({ username });
 	if (isExist) {
-		ConflictException('This email is already registered', 'registerService', {
-			body: { email: 'This email is already registered' },
+		ConflictException('This username is already taken', 'checkIfUsernameExists', {
+			body: { username: 'This username is already taken' },
 		});
 	}
-
-	const otp = generateOTP();
-	const hashedOtp = await generateHash(otp, null, true);
-
-	const user = await User.create({
-		firstName,
-		lastName,
-		username,
-		email,
-		password, //: hashedPassword, in user model password is hashed automatically with pre save middleware
-		// phone, //: encryptedPhone, in user model phone is encrypted automatically with pre save middleware
-		// gender,
-		// birthdate,
-		// otp,
-	});
-
-	// save otp in redis with expiration of 5 minutes
-	await otpServices.set(user._id, hashedOtp); // save in redis hashed otp
-
-	// send otp email, don't wait for it to finish
-	sendOtpEmail(email, otp);
-
-	return user;
+	return true;
 };
+
+
+	export const registerService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
+		// check if user already exists
+		const isExist = await User.findOne({ email });
+		if (isExist) {
+			ConflictException('This email is already registered', 'registerService', {
+				body: { email: 'This email is already registered' },
+			});
+		}
+
+		await checkIfUsernameExists(username);
+
+		const otp = generateOTP();
+		const hashedOtp = await generateHash(otp, null, true);
+
+		const user = await User.create({
+			firstName,
+			lastName,
+			username,
+			email,
+			password, //: hashedPassword, in user model password is hashed automatically with pre save middleware
+			// phone, //: encryptedPhone, in user model phone is encrypted automatically with pre save middleware
+			// gender,
+			// birthdate,
+			// otp,
+		});
+
+		// save otp in redis with expiration of 5 minutes
+		await otpServices.set(user._id, hashedOtp); // save in redis hashed otp
+
+		// send otp email, don't wait for it to finish
+		sendOtpEmail(email, otp);
+
+		return user;
+};
+	
+
 
 export const loginService = async ({ email, password, rememberMe = false }) => {
 	const user = await User.findOne({ email });
@@ -191,17 +206,19 @@ export const verifyEmailService = async (email, otp) => {
 	}
 
 	const userOtp = await otpServices.get(user._id);
-	const isValidOtp = await verifyHash(otp, userOtp);
-	if (isValidOtp) {
+	const isValidOtp = await verifyHash(otp, userOtp, true);
+	if (!isValidOtp) {
 		BadRequestException('Invalid or expired OTP', 'verifyEmailService-invalid-otp');
 	}
 
-	user.verified = Date.now().toString();
-	await user.save();
 
-	await otpServices.delete(user._id);
 
-	return true;
+	// user.verified = Date.now().toString();
+	// await user.save();
+
+	// await otpServices.delete(user._id);
+
+	// return true;
 };
 
 export const resendOtpService = async (email) => {
@@ -257,7 +274,7 @@ export const forgetPasswordService = async (email) => {
 	return true;
 };
 
-export const resetPasswordService = async (token, password) => {
+export const resetPasswordService = async (token, password, logoutAll = false) => {
 	const hashedToken = createHash('sha256').update(token).digest('hex');
 
 	const userId = await resetPasswordServices.get(hashedToken);
@@ -272,14 +289,20 @@ export const resetPasswordService = async (token, password) => {
 
 	user.password = password;
 	user.passwordChangedAt = Date.now();
+
+	// logout all devices if requested
+	if (logoutAll) {
+		user.loggedOutAllAt = Date.now();
+	}
+
 	await user.save();
 
 	await resetPasswordServices.delete(hashedToken);
 
 	return true;
-};
+};;
 
-export const changePasswordService = async ({ userId, oldPassword, newPassword, isConfirmed }) => {
+export const changePasswordService = async ({ userId, oldPassword, newPassword, isConfirmed, logoutAll = false }) => {
 	if (oldPassword == newPassword) {
 		BadRequestException('New password cannot be the same as the current password', 'changePasswordService-same-password');
 	}
@@ -311,6 +334,11 @@ export const changePasswordService = async ({ userId, oldPassword, newPassword, 
 
 	user.password = newPassword;
 	user.passwordChangedAt = Date.now();
+	// logout all devices if requested
+	if (logoutAll) {
+		user.loggedOutAllAt = Date.now();
+	}
+
 	await user.save();
 
 	return true;
