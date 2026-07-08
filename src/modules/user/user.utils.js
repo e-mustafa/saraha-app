@@ -30,12 +30,18 @@ export class UserDTO {
 			};
 		}
 
+		const userAvatar = user.avatar
+			? user.avatar.startsWith('http')
+				? user.avatar
+				: `${configEnv.appUrl}/${user.avatar.replace(/\\/g, '/')}`
+			: null;
+
 		return {
 			id: user._id,
 			name: `${user.firstName} ${user.lastName}`,
 			firstName: user.firstName,
 			lastName: user.lastName,
-			avatar: user.avatar ? `${configEnv.appUrl}/${user.avatar.replace(/\\/g, '/')}` : null,
+			avatar: userAvatar,
 			covers: user.covers || [],
 			username: user.username,
 			email: user.email,

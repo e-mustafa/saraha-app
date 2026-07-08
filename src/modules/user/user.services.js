@@ -161,7 +161,7 @@ export const visitUserService = async (user, username) => {
 
 // Get all users
 export const getUsersService = async ({ search, page, limit, sort }) => {
-	const data = getDataWithPagination({
+	const data = await getDataWithPagination({
 		Model: User,
 		search: search || '',
 		searchField: 'username',

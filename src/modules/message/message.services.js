@@ -82,7 +82,9 @@ export const getMessagesService = async (userId, type = MESSAGE_TYPE_ENUM.INBOX,
 			find.population.select = 'username firstName lastName avatar';
 			break;
 		case MESSAGE_TYPE_ENUM.FAVORITES:
-			find.filter = { to: userId, isFavorite: true };
+			find.filter = {
+				$and: [{ $or: [{ to: userId }, { from: userId }] }, { $or: [{ toFavorite: true }, { fromFavorite: true }] }],
+			};
 			find.population.path = 'from';
 			find.population.select = 'username firstName lastName avatar';
 			break;
@@ -140,4 +142,32 @@ export const deleteMessageService = async (userId, messageId) => {
 	}
 
 	return message;
+};
+
+export const toggleFavoriteMessageService = async (userId, messageId) => {
+	const message = await Message.findOne({ _id: messageId, $or: [{ to: userId }, { from: userId }] });
+	if (!message) {
+		NotFoundException(
+			'Message not found, or you not authorized to edit this message',
+			'TOGGLE_FAVORITE_MESSAGE.MESSAGE_NOT_FOUND',
+		);
+	}
+
+	const data = {};
+
+	if (message.to && message.to.toString() === userId) {
+		message.toFavorite = !message.toFavorite;
+		data.toFavorite = message.toFavorite;
+		data.newState = message.toFavorite;
+	} else if (message.from && message.from.toString() === userId) {
+		message.fromFavorite = !message.fromFavorite;
+		data.fromFavorite = message.fromFavorite;
+		data.newState = message.fromFavorite;
+	}
+	await message.save();
+
+	console.log('data', data);
+	console.log('message', message);
+
+	return data;
 };

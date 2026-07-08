@@ -32,12 +32,13 @@ export const getMessages = asyncHandler(async (req, res) => {
 export const getMessagesType = (type) =>
 	asyncHandler(async (req, res) => {
 		const { user, query } = req || {};
-		const data = await getMessagesService(user._id, type, query);
+		const { metadata, data } = await getMessagesService(user._id, type, query);
 
 		// format messages and remove from field (sender) if message is anonymous
-		data.data = MessageDTO.list(data.data, !!user.role);
-		successResponse({ res, data });
+		const formattedData = MessageDTO.list(data, !!user.role);
+		successResponse({ res, data: formattedData, metadata });
 	});
+
 // get single message by id
 export const getMessage = asyncHandler(async (req, res) => {
 	const { user, params } = req || {};
@@ -51,4 +52,15 @@ export const deleteMessage = asyncHandler(async (req, res) => {
 	const { user, params } = req || {};
 	await deleteMessageService(user._id, params.id || '');
 	successResponse({ res, message: 'Message deleted successfully' });
+});
+
+// toggle favorite message by id
+export const toggleFavoriteMessage = asyncHandler(async (req, res) => {
+	const { user, params } = req || {};
+	const { newState, ...reset } = await toggleFavoriteMessageService(user._id, params.id || '');
+	successResponse({
+		res,
+		message: newState ? 'Message marked as favorite' : 'Message removed from favorites',
+		data: reset,
+	});
 });

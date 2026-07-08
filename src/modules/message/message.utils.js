@@ -1,32 +1,5 @@
 import { configEnv } from '../../config/env.js';
 import { decrypt } from '../../utils/security/encryption.security.js';
-
-// format message and remove from field (sender) if message is anonymous
-// export function serializeMessage(message) {
-// 	if (message.attachments && message.attachments?.length > 0) {
-// 		message.attachments = message.attachments.map((attachment) => {
-// 			return {
-// 				url: `${configEnv.appUrl}/${attachment.url.replace(/\\/g, '/')}`,
-// 				fileType: attachment.fileType,
-// 			};
-// 		});
-// 	}
-
-// 	if (message.isConfidential) {
-// 		message.content = decrypt(message.content);
-// 	}
-
-// 	return {
-// 		id: message._id,
-// 		content: message.content,
-// 		attachments: message.attachments,
-// 		createdAt: message.createdAt,
-// 		isFavorite: message.isFavorite,
-// 		from: message.isAnonymous ? null : message.from,
-// 		to: message.to ? message.to : null,
-// 	};
-// }
-
 export class MessageDTO {
 	static single(message, isAdmin = false) {
 		// remove from (sender) data if message is anonymous
@@ -49,11 +22,23 @@ export class MessageDTO {
 			});
 		}
 
-		if (!message.isAnonymous && message.from) {
+		if (message.from) {
+			const { firstName, lastName, username, avatar, _id } = message.from || {};
 			message.from = {
-				id: message.from._id,
-				name: `${message.from.firstName} ${message.from.lastName}`,
-				avatar: message.from.avatar ? `${configEnv.appUrl}/${message.from.avatar.replace(/\\/g, '/')}` : null,
+				id: _id?.toString() || '',
+				name: firstName ? `${firstName || ''} ${lastName || ''}` : undefined,
+				username: username ? username : undefined,
+				avatar: avatar ? `${configEnv.appUrl}/${avatar.replace(/\\/g, '/')}` : null,
+			};
+		}
+
+		if (message.to) {
+			const { firstName, lastName, username, avatar, _id } = message.to || {};
+			message.to = {
+				id: _id?.toString() || '',
+				name: firstName ? `${firstName || ''} ${lastName || ''}` : undefined,
+				username: username ? username : undefined,
+				avatar: avatar ? `${configEnv.appUrl}/${avatar.replace(/\\/g, '/')}` : null,
 			};
 		}
 
@@ -63,7 +48,8 @@ export class MessageDTO {
 			content: message.content,
 			attachments: message.attachments,
 			createdAt: message.createdAt,
-			isFavorite: message.isFavorite,
+			fromFavorite: message.fromFavorite,
+			toFavorite: message.toFavorite,
 			from: !isAdmin && message.isAnonymous ? null : message.from,
 			to: message.to ? message.to : null,
 
@@ -73,7 +59,6 @@ export class MessageDTO {
 	}
 
 	static list = function (messages, isAdmin = false) {
-		// console.log('messages', messages);
 		if (!messages || !Array.isArray(messages)) return [];
 
 		return messages.map((message) => this.single(message, isAdmin)) || [];

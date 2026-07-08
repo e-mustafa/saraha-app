@@ -42,7 +42,7 @@ export const routes = {
 	checkUsername: '/check-username',
 	register: '/signup',
 	refreshToken: '/refresh-token',
-	socialLogin: '/social-login',
+	socialLogin_google: '/social-login/google',
 	verifyEmail: '/verify-account',
 	resendOtp: '/resend-otp',
 
@@ -109,7 +109,7 @@ router.post(
 
 // social login
 router.post(
-	routes.socialLogin,
+	routes.socialLogin_google,
 	asyncHandler(async (req, res) => {
 		const { isNew, tokens } = await socialLoginService(PROVIDERS_ENUM.GOOGLE, req.body.idToken);
 		if (isNew) {

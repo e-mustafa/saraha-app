@@ -22,7 +22,7 @@ export const sendMessageSchema = {
 			}),
 		from: joi.string().optional(),
 		// attachments: joi.array().items(joi.string()).optional(),
-		isConfidential: joi.boolean().optional().default(false),
+		isPublic: joi.boolean().optional().default(false),
 		isAnonymous: joi.boolean().optional().default(false),
 		saveToMyMessages: joi.boolean().optional().default(false),
 	}),
@@ -56,6 +56,12 @@ export const sendMessageSchema = {
 // 	}),
 // };
 
+export const getPublicMessageSchema = {
+	params: joi.object({
+		username: generalFields.username,
+	}),
+};
+
 export const getMessageSchema = {
 	params: joi.object({
 		id: generalFields.id,
@@ -63,6 +69,12 @@ export const getMessageSchema = {
 };
 
 export const deleteMessageSchema = {
+	params: joi.object({
+		id: generalFields.id,
+	}),
+};
+
+export const toggleMessageSchema = {
 	params: joi.object({
 		id: generalFields.id,
 	}),

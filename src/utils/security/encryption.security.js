@@ -39,7 +39,7 @@ export const decrypt = (encryptedData = '') => {
 		if (!encryptedData.startsWith('enc:')) {
 			return encryptedData;
 		}
-		const [iv, encryptedText] = encryptedData.split(':');
+		const [_, iv, encryptedText] = encryptedData.split(':');
 
 		const binaryLikeIv = Buffer.from(iv, 'hex');
 
