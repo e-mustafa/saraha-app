@@ -20,7 +20,8 @@ const router = Router();
 
 export const routes = {
 	base: '/users',
-	profile: '/profile',
+	getProfile: '/profile',
+	
 	uploadAvatar: '/profile-avatar',
 	deleteAvatar: '/profile-avatar',
 	uploadCovers: '/profile-covers',
@@ -31,7 +32,7 @@ export const routes = {
 };
 
 router.get(
-	routes.profile,
+	routes.getProfile,
 	auth(),
 	asyncHandler(async (req, res) => {
 		const { user } = req;
@@ -111,9 +112,9 @@ router.get(
 	// authorization(ADMIN_ROLES),
 	// requireAuthAdmins(),
 	asyncHandler(async (req, res) => {
-		const data = await getUsersService(req.query || {});
-		data.data = UserDTO.list(data.data, true);
-		successResponse({ res, data });
+		const { data, metadata } = await getUsersService(req.query || {});
+		const formattedData = UserDTO.list(data, true);
+		successResponse({ res, data: formattedData, metadata });
 	}),
 );
 export default router;

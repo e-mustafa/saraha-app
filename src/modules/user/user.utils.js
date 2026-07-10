@@ -1,4 +1,4 @@
-import { configEnv } from '../../config/env.js';
+import { formatFilePath } from '../../utils/general/format-file-path.js';
 import { decrypt } from '../../utils/security/encryption.security.js';
 import { MessageDTO } from '../message/message.utils.js';
 
@@ -9,7 +9,8 @@ export class UserDTO {
 		}
 
 		if (user.covers && Array.isArray(user.covers) && user.covers.length > 0) {
-			user.covers = user.covers.map((cover) => `${configEnv.appUrl}/${cover.replace(/\\/g, '/')}`);
+			// user.covers = user.covers.map((cover) => `${configEnv.appUrl}/${cover.replace(/\\/g, '/')}`);
+			user.covers = user.covers.map((cover) => formatFilePath(cover));
 		}
 
 		const messages = {};
@@ -30,18 +31,12 @@ export class UserDTO {
 			};
 		}
 
-		const userAvatar = user.avatar
-			? user.avatar.startsWith('http')
-				? user.avatar
-				: `${configEnv.appUrl}/${user.avatar.replace(/\\/g, '/')}`
-			: null;
-
 		return {
 			id: user._id,
 			name: `${user.firstName} ${user.lastName}`,
 			firstName: user.firstName,
 			lastName: user.lastName,
-			avatar: userAvatar,
+			avatar: formatFilePath(user.avatar),
 			covers: user.covers || [],
 			username: user.username,
 			email: user.email,

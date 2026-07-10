@@ -142,7 +142,7 @@ export const deleteSingleCoverService = async (user, imagePath) => {
 export const visitUserService = async (user, username) => {
 	let targetUser;
 	if (user && user.username === username) {
-		targetUser = await User.findById(user._id).select('-visitCount -password -__v -role -provider -otp').lean();
+		targetUser = await User.findById(user._id).select('-visitCount -password -__v - -phone -role -provider -otp').lean();
 	} else {
 		targetUser = await User.findOneAndUpdate({ username }, { $inc: { visitCount: 1 } }, { returnDocument: 'after' })
 			// .select('-visitCount -password -phone -__v -role -provider -otp')
@@ -153,9 +153,10 @@ export const visitUserService = async (user, username) => {
 		NotFoundException('User not found');
 	}
 
-	if (user && user.username === username && user.phone) {
-		targetUser.phone = decrypt(user.phone);
-	}
+	// if (user && user.username === username && user.phone) {
+	// 	targetUser.phone = decrypt(user.phone);
+	// }
+	targetUser.id = targetUser._id;
 	return targetUser;
 };
 
