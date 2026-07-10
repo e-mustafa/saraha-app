@@ -16,6 +16,7 @@ const messageSchema = new Schema(
 			{
 				url: String,
 				fileType: String,
+				_id: false,
 			},
 		],
 
@@ -38,15 +39,18 @@ const messageSchema = new Schema(
 			type: Boolean,
 			default: true,
 		},
-		isConfidential: {
-			// Messages are encrypted and only visible to sender and receiver
+		// isConfidential: {
+			
+		// 	type: Boolean,
+		// 	default: true,
+		// },
+		isPublic: { // Messages are not encrypted and only visible to sender and receiver
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 
-		isFavorite: {
-			type: Boolean,
-		},
+		toFavorite: Boolean,
+		fromFavorite: Boolean,
 
 		// readAt: Date,
 		// deletedAt: Date,
@@ -65,51 +69,9 @@ const messageSchema = new Schema(
 // indexes for better query performance - Covered Query instead Collection Scan (COLLSCAN)
 messageSchema.index({ to: 1, createdAt: -1 });
 messageSchema.index({ from: 1, createdAt: -1 });
-messageSchema.index({ to: 1, isFavorite: 1, createdAt: -1 });
-
-// messageSchema.pre('save', function (next) {
-// 	if (this.isModified('content') && this.isConfidential) {
-// 		this.content = encrypt(this.content);
-// 	}
-// 	next();
-// });
-
-// messageSchema.set('toJSON', {
-// 	virtuals: true,
-// 	transform: function (doc, data) {
-// 		// remove from (sender) data if message is anonymous
-// 		if (data.isAnonymous) {
-// 			data.from = null;
-// 		}
-
-// 		// decrypt content if message is confidential
-// 		if (data.isConfidential) {
-// 			// data.content = '🔒 This message is confidential';
-// 			data.content = decrypt(data.content);
-// 		}
-
-// 		if (data.attachments && data.attachments?.length > 0) {
-// 			data.attachments = data.attachments.map((attachment) => {
-// 				return {
-// 					url: `${configEnv.appUrl}/${attachment.url.replace(/\\/g, '/')}`,
-// 					fileType: attachment.fileType,
-// 				};
-// 			});
-// 		}
-
-// 		// return data;
-
-// 		return {
-// 			id: data._id,
-// 			content: data.content,
-// 			attachments: data.attachments,
-// 			createdAt: data.createdAt,
-// 			isFavorite: data.isFavorite,
-// 			from: data.isAnonymous ? null : data.from,
-// 			to: data.to ? data.to : null,
-// 		};
-// 	},
-// });
+messageSchema.index({ to: 1, toFavorite: 1, createdAt: -1 });
+messageSchema.index({ from: 1, fromFavorite: 1, createdAt: -1 });
+messageSchema.index({ to: 1, isPublic: 1, createdAt: -1 });
 
 const Message = model('message', messageSchema);
 export default Message;

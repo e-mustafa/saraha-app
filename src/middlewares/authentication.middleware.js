@@ -11,7 +11,8 @@ export const auth = (isOptional = false) => {
 			if (isOptional) {
 				return next();
 			}
-			BadRequestException('Authorization header is required', 'Auth-middleware-no-auth-header');
+			// BadRequestException('Authorization header is required', 'Auth-middleware-no-auth-header');
+			UnauthorizedException('Authorization header is required', 'Auth-middleware-no-auth-header');
 		}
 		const decoded = (await decodeToken(authorization)) || {};
 		// const user = await User.findById(decoded.id).select('-password');

@@ -41,5 +41,5 @@ export const personSettings = {
 export const messageConfig = {
 	saveToMyMessages: true, // Save messages to user's message history
 	anonymous: true, // Messages are sent without revealing sender's identity
-	confidential: true, // Messages are encrypted and only visible to sender and receiver
+	isPublic: false, // Messages are encrypted and only visible to sender and receiver
 };

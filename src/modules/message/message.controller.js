@@ -1,6 +1,13 @@
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
-import { deleteMessageService, getMessageService, getMessagesService, sendMessageService } from './message.services.js';
+import {
+	deleteMessageService,
+	getMessageService,
+	getMessagesService,
+	getPublicMessagesService,
+	sendMessageService,
+	toggleFavoriteMessageService,
+} from './message.services.js';
 import { MessageDTO } from './message.utils.js';
 
 // @desc    Send an anonymous message
@@ -8,7 +15,7 @@ import { MessageDTO } from './message.utils.js';
 export const sendMessages = asyncHandler(async (req, res) => {
 	const { user, body, params, files } = req || {};
 	const messages = await sendMessageService({
-		userId: user._id || null,
+		userId: user?._id || null,
 		username: params.username,
 		files,
 		...body,
@@ -19,20 +26,29 @@ export const sendMessages = asyncHandler(async (req, res) => {
 	successResponse({ res, message: 'Message sent successfully', data });
 });
 
-export const getMessages = asyncHandler(async (req, res) => {
-	const { user } = req || {};
-	const data = await getMessagesService(user._id);
+export const getPublicMessages = asyncHandler(async (req, res) => {
+	const { params, query } = req || {};
+	const { data, metadata } = await getPublicMessagesService(params.username, query);
 
 	// format messages and remove from field (sender) if message is anonymous
-	data.data = MessageDTO.list(data.data, !!user.role);
-	successResponse({ res, message: 'Messages retrieved successfully', data });
+	const formattedData = MessageDTO.list(data, false);
+	successResponse({ res, data: formattedData, metadata });
 });
 
+// export const getMessages = asyncHandler(async (req, res) => {
+// 	const { user } = req || {};
+// 	const data = await getMessagesService(user._id);
+
+// 	// format messages and remove from field (sender) if message is anonymous
+// 	data.data = MessageDTO.list(data.data, !!user.role);
+// 	successResponse({ res, message: 'Messages retrieved successfully', data });
+// });
+
 // get messages by type (inbox, sent, favorites)
-export const getMessagesType = (type) =>
+export const getMessages = () =>
 	asyncHandler(async (req, res) => {
 		const { user, query } = req || {};
-		const { metadata, data } = await getMessagesService(user._id, type, query);
+		const { metadata, data } = await getMessagesService(user._id, query);
 
 		// format messages and remove from field (sender) if message is anonymous
 		const formattedData = MessageDTO.list(data, !!user.role);

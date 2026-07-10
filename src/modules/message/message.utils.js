@@ -1,66 +1,60 @@
 import { configEnv } from '../../config/env.js';
-import { decrypt } from '../../utils/security/encryption.security.js';
+import { formatFilePath } from '../../utils/general/format-file-path.js';
+
 export class MessageDTO {
 	static single(message, isAdmin = false) {
-		// remove from (sender) data if message is anonymous
-		if (message.isAnonymous) {
-			message.from = null;
+		if (!message) return null;
+
+		// تنسيق المرفقات وتحويل المسارات لروابط كاملة
+		let formattedAttachments = [];
+		if (message.attachments && message.attachments.length > 0) {
+			formattedAttachments = message.attachments.map((attachment) => ({
+				url: formatFilePath(attachment.url),
+				fileType: attachment.fileType,
+			}));
 		}
 
-		// decrypt content if message is confidential
-		if (message?.isConfidential && message?.content) {
-			// message.content = '🔒 This message is confidential';
-			message.content = decrypt(message.content);
-		}
-
-		if (message.attachments && message.attachments?.length > 0) {
-			message.attachments = message.attachments.map((attachment) => {
-				return {
-					url: `${configEnv.appUrl}/${attachment.url.replace(/\\/g, '/')}`,
-					fileType: attachment.fileType,
-				};
-			});
-		}
-
-		if (message.from) {
+		// تنسيق بيانات المرسل (from) مع حماية الهوية المجهولة
+		let formattedFrom = null;
+		if (message.from && (!message.isAnonymous || isAdmin)) {
 			const { firstName, lastName, username, avatar, _id } = message.from || {};
-			message.from = {
+			formattedFrom = {
 				id: _id?.toString() || '',
-				name: firstName ? `${firstName || ''} ${lastName || ''}` : undefined,
-				username: username ? username : undefined,
-				avatar: avatar ? `${configEnv.appUrl}/${avatar.replace(/\\/g, '/')}` : null,
+				name: firstName ? `${firstName || ''} ${lastName || ''}`.trim() : undefined,
+				username: username || undefined,
+				avatar: formatFilePath(avatar),
 			};
 		}
 
+		// تنسيق بيانات المستقبل (to)
+		let formattedTo = null;
 		if (message.to) {
 			const { firstName, lastName, username, avatar, _id } = message.to || {};
-			message.to = {
+			formattedTo = {
 				id: _id?.toString() || '',
-				name: firstName ? `${firstName || ''} ${lastName || ''}` : undefined,
-				username: username ? username : undefined,
+				name: firstName ? `${firstName} ${lastName || ''}`.trim() : undefined,
+				username: username || undefined,
 				avatar: avatar ? `${configEnv.appUrl}/${avatar.replace(/\\/g, '/')}` : null,
 			};
 		}
 
-		// return data;
+		// بناء كائن الرد النظيف الموحد للـ Frontend
 		return {
-			id: message._id,
-			content: message.content,
-			attachments: message.attachments,
+			id: message._id || message.id,
+			content: message.content || '', // يأتي دائماً مفكوك التشفير وجاهز للعرض من الـ Services
+			attachments: formattedAttachments,
 			createdAt: message.createdAt,
-			fromFavorite: message.fromFavorite,
-			toFavorite: message.toFavorite,
-			from: !isAdmin && message.isAnonymous ? null : message.from,
-			to: message.to ? message.to : null,
-
-			isConfidential: message.isConfidential,
-			isAnonymous: message.isAnonymous,
+			fromFavorite: message.fromFavorite || false,
+			toFavorite: message.toFavorite || false,
+			from: formattedFrom,
+			to: formattedTo,
+			isAnonymous: message.isAnonymous || false,
+			isPublic: message.isPublic || false,
 		};
 	}
 
-	static list = function (messages, isAdmin = false) {
+	static list(messages, isAdmin = false) {
 		if (!messages || !Array.isArray(messages)) return [];
-
-		return messages.map((message) => this.single(message, isAdmin)) || [];
-	};
+		return messages.map((message) => this.single(message, isAdmin)).filter(Boolean);
+	}
 }

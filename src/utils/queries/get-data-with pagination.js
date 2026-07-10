@@ -56,3 +56,49 @@ export async function getDataWithPagination({
 		data,
 	};
 }
+
+export async function getAggregateWithPagination({
+	Model,
+	baseMatch = {}, // الفلترة الأساسية (مثل to و isPublic)
+	additionalStages = [], // المراحل الإضافية (مثل $project لإخفاء الهوية)
+	page = 1,
+	limit = 10,
+	sort = { createdAt: -1 }, // الترتيب ككائن جاهز للـ Aggregation
+}) {
+	const parsedPage = Math.max(1, parseInt(page) || 1);
+	const parsedLimit = Math.max(1, parseInt(limit) || 10);
+	const skip = (parsedPage - 1) * parsedLimit;
+
+	// بناء الـ Pipeline الاحترافي باستخدام $facet
+	const pipeline = [
+		{ $match: baseMatch },
+		...additionalStages,
+		{
+			$facet: {
+				// المسار الأول: جلب البيانات المقسمة لصفحات
+				metadata: [{ $count: 'totalItems' }],
+				// المسار الثاني: جلب البيانات الفعلية
+				data: [{ $sort: sort }, { $skip: skip }, { $limit: parsedLimit }],
+			},
+		},
+	];
+
+	const [result] = await Model.aggregate(pipeline);
+
+	// استخراج الإجمالي بأمان (إذا كانت النتيجة فارغة نضع 0)
+	const totalItems = result.metadata[0]?.totalItems || 0;
+	const totalPages = Math.ceil(totalItems / parsedLimit);
+	const data = result.data;
+
+	return {
+		metadata: {
+			totalItems,
+			totalPages,
+			currentPage: parsedPage,
+			limit: parsedLimit,
+			hasNextPage: parsedPage < totalPages,
+			hasPrevPage: parsedPage > 1,
+		},
+		data,
+	};
+}

@@ -1,68 +1,148 @@
+import { Types } from 'mongoose';
 import Message from '../../DB/models/message.model.js';
 import User from '../../DB/models/user.model.js';
 import { MESSAGE_TYPE_ENUM } from '../../utils/enums/message.enum.js';
 import { deleteFileHelper } from '../../utils/general/file.util.js';
-import { getDataWithPagination } from '../../utils/queries/get-data-with pagination.js';
+import { getAggregateWithPagination, getDataWithPagination } from '../../utils/queries/get-data-with pagination.js';
 import { NotFoundException } from '../../utils/response/throw.exceptions.js';
-import { encrypt } from '../../utils/security/encryption.security.js';
+import { decrypt, encrypt } from '../../utils/security/encryption.security.js';
 
-export const sendMessageService = async ({
-	userId,
-	username,
-	content,
-	files,
-	isConfidential,
-	isAnonymous,
-	saveToMyMessages = false,
-}) => {
+export const sendMessageService = async ({ userId, username, content, files, isAnonymous, saveToMyMessages = false }) => {
 	let attachments = [];
 	try {
-		// if (userId) {
-		//    const userSettings = await User.findById(userId).select('settings');
-		// }
-
 		const receiver = await User.findOne({ username, deletedAt: null }).lean().select('_id username');
 		if (!receiver) {
 			if (attachments && attachments.length > 0) {
-				attachments.forEach((attachment) => {
-					deleteFileHelper(attachment.url);
-				});
+				attachments.forEach((attachment) => deleteFileHelper(attachment.url));
 			}
 			NotFoundException('User not found', 'SEND_MESSAGE.USER_NOT_FOUND');
 		}
 
 		if (files && files.length > 0) {
-			attachments = files?.map((file) => ({
+			attachments = files.map((file) => ({
 				url: file.filePath,
 				fileType: file.mimetype?.split('/')[0] || 'image',
 			}));
 		}
 
-		if (isConfidential) {
-			// content = Buffer.from(content).toString('base64');
-			content = encrypt(content);
-		}
+		// الرسائل تشفر دائماً في قاعدة البيانات لحماية الخصوصية كمبدأ أساسي (Secure by Default)
+		const encryptedContent = encrypt(content);
 
 		const message = await Message.create({
-			content,
+			content: encryptedContent,
+			publicContent: null, // يبدأ دائماً بـ null حتى يقرر المستخدم نشرها
 			to: receiver._id,
 			from: userId && saveToMyMessages ? userId : undefined,
 			attachments,
-			isConfidential,
 			isAnonymous,
+			isPublic: false, // الافتراضي غير منشورة
 		});
+
 		return message;
 	} catch (error) {
 		if (attachments && attachments.length > 0) {
-			attachments.forEach((attachment) => {
-				deleteFileHelper(attachment.url);
-			});
+			attachments.forEach((attachment) => deleteFileHelper(attachment.url));
 		}
 		throw error;
 	}
 };
 
-export const getMessagesService = async (userId, type = MESSAGE_TYPE_ENUM.INBOX, query = {}) => {
+export const getPublicMessagesService = async (username, query = {}) => {
+	const user = await User.findOne({ username, deletedAt: null }).lean().select('_id');
+	if (!user) {
+		NotFoundException('User not found', 'GET_PUBLIC_MESSAGES.USER_NOT_FOUND');
+	}
+
+	// const result = await getAggregateWithPagination({
+	// 	Model: Message,
+	// 	page: query.page,
+	// 	limit: query.limit,
+	// 	baseMatch: {
+	// 		to: new Types.ObjectId(user._id),
+	// 		isPublic: true,
+	// 	},
+	// 	sort: { createdAt: -1 },
+	// 	additionalStages: [
+	// 		{
+	// 			$project: {
+	// 				// سحب النص المقروء من حقل العامة وعرضه باسم content للفرونت إند
+	// 				content: '$publicContent',
+	// 				attachments: 1,
+	// 				createdAt: 1,
+	// 				isAnonymous: 1,
+	// 				isPublic:1,
+	// 				from: {
+	// 					$cond: {
+	// 						if: { $eq: ['$isAnonymous', true] },
+	// 						then: '$$REMOVE',
+	// 						else: '$from',
+	// 					},
+	// 				},
+	// 			},
+
+	// 		},
+	// 	],
+	// });
+
+	const result = await getAggregateWithPagination({
+		Model: Message,
+		page: query.page,
+		limit: query.limit,
+		baseMatch: {
+			to: new Types.ObjectId(user._id),
+			isPublic: true,
+		},
+		sort: { createdAt: -1 },
+		additionalStages: [
+			// 1. ربط مجموعة الرسائل بمجموعة المستخدمين (Users) لجلب بيانات المرسل
+			{
+				$lookup: {
+					from: 'users', // تأكد أن هذا الاسم يطابق اسم الـ Collection الفعلي في قاعدة البيانات (غالباً users بالجمع)
+					localField: 'from',
+					foreignField: '_id',
+					as: 'sender',
+				},
+			},
+			// 2. تحويل مصفوفة sender الناتجة من الـ lookup إلى كائن واحد نَشِط
+			{
+				$unwind: {
+					path: '$sender',
+					preserveNullAndEmptyArrays: true, // هامة جداً لكي لا تختفي الرسائل المرسلة من زوار غير مسجلين
+				},
+			},
+			// 3. صياغة وتشكيل المخرج النهائي للبيانات
+			{
+				$project: {
+					content: '$publicContent',
+					attachments: 1,
+					createdAt: 1,
+					isAnonymous: 1,
+					isPublic: 1,
+					// التحكم الذكي في حقل from بناءً على مجهولية الرسالة
+					from: {
+						$cond: {
+							if: { $eq: ['$isAnonymous', true] },
+							then: '$$REMOVE', // إذا كانت مجهولة، يتم تدمير حقل from تماماً لحماية الخوية
+							else: {
+								// إذا كانت علنية، نمرر الكائن بالحقول التي يتوقعها الـ DTO للتنسيق
+								_id: '$sender._id',
+								username: '$sender.username',
+								avatar: '$sender.avatar',
+								firstName: '$sender.firstName',
+								lastName: '$sender.lastName',
+							},
+						},
+					},
+				},
+			},
+		],
+	});
+
+	return result;
+};
+
+export const getMessagesService = async (userId, query = {}) => {
+	const type = query.type || MESSAGE_TYPE_ENUM.INBOX;
 	const find = {
 		population: {
 			path: 'from',
@@ -88,6 +168,11 @@ export const getMessagesService = async (userId, type = MESSAGE_TYPE_ENUM.INBOX,
 			find.population.path = 'from';
 			find.population.select = 'username firstName lastName avatar';
 			break;
+		case MESSAGE_TYPE_ENUM.PUBLIC:
+			find.filter = { to: userId, isPublic: true };
+			find.population.path = '';
+			find.population.select = '';
+			break;
 		default:
 			find.filter = {};
 			find.population.path = '';
@@ -95,7 +180,7 @@ export const getMessagesService = async (userId, type = MESSAGE_TYPE_ENUM.INBOX,
 			break;
 	}
 
-	const data = await getDataWithPagination({
+	const result = await getDataWithPagination({
 		Model: Message,
 		initQuery: find.filter,
 		search: query.content || '',
@@ -103,23 +188,38 @@ export const getMessagesService = async (userId, type = MESSAGE_TYPE_ENUM.INBOX,
 		page: query.page || 1,
 		limit: query.limit || 10,
 		sort: query.sort || '-createdAt',
-		// select: '-__v',
 		populate: find.population,
 	});
 
-	return data;
+	// فك تشفير الرسائل الخاصة بصاحب الحساب قبل إرسالها للـ DTO أو الكنترولر
+	if (result.data && result.data.length > 0) {
+		result.data = result.data.map((message) => ({
+			...message,
+			content: message.content ? decrypt(message.content) : '',
+		}));
+	}
+
+	return result;
 };
 
 export const getMessageService = async (userId, messageId) => {
 	const message = await Message.findOne({ _id: messageId, $or: [{ to: userId }, { from: userId }] })
 		.populate('from', 'username firstName lastName avatar')
 		.lean();
+
 	if (!message) {
 		NotFoundException('Message not found, or you not authorized to view this message', 'GET_MESSAGE.MESSAGE_NOT_FOUND');
 	}
+
+	// فك تشفير محتوى الرسالة الفردية الخاصة
+	if (message.content) {
+		message.content = decrypt(message.content);
+	}
+
 	return message;
 };
 
+// دوال الـ delete و الـ toggleFavorite لا تحتاج لتعديل لأنها لا تتعامل مع حقل الـ content مباشرة
 export const deleteMessageService = async (userId, messageId) => {
 	const message = await Message.findOne({ _id: messageId, $or: [{ to: userId }, { from: userId }] });
 	if (!message) {
@@ -154,7 +254,6 @@ export const toggleFavoriteMessageService = async (userId, messageId) => {
 	}
 
 	const data = {};
-
 	if (message.to && message.to.toString() === userId) {
 		message.toFavorite = !message.toFavorite;
 		data.toFavorite = message.toFavorite;
@@ -165,9 +264,6 @@ export const toggleFavoriteMessageService = async (userId, messageId) => {
 		data.newState = message.fromFavorite;
 	}
 	await message.save();
-
-	console.log('data', data);
-	console.log('message', message);
 
 	return data;
 };
