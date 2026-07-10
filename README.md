@@ -213,17 +213,25 @@ To mitigate token-theft and replay attacks, every time a new Access Token is req
 ---
 
 
-## 💬 Advanced Messaging Architecture
+## 💬 Advanced Messaging Architecture & Privacy Framework
 
-The messaging module is designed as a scalable, privacy-focused system inspired by modern anonymous messaging platforms. It separates message visibility, ownership, retrieval, and presentation logic while maintaining high performance through optimized database queries and reusable service layers.
+The messaging module is designed as an enterprise-grade, privacy-first system. It implements a unique **Dual-Field Cryptographic Pattern** that ensures maximum data security at rest, while maintaining ultra-high performance for public profile views without draining server CPU resources.
 
 ### 🚀 Core Architecture Concepts
 
-- **Anonymous Messaging:** Messages can be sent without exposing the sender's identity. The sender is stored securely when needed, while the API serialization layer hides the identity from recipients.
-- **Confidential Messages:** Supports private messages that are only accessible to authorized participants and are excluded from public profile views.
-- **Dedicated Message Endpoints:** Messages are organized into dedicated endpoints (`Inbox`, `Sent`, `Favorites`) instead of returning large mixed datasets, enabling efficient pagination and filtering.
-- **Service-Oriented Design:** Business logic is isolated from controllers using reusable service and serialization layers for maintainability and future scalability.
+* **Secure by Default (Zero-Knowledge Pattern):** Every incoming message is immediately encrypted on the server side using AES-256-CBC prior to database insertion. The raw text is never stored in plain format within the primary storage.
+* **Dual-Field Performance Optimization (`content` vs `publicContent`):** * `content` (Ciphertext): Always holds the securely encrypted version of the message, accessible only to the account owner after server-side decryption.
+    * `publicContent` (Plaintext Cache): When a user chooses to publish a message (`isPublic: true`), the server decrypts the text **exactly once** and caches the plaintext in this field. 
+* **Zero-CPU Profile Browsing:** When public visitors view a user's profile, the system fetches the pre-decrypted `publicContent` using database aggregation, completely bypassing any runtime decryption algorithms. This eliminates CPU bottlenecks during high-traffic events.
+* **Instant One-Click Unpublish:** If a user toggles a message back to private, the server simply sets `isPublic: false` and purges `publicContent: null`. The original encrypted payload remains untouched in `content`, removing the need for re-encryption cycles.
 
+---
+
+### 🛡️ Implemented Features
+
+#### 1. Anonymous & Public Messaging
+* **Sender Anonymity:** When `isAnonymous: true`, the sender's relational data is entirely removed from public endpoints via MongoDB `$project` aggregation pipelines and API serialization layers before escaping the server.
+* **Unified UI Response Mapping:** The Serialization layer automatically handles field aliases, meaning the Frontend always receives a clean, single, decrypted string under the key `content`, regardless of whether the message was fetched from the private inbox or public feed.
 ---
 
 ### 🛡️ Implemented Features
@@ -272,17 +280,16 @@ The messaging system is optimized for large datasets.
 
 ---
 
-### 📊 Message Flow
+### 📊 Message Flow & Cryptographic States
 
-| Operation               | Processing Layer            | Database Strategy                        |
-| :---------------------- | :-------------------------- | :--------------------------------------  |
-| **Send Message**        | Validation → Service        | MongoDB Insert                           |
-| **Inbox**               | Filter → Serialize          | Indexed Query + Pagination               |
-| **Sent Messages**       | Filter → Serialize          | Indexed Query + Pagination               |
-| **Favorite Messages**   | Filter → Serialize          | Indexed Query + Pagination               |
-| **Message Details**     | Authorization → Serialize   | Indexed Query                            |
-| **Delete Message**      | Ownership Validation        | Remove User Reference → Delete Document  |
-
+| Operation | Processing Layer | Database Strategy | Cryptographic Action |
+| :--- | :--- | :--- | :--- |
+| **Send Message** | Validation → Service | MongoDB Insert | Text encrypted into `content` field. |
+| **Inbox View** | Decryption Filter → DTO | Indexed Query + Map | `content` decrypted on-the-fly for owner. |
+| **Publish Message** | Toggle Service | Update Document | Decrypts `content` → Saves to `publicContent`. |
+| **Profile View (Public)** | Aggregation Pipeline | `baseMatch: { isPublic: true }` | Zero-CPU. Aliases `publicContent` as `content`. |
+| **Unpublish Message** | Toggle Service | Update Document | Sets `publicContent: null` & `isPublic: false`. |
+| **Delete Message** | Ownership Validation | Remove Reference / Delete | Document completely purged from storage. |
 ---
 
 ## 🚀 Future Improvements
@@ -298,14 +305,16 @@ The messaging system is optimized for large datasets.
 
 ## 🔒 Security Checklist
 
-- Refresh Token Rotation
-- Token Reuse Detection
-- Hybrid JWT
-- AES Encryption
-- Secure Cookies
-- Joi Validation
-- MIME Validation
-- Compound Indexes
+- [x] Refresh Token Rotation
+- [x] Token Reuse Detection
+- [x] Hybrid JWT
+- [x] AES Encryption
+- [x] Secure Cookies
+- [x] Joi Validation
+- [x] MIME Validation
+- [x] Compound Indexes
+- [x] Dual-Field Cryptographic Caching (content / publicContent)
+- [x] Zero-CPU Public Aggregation Logic
 
 ---
 
