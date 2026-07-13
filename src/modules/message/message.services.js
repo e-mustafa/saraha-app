@@ -143,55 +143,54 @@ export const getPublicMessagesService = async (username, query = {}) => {
 
 export const getMessagesService = async (userId, query = {}) => {
 	const type = query.type || MESSAGE_TYPE_ENUM.INBOX;
-	const find = {
-		population: {
-			path: 'from',
-			select: 'username firstName lastName avatar',
-		},
-	};
+	let filter;
+	let populate = null;
 
 	switch (type) {
 		case MESSAGE_TYPE_ENUM.INBOX:
-			find.filter = { to: userId };
-			find.population.path = 'from';
-			find.population.select = 'username firstName lastName avatar';
+			filter = { to: userId };
+			populate = {
+				path: 'from',
+				select: 'username firstName lastName avatar',
+			};
 			break;
 		case MESSAGE_TYPE_ENUM.SENT:
-			find.filter = { from: userId };
-			find.population.path = 'to';
-			find.population.select = 'username firstName lastName avatar';
+			filter = { from: userId };
+			populate = {
+				path: 'to',
+				select: 'username firstName lastName avatar',
+			};
 			break;
 		case MESSAGE_TYPE_ENUM.FAVORITES:
-			find.filter = {
+			filter = {
 				$and: [{ $or: [{ to: userId }, { from: userId }] }, { $or: [{ toFavorite: true }, { fromFavorite: true }] }],
 			};
-			find.population.path = 'from';
-			find.population.select = 'username firstName lastName avatar';
+			populate = {
+				path: 'from',
+				select: 'username firstName lastName avatar',
+			};
 			break;
 		case MESSAGE_TYPE_ENUM.PUBLIC:
-			find.filter = { to: userId, isPublic: true };
-			find.population.path = '';
-			find.population.select = '';
+			filter = { to: userId, isPublic: true };
 			break;
+
 		default:
-			find.filter = {};
-			find.population.path = '';
-			find.population.select = '';
+			filter = {};
 			break;
 	}
 
 	const result = await getDataWithPagination({
 		Model: Message,
-		initQuery: find.filter,
+		initQuery: filter,
 		search: query.content || '',
 		searchField: 'content',
 		page: query.page || 1,
 		limit: query.limit || 10,
 		sort: query.sort || '-createdAt',
-		populate: find.population,
+		...(populate && { populate }),
 	});
 
-	// فك تشفير الرسائل الخاصة بصاحب الحساب قبل إرسالها للـ DTO أو الكنترولر
+	// decrypt content for owner
 	if (result.data && result.data.length > 0) {
 		result.data = result.data.map((message) => ({
 			...message,
