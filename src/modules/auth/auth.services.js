@@ -185,9 +185,9 @@ export const socialLoginService = async (provider, idToken) => {
 	// Register create new user
 	const newUser = await User.create({
 		email,
-		firstName: given_name,
-		lastName: family_name,
-		username: `${email.split('@')[0]}_${Math.floor(Math.random() * 1000)}`,
+		firstName: given_name || email.split('@')[0],
+		lastName: family_name || given_name || email.split('@')[0],
+		username: `${email.split('@')[0].replace(/\./g, '')}_${Math.floor(Math.random() * 1000)}`,
 		avatar: picture,
 		provider,
 	});
