@@ -83,7 +83,7 @@ router.post(
 	asyncHandler(async (req, res) => {
 		const { firstName, lastName, username, email, password, phone, gender, birthdate } = req.body || {};
 		const data = await registerService({ firstName, lastName, username, email, password, phone, gender, birthdate });
-		const user = UserDTO.single(data.user);
+		const user = UserDTO.single(data);
 		successResponse({ res, message: 'Account created successfully, please verify your account', data: user });
 	}),
 );

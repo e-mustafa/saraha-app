@@ -3,13 +3,16 @@ import { MessageDTO } from '../message/message.utils.js';
 
 export class UserDTO {
 	static single(user, isAdmin = false) {
+		if(!user) return null
 		// if (user.phone) {
 		// 	user.phone = decrypt(user.phone);
 		// }
 
-		if (user.covers && Array.isArray(user.covers) && user.covers.length > 0) {
-			// user.covers = user.covers.map((cover) => `${configEnv.appUrl}/${cover.replace(/\\/g, '/')}`);
-			user.covers = user.covers.map((cover) => formatFilePath(cover));
+		if (user?.covers) {
+			if (Array.isArray(user.covers) && user.covers.length > 0) {
+				// user.covers = user.covers.map((cover) => `${configEnv.appUrl}/${cover.replace(/\\/g, '/')}`);
+				user.covers = user.covers.map((cover) => formatFilePath(cover));
+			}
 		}
 
 		const messages = {};
