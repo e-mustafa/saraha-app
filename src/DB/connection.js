@@ -3,6 +3,7 @@ import { configEnv } from '../config/env.js';
 
 export default async function connectDB() {
 	try {
+		console.log('mongoose db Url:', configEnv.db.dbUrl);
 		await connect(configEnv.db.dbUrl, {
 			// useNewUrlParser: true,
 			// useUnifiedTopology: true,
@@ -11,6 +12,7 @@ export default async function connectDB() {
 		console.log('✔ Connected to Database successfully!');
 	} catch (error) {
 		console.error('Error connecting to Database:', error);
-		process.exit(1);
+		throw error;
+		// process.exit(1);
 	}
 }
