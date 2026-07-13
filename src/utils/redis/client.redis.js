@@ -21,7 +21,6 @@ redisDB.on('error', (err) => console.log('❌ Redis Error:', err.message));
 redisDB.on('ready', () => console.log('✔ Connected to Redis successfully'));
 
 export async function connectRedis() {
-	console.log('redis Url:', configEnv.db.redisUrl);
 	// be sure that the client is not connected already to avoid errors in Serverless environment
 	if (!redisDB.isOpen) {
 		try {
