@@ -1,12 +1,11 @@
 import { formatFilePath } from '../../utils/general/format-file-path.js';
-import { decrypt } from '../../utils/security/encryption.security.js';
 import { MessageDTO } from '../message/message.utils.js';
 
 export class UserDTO {
 	static single(user, isAdmin = false) {
-		if (user.phone) {
-			user.phone = decrypt(user.phone);
-		}
+		// if (user.phone) {
+		// 	user.phone = decrypt(user.phone);
+		// }
 
 		if (user.covers && Array.isArray(user.covers) && user.covers.length > 0) {
 			// user.covers = user.covers.map((cover) => `${configEnv.appUrl}/${cover.replace(/\\/g, '/')}`);
@@ -41,8 +40,10 @@ export class UserDTO {
 			username: user.username,
 			email: user.email,
 			gender: user.gender,
-			birthdate: user.birthdate,
+			birthdate: user.birthdate ? new Date(user.birthdate).toISOString().split('T')[0] : '',
 			bio: user.bio,
+			phone: user.phone,
+			age: user.age,
 
 			verified: user.verified,
 			isActive: user.isActive,

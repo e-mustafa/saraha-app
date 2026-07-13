@@ -9,6 +9,7 @@ import {
 	deleteSingleCoverService,
 	getProfileService,
 	getUsersService,
+	updateProfileService,
 	uploadAvatarService,
 	uploadCoversService,
 	visitUserService,
@@ -20,14 +21,17 @@ const router = Router();
 
 export const routes = {
 	base: '/users',
-	getProfile: '/profile',
 	
+	visitUser: '/visit/:username',
+
+	getProfile: '/profile',
+	updataProfile: '/profile',
+
 	uploadAvatar: '/profile-avatar',
 	deleteAvatar: '/profile-avatar',
 	uploadCovers: '/profile-covers',
 	deleteCovers: '/profile-covers',
 
-	visitUser: '/visit/:username',
 	getUsers: '/',
 };
 
@@ -39,6 +43,17 @@ router.get(
 		const data = await getProfileService(user);
 
 		successResponse({ res, data: UserDTO.single(data) });
+	}),
+);
+
+router.patch(
+	routes.updataProfile,
+	auth(),
+	asyncHandler(async (req, res) => {
+		const { user, body } = req;
+		const data = await updateProfileService(user, body);
+
+		successResponse({ res, message: 'Profile updated successfully', data: UserDTO.single(data) });
 	}),
 );
 

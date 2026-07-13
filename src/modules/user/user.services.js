@@ -1,9 +1,11 @@
 import { configEnv } from '../../config/env.js';
 import User from '../../DB/models/user.model.js';
 import { deleteFileHelper } from '../../utils/general/file.util.js';
+import { formatFilePath } from '../../utils/general/format-file-path.js';
 import { getDataWithPagination } from '../../utils/queries/get-data-with pagination.js';
 import { ConflictException, NotFoundException, throwInternalException } from '../../utils/response/throw.exceptions.js';
 import { decrypt } from '../../utils/security/encryption.security.js';
+import { checkIfUsernameExists } from '../auth/auth.services.js';
 
 // Get user profile data
 export const getProfileService = async (user) => {
@@ -12,6 +14,26 @@ export const getProfileService = async (user) => {
 		userData.phone = decrypt(userData.phone);
 	}
 	return userData;
+};
+
+export const updateProfileService = async (user, { firstName, lastName, username, bio, phone, gender, birthdate }) => {
+	if (username) {
+		await checkIfUsernameExists(user._id, username);
+	}
+
+	const updatedUser = await User.findByIdAndUpdate(
+		user._id,
+		{ firstName, lastName, username, bio, phone, gender, birthdate },
+		{ returnDocument: 'after' },
+	).lean().select('-password -__v -role -provider -otp');
+
+	if (updatedUser.phone) {
+		updatedUser.phone = decrypt(updatedUser.phone);
+	}
+
+	console.log('updatedUser', updatedUser);
+
+	return updatedUser;
 };
 
 // Upload and Update Profile Avatar
@@ -28,7 +50,7 @@ export const uploadAvatarService = async (user, file) => {
 			{ avatar: file.filePath },
 			{ returnDocument: 'after' },
 			// ).select('-password -__v -role -provider -otp');
-		).select('avatar');
+		).lean().select('avatar');
 
 		// if (updatedUser.phone) {
 		// 	updatedUser.phone = decrypt(updatedUser.phone);
@@ -43,6 +65,8 @@ export const uploadAvatarService = async (user, file) => {
 			// 	console.error('❌ Background task [moveFileHelper] failed:', err.message);
 			// });
 		}
+
+		updatedUser.avatar = formatFilePath(updatedUser.avatar);
 
 		return updatedUser;
 	} catch (error) {
@@ -66,7 +90,7 @@ export const deleteAvatarService = async (user) => {
 		{ returnDocument: 'after' },
 
 		// ).select('-password -__v -role -provider -otp')
-	).select('avatar');
+	).lean().select('avatar');
 
 	// Delete the physical file from the disk in the background
 	deleteFileHelper(oldAvatar);
@@ -101,7 +125,9 @@ export const uploadCoversService = async (user, files) => {
 			{ $push: { covers: { $each: newFilePaths } } },
 			{ returnDocument: 'after' },
 			// ).select('-password -__v -visitCount -role -provider -otp');
-		).select('covers');
+		).lean().select('covers');
+		
+		updatedUser.covers = updatedUser.covers.map((cover) => formatFilePath(cover));
 
 		return updatedUser;
 	} catch (error) {
@@ -146,8 +172,8 @@ export const visitUserService = async (user, username) => {
 	} else {
 		targetUser = await User.findOneAndUpdate({ username }, { $inc: { visitCount: 1 } }, { returnDocument: 'after' })
 			// .select('-visitCount -password -phone -__v -role -provider -otp')
-			.select('firstName lastName username gender')
-			.lean();
+			.lean()
+			.select('firstName lastName username gender');
 	}
 	if (!targetUser) {
 		NotFoundException('User not found');
