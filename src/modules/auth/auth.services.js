@@ -1,11 +1,21 @@
 import { createHash, randomBytes } from 'node:crypto';
+import { frontendUrls } from '../../config/app.config.js';
 import { configEnv } from '../../config/env.js';
 import User from '../../DB/models/user.model.js';
+import {
+	sendChangedNewEmail,
+	sendChangedOldEmail,
+	sendRequestChangeNewEmail,
+	sendRequestChangOldEmail,
+	sendRevertSuccessEmail,
+} from '../../utils/emails/change-email.email.js';
 import { sendOtpEmail } from '../../utils/emails/otp.email.js';
 import { sendResetPasswordEmail } from '../../utils/emails/reset-password.email.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
+import { changeEmailOtpServices } from '../../utils/redis/otp-change-email-service.redis.js';
 import { otpServices } from '../../utils/redis/otp-service.redis.js';
 import { resetPasswordServices } from '../../utils/redis/reset-password-service.redis.js';
+import { revertEmailTokenServices } from '../../utils/redis/token-revert-email-service.redis.js';
 import { tokenServices } from '../../utils/redis/token-service.redis.js';
 import {
 	BadRequestException,
@@ -19,8 +29,11 @@ import { generateOTP } from '../../utils/security/otp.security.js';
 import { verifyOAuth2Google } from '../../utils/security/tokens/providers/google.token.js';
 import { decodeToken, generateTokens } from '../../utils/security/tokens/token.js';
 
-export const checkIfUsernameExists = async (username) => {
-	const isExist = await User.findOne({ username });
+export const checkIfUsernameExists = async (userId, username) => {
+	const query = { username };
+	if (userId) query._id = { $ne: userId };
+
+	const isExist = await User.findOne(query);
 	if (isExist) {
 		ConflictException('This username is already taken', 'checkIfUsernameExists', {
 			body: { username: 'This username is already taken' },
@@ -29,43 +42,40 @@ export const checkIfUsernameExists = async (username) => {
 	return true;
 };
 
-
-	export const registerService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
-		// check if user already exists
-		const isExist = await User.findOne({ email });
-		if (isExist) {
-			ConflictException('This email is already registered', 'registerService', {
-				body: { email: 'This email is already registered' },
-			});
-		}
-
-		await checkIfUsernameExists(username);
-
-		const otp = generateOTP();
-		const hashedOtp = await generateHash(otp, null, true);
-
-		const user = await User.create({
-			firstName,
-			lastName,
-			username,
-			email,
-			password, //: hashedPassword, in user model password is hashed automatically with pre save middleware
-			// phone, //: encryptedPhone, in user model phone is encrypted automatically with pre save middleware
-			// gender,
-			// birthdate,
-			// otp,
+export const registerService = async ({ firstName, lastName, username, email, password, phone, gender, birthdate }) => {
+	// check if user already exists
+	const isExist = await User.findOne({ email });
+	if (isExist) {
+		ConflictException('This email is already registered', 'registerService', {
+			body: { email: 'This email is already registered' },
 		});
+	}
 
-		// save otp in redis with expiration of 5 minutes
-		await otpServices.set(user._id, hashedOtp); // save in redis hashed otp
+	await checkIfUsernameExists(null, username);
 
-		// send otp email, don't wait for it to finish
-		sendOtpEmail(email, otp);
+	const otp = generateOTP();
+	const hashedOtp = await generateHash(otp, null, true);
 
-		return user;
+	const user = await User.create({
+		firstName,
+		lastName,
+		username,
+		email,
+		password, //: hashedPassword, in user model password is hashed automatically with pre save middleware
+		// phone, //: encryptedPhone, in user model phone is encrypted automatically with pre save middleware
+		// gender,
+		// birthdate,
+		// otp,
+	});
+
+	// save otp in redis with expiration of 5 minutes
+	await otpServices.set(user._id, hashedOtp); // save in redis hashed otp
+
+	// send otp email, don't wait for it to finish
+	sendOtpEmail(email, otp);
+
+	return user;
 };
-	
-
 
 export const loginService = async ({ email, password, rememberMe = false }) => {
 	const user = await User.findOne({ email });
@@ -211,14 +221,12 @@ export const verifyEmailService = async (email, otp) => {
 		BadRequestException('Invalid or expired OTP', 'verifyEmailService-invalid-otp');
 	}
 
+	user.verified = Date.now().toString();
+	await user.save();
 
+	await otpServices.delete(user._id);
 
-	// user.verified = Date.now().toString();
-	// await user.save();
-
-	// await otpServices.delete(user._id);
-
-	// return true;
+	return true;
 };
 
 export const resendOtpService = async (email) => {
@@ -268,7 +276,7 @@ export const forgetPasswordService = async (email) => {
 
 	await resetPasswordServices.set(hashedToken, user._id.toString());
 
-	const link = `${configEnv.frontendUrl}/auth/reset-password?token=${resetToken}`;
+	const link = `${configEnv.frontendUrl}${frontendUrls.resetPassword}?token=${resetToken}`;
 	sendResetPasswordEmail(user.email, link, `${user.firstName} ${user.lastName}`);
 
 	return true;
@@ -300,7 +308,7 @@ export const resetPasswordService = async (token, password, logoutAll = false) =
 	await resetPasswordServices.delete(hashedToken);
 
 	return true;
-};;
+};
 
 export const changePasswordService = async ({ userId, oldPassword, newPassword, isConfirmed, logoutAll = false }) => {
 	if (oldPassword == newPassword) {
@@ -340,6 +348,139 @@ export const changePasswordService = async ({ userId, oldPassword, newPassword, 
 	}
 
 	await user.save();
+
+	return true;
+};
+
+export const changeEmailRequestService = async ({ userId, newEmail, password }) => {
+	const user = await User.findById(userId);
+	// if (!user) {
+	// 	NotFoundException('User not found', 'changeEmailService-user-not-found');
+	// }
+	console.log('user', user);
+
+	if (!user.isActive || user.deletedAt) {
+		BadRequestException('User is not active or deleted', 'changeEmailService-user-not-active');
+	}
+
+	if (!user.verified) {
+		BadRequestException('User not verified', 'changeEmailService-user-not-verified');
+	}
+
+	const isValidPassword = await verifyHash(password, user.password);
+	if (!isValidPassword) {
+		throwException(400, 'Invalid password', 'changeEmailService-invalid-password', {
+			password: 'Invalid password',
+		});
+	}
+
+	const isEmailExists = await User.findOne({ email: newEmail });
+	if (isEmailExists) {
+		BadRequestException('Email already exists', 'changeEmailService-email-exists');
+	}
+
+	const newOtp = generateOTP();
+	// const token = getRandomValues(new Uint32Array(1))[0].toString();
+
+	console.log('newOtp', newOtp);
+	// console.log('token', token);
+
+	await changeEmailOtpServices.set(userId, { otp: newOtp, newEmail });
+
+	// send email
+	sendRequestChangeNewEmail(newEmail, newOtp);
+	sendRequestChangOldEmail(user.email, newEmail);
+
+	return true;
+};
+
+export const changeEmailService = async (userId, otp) => {
+	const user = await User.findById(userId);
+	console.log('user', user);
+	if (!user) {
+		NotFoundException('User not found', 'changeEmailService-user-not-found');
+	}
+
+	if (!user.isActive || user.deletedAt) {
+		BadRequestException('User is not active or deleted', 'changeEmailService-user-not-active');
+	}
+
+	if (!user.verified) {
+		BadRequestException('User not verified', 'changeEmailService-user-not-verified');
+	}
+
+	const otpData = await changeEmailOtpServices.get(userId);
+	if (!otpData) {
+		BadRequestException('Expired OTP, please request a new one', 'changeEmailService-invalid-otp');
+	}
+
+	console.log('otpData', otpData);
+
+	let parsedOtp;
+	try {
+		parsedOtp = JSON.parse(otpData);
+		if (parsedOtp.otp !== otp) {
+			BadRequestException('Invalid OTP', 'changeEmailService-invalid-otp');
+		}
+	} catch (_error) {
+		BadRequestException('Expired OTP, please request a new one', 'changeEmailService-invalid-otp');
+	}
+
+	const oldEmail = user.email;
+	user.email = parsedOtp.newEmail;
+	await user.save();
+
+	// create revert link
+	// creat and hash token
+	const revertToken = randomBytes(64)?.toString('hex');
+	const hashedToken = createHash('sha256').update(revertToken).digest('hex');
+
+	// save to redis
+	await revertEmailTokenServices.set(userId, { token: hashedToken, oldEmail });
+	// build link
+	const url = new URL(`${configEnv.frontendUrl}${frontendUrls.revertEmail}`);
+	url.searchParams.append('email', oldEmail);
+	url.searchParams.append('userId', userId);
+	url.searchParams.append('token', revertToken);
+
+	const revertUrl = url.toString();
+
+	// send revert link to old email
+	sendChangedOldEmail(oldEmail, parsedOtp.newEmail, revertUrl);
+
+	// send success to new email
+	sendChangedNewEmail(user.email);
+
+	return true;
+};
+
+export const revertEmailService = async (userId, token) => {
+	const user = await User.findById(userId);
+	if (!user) {
+		BadRequestException('User not found', 'revertEmailService-user-not-found');
+	}
+
+	const savedToken = await revertEmailTokenServices.get(userId);
+	if (!savedToken) {
+		BadRequestException('Invalid token or expired', 'revertEmailService-invalid-token');
+	}
+
+	const hashedToken = createHash('sha256').update(token).digest('hex');
+
+	if (savedToken.token !== hashedToken || !savedToken.oldEmail) {
+		BadRequestException('Invalid token', 'revertEmailService-invalid-token');
+	}
+
+	// update user email with old email
+	user.email = savedToken.oldEmail;
+	user.loggedOutAllAt = Date.now();
+	await user.save();
+
+	// send success email
+	sendRevertSuccessEmail(savedToken.oldEmail);
+
+	// delete token from redis
+	await revertEmailTokenServices.delete(userId);
 
 	return true;
 };

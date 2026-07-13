@@ -23,6 +23,11 @@ export const appConfig = {
 	},
 };
 
+export const frontendUrls = {
+	resetPassword: '/auth/reset-password',
+	revertEmail: '/auth/revert-email',
+};
+
 export const personSettings = {
 	user: {
 		isPublicAccount: true,

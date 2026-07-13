@@ -227,12 +227,6 @@ The messaging module is designed as an enterprise-grade, privacy-first system. I
 
 ---
 
-### 🛡️ Implemented Features
-
-#### 1. Anonymous & Public Messaging
-* **Sender Anonymity:** When `isAnonymous: true`, the sender's relational data is entirely removed from public endpoints via MongoDB `$project` aggregation pipelines and API serialization layers before escaping the server.
-* **Unified UI Response Mapping:** The Serialization layer automatically handles field aliases, meaning the Frontend always receives a clean, single, decrypted string under the key `content`, regardless of whether the message was fetched from the private inbox or public feed.
----
 
 ### 🛡️ Implemented Features
 
@@ -305,17 +299,16 @@ The messaging system is optimized for large datasets.
 
 ## 🔒 Security Checklist
 
-- [x] Refresh Token Rotation
-- [x] Token Reuse Detection
-- [x] Hybrid JWT
-- [x] AES Encryption
-- [x] Secure Cookies
-- [x] Joi Validation
-- [x] MIME Validation
-- [x] Compound Indexes
+- [x] Refresh Token Rotation (RTR)
+- [x] Token Reuse Detection & Session Purging
+- [x] Hybrid JWT (Stateless CPU Verification / Stateful Refresh)
+- [x] AES-256-CBC Cryptographic Layer at Rest
+- [x] Secure HttpOnly Cookies (SameSite=Strict)
+- [x] Strict Schema Validation via Joi
+- [x] Inbound Multi-part File MIME Validation
+- [x] Optimized Performance Compound MongoDB Indexes
 - [x] Dual-Field Cryptographic Caching (content / publicContent)
-- [x] Zero-CPU Public Aggregation Logic
-
+- [x] Zero-CPU Public Profile Aggregation Logic
 ---
 
 ## 🚀 Quick Start
@@ -329,8 +322,8 @@ The messaging system is optimized for large datasets.
 ### Installation
 
 ```bash
-git clone ...
-cd ...
+git clone https://github.com/e-mustafa/saraha-app.git
+cd saraha-app
 npm install
 
 
@@ -349,12 +342,33 @@ Required variables:
 - in .env.example file
 
 ```text
-APP_PORT
-DATABASE_URL
-REDIS_URL
-JWT_SECRET
-GOOGLE_CLIENT_ID
-...
+APP_PORT=3000
+APP_URL=http://localhost:3000
+
+# Databases
+DATABASE_URL=mongodb://localhost:27017/saraha
+REDIS_URL=redis://localhost:6379
+
+# Cryptography & Security
+JWT_SECRET=your_super_secret_jwt_access_hash_key
+JWT_REFRESH_SECRET=your_super_secret_jwt_refresh_hash_key
+JWT_ACCESS_EXPIRATION=15m
+JWT_REFRESH_EXPIRATION=7d
+
+# Google OAuth2 Credentials
+GOOGLE_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-your_google_client_secret_key
+
+# Third-Party Media Cloud Storage (Cloudinary)
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+# SMTP Email Service (Verification & Password Reset)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your_verified_email@gmail.com
+EMAIL_PASS=your_app_specific_password
 ```
 ---
 

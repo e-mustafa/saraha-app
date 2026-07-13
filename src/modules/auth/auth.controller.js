@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { auth } from '../../middlewares/authentication.middleware.js';
+import { auth, authOptional } from '../../middlewares/authentication.middleware.js';
 import validation from '../../middlewares/validation.middleware.js';
 import { cookiesKeysEnum } from '../../utils/enums/security,enum.js';
 import { PROVIDERS_ENUM } from '../../utils/enums/user.enum.js';
@@ -8,6 +8,8 @@ import { successResponse } from '../../utils/response/success.response.js';
 import { setCookies } from '../../utils/security/set-cookies.security.js';
 import { UserDTO } from '../user/user.utils.js';
 import {
+	changeEmailRequestService,
+	changeEmailService,
 	changePasswordService,
 	checkIfUsernameExists,
 	forgetPasswordService,
@@ -18,10 +20,13 @@ import {
 	registerService,
 	resendOtpService,
 	resetPasswordService,
+	revertEmailService,
 	socialLoginService,
 	verifyEmailService,
 } from './auth.services.js';
 import {
+	changeEmailRequestSchema,
+	changeEmailSchema,
 	changePasswordSchema,
 	checkUsernameSchema,
 	forgetPasswordSchema,
@@ -30,6 +35,7 @@ import {
 	registerSchema,
 	resendOtpSchema,
 	resetPasswordSchema,
+	revertEmailSchema,
 	verifyEmailSchema,
 } from './auth.validation.js';
 
@@ -50,6 +56,10 @@ export const routes = {
 	resetPassword: '/reset-password',
 	changePassword: '/change-password',
 
+	requestChangeEmail: '/request-change-email',
+	changeEmail: '/change-email',
+	revertEmail: '/revert-email',
+
 	logout: '/logout',
 	logoutAll: '/logout-all',
 };
@@ -57,10 +67,11 @@ export const routes = {
 // check if username already exists or available
 router.post(
 	routes.checkUsername,
+	authOptional(),
 	validation(checkUsernameSchema),
 	asyncHandler(async (req, res) => {
 		const { username } = req.body || {};
-		const data = await checkIfUsernameExists(username);
+		const data = await checkIfUsernameExists(req.user._id || null, username);
 		successResponse({ res, message: 'Username is available', data });
 	}),
 );
@@ -178,6 +189,41 @@ router.post(
 		await changePasswordService({ userId: req.user._id, oldPassword, newPassword, isConfirmed, logoutAll });
 
 		successResponse({ res, message: 'Password changed successfully' });
+	}),
+);
+
+router.post(
+	routes.requestChangeEmail,
+	auth(),
+	validation(changeEmailRequestSchema),
+	asyncHandler(async (req, res) => {
+		const { newEmail, password } = req.body || {};
+		await changeEmailRequestService({ userId: req.user._id, newEmail, password });
+
+		successResponse({ res, message: 'An OTP has been sent to your new email' });
+	}),
+);
+
+router.patch(
+	routes.changeEmail,
+	auth(),
+	validation(changeEmailSchema),
+	asyncHandler(async (req, res) => {
+		await changeEmailService(req.user._id, req.body.otp || '');
+
+		successResponse({ res, message: 'Email changed successfully' });
+	}),
+);
+
+// revert email
+router.patch(
+	routes.revertEmail,
+	// auth(),
+	validation(revertEmailSchema),
+	asyncHandler(async (req, res) => {
+		await revertEmailService(req.user._id, req.body.token || '');
+
+		successResponse({ res, message: 'Email reverted successfully' });
 	}),
 );
 

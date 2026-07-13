@@ -147,6 +147,23 @@ userSchema.virtual('age').get(function () {
 	return calcAge(this.birthdate);
 });
 
+// userSchema.set('toJSON', {
+// 	virtuals: true, // activate virtuals in toJSON
+// 	versionKey: false, // remove __v field
+// 	transform: function (doc, ret) {
+// 		ret.id = ret._id.toString(); // convert ObjectId to String with id field
+// 		// delete ret._id; // remove old _id field
+
+// 		// dates: Mongoose automatically converts Date objects to ISO strings when converting to JSON
+// 		// but if you want to customize the format to be only date without time (YYYY-MM-DD):
+// 		if (ret.birthdate) {
+// 			ret.birthdate = new Date(ret.birthdate).toISOString().split('T')[0];
+// 		}
+
+// 		return ret;
+// 	},
+// });
+
 // userSchema.virtual('messages', {
 // 	ref: 'message',
 // 	localField: '_id',

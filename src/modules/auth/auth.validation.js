@@ -83,13 +83,32 @@ export const resetPasswordSchema = {
 export const changePasswordSchema = {
 	body: joi.object({
 		oldPassword: generalFields.password,
-		newPassword: generalFields.password.valid(joi.ref('oldPassword')).messages({
-			'any.only': 'New password must be different from old password',
+		newPassword: generalFields.password.invalid(joi.ref('oldPassword')).messages({
+			'any.invalid': 'New password must be different from old password',
 		}),
 		isConfirmed: joi.boolean().required().messages({
 			'boolean.required': 'isConfirmed is required',
 		}),
 		// confirmPassword: generalFields.confirmPassword,
 		logoutAll: joi.boolean().optional(),
+	}),
+};
+
+export const changeEmailRequestSchema = {
+	body: joi.object({
+		newEmail: generalFields.email,
+		password: generalFields.password,
+	}),
+};
+
+export const changeEmailSchema = {
+	body: joi.object({
+		otp: generalFields.otp,
+	}),
+};
+
+export const revertEmailSchema = {
+	body: joi.object({
+		token: generalFields,
 	}),
 };

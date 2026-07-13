@@ -96,4 +96,7 @@ export const generalFields = {
 		'string.length': 'OTP must be 6 characters',
 		'any.required': 'OTP is required',
 	}),
+	token: joi.string().required().messages({
+		'string.required': 'Token is required',
+	}),
 };
