@@ -1,7 +1,8 @@
+import { appConfig } from '../../config/app.config.js';
 import { redisDB } from './client.redis.js';
 
 export const changeEmailOtpServices = {
-	set: async (userId, { otp, newEmail }, expiresInSeconds = 60 * 5) => {
+	set: async (userId, { otp, newEmail }, expiresInSeconds = appConfig.otp.changeEmail.expiresIn) => {
 		await redisDB.set(`users:${userId}:email-change`, JSON.stringify({ newEmail, otp }), {
 			expiration: {
 				type: 'EX',

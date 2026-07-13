@@ -1,4 +1,21 @@
 export const appConfig = {
+	otp: {
+		resetPassword: {
+			expiresIn: 60 * 15, // 10 minutes
+		},
+		changeEmail: {
+			expiresIn: 60 * 15, // 10 minutes
+		},
+		verifyEmail: {
+			expiresIn: 60 * 15, // 10 minutes
+		},
+		revertEmail: {
+			expiresIn: 60 * 60 * 24 * 7, // 7 days
+		},
+		refreshToken: {
+			expiresIn: 60 * 60 * 24 * 7, // 7 days
+		},
+	},
 	messages: {
 		maxMessageLength: 1000,
 		maxAttachmentsPerMessage: 4,

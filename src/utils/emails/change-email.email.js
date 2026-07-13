@@ -705,7 +705,7 @@ export const sendRevertSuccessEmail = async (email, language = 'en') => {
               <tr>
                 <td style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); padding: 35px 20px; text-align: center;">
                   <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
-                    ${configEnv.appName}
+                    ${appName}
                   </h1>
                 </td>
               </tr>
@@ -758,7 +758,7 @@ export const sendRevertSuccessEmail = async (email, language = 'en') => {
                     هذا تأكيد أمني تلقائي، يرجى عدم الرد على هذه الرسالة مباشرة.
                   </p>
                   <p style="color: #b3b3b3; font-size: 12px; margin: 8px 0 0 0; direction: ltr;">
-                    &copy; ${new Date().getFullYear()} ${configEnv.appName}. All rights reserved.
+                    &copy; ${new Date().getFullYear()} ${appName}. All rights reserved.
                   </p>
                 </td>
               </tr>
@@ -793,7 +793,7 @@ export const sendRevertSuccessEmail = async (email, language = 'en') => {
               <tr>
                 <td style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); padding: 35px 20px; text-align: center;">
                   <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
-                    ${configEnv.appName}
+                    ${appName}
                   </h1>
                 </td>
               </tr>
@@ -846,7 +846,7 @@ export const sendRevertSuccessEmail = async (email, language = 'en') => {
                     This is an automated security confirmation, please do not reply to it directly.
                   </p>
                   <p style="color: #b3b3b3; font-size: 12px; margin: 8px 0 0 0;">
-                    &copy; ${new Date().getFullYear()} ${configEnv.appName}. All rights reserved.
+                    &copy; ${new Date().getFullYear()} ${appName}. All rights reserved.
                   </p>
                 </td>
               </tr>

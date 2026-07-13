@@ -1,7 +1,8 @@
+import { appConfig } from '../../config/app.config.js';
 import { redisDB } from './client.redis.js';
 
 export const tokenServices = {
-	set: async (userId, token, expiresInSeconds = 60 * 60 * 24 * 7) => {
+	set: async (userId, token, expiresInSeconds = appConfig.otp.refreshToken.expiresIn) => {
 		await redisDB.set(`users:refreshTokens:${token}`, userId, {
 			expiration: {
 				type: 'EX',

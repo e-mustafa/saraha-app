@@ -1,7 +1,8 @@
+import { appConfig } from '../../config/app.config.js';
 import { redisDB } from './client.redis.js';
 
 export const revertEmailTokenServices = {
-	set: async (userId, { token, oldEmail }, expiresInSeconds = 60 * 60 * 24 * 7) => {
+	set: async (userId, { token, oldEmail }, expiresInSeconds = appConfig.otp.revertEmail.expiresIn) => {
 		await redisDB.set(`users:${userId}:email-revert`, JSON.stringify({ oldEmail, token }), {
 			expiration: {
 				type: 'EX',

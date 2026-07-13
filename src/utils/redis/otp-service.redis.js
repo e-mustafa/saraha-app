@@ -1,7 +1,8 @@
+import { appConfig } from '../../config/app.config.js';
 import { redisDB } from './client.redis.js';
 
 export const otpServices = {
-	set: async (userId, otp, expiresInSeconds = 60 * 5) => {
+	set: async (userId, otp, expiresInSeconds = appConfig.otp.verifyEmail.expiresIn) => {
 		await redisDB.set(`users:${userId}:verify_account_otp`, otp, {
 			expiration: {
 				type: 'EX',
