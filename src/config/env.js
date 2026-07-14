@@ -9,6 +9,7 @@ export const configEnv = {
 	appUrl: `${process.env.APP_URL}:${process.env.APP_PORT}`,
 	urlApiBase: process.env.URL_API_BASE || '/api/v2',
 	frontendUrl: process.env.FRONTEND_URL,
+	allowedOrigin: process.env.ALLOWED_ORIGIN,
 	db: {
 		dbUrl: process.env.DATABASE_URL,
 		dbName: process.env.DATABASE_Name,

@@ -1,8 +1,12 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { corsOptions } from './config/cors.js';
 import { configEnv } from './config/env.js';
+import { rateLimitConfig } from './config/rate-limit.js';
 import connectDB from './DB/connection.js';
 import { authRouter, authRoutes, messageRouter, messageRoutes, userRouter, userRoutes } from './modules/index.js';
 import { globalErrorHandler } from './utils/error-handler/index.js';
@@ -15,7 +19,12 @@ const __dirname = path.dirname(__filename);
 
 export default async function bootstrap(app, express) {
 	// middlewares
-	app.use(cors({ origin: configEnv.frontendUrl, credentials: true })); // for handling CORS
+	// Security ------
+	app.use(cors(corsOptions)); // for handling CORS
+	app.use(helmet()); // for handling security headers
+	app.use(rateLimit(rateLimitConfig)); // for handling rate limiting
+
+	// app.use(express.urlencoded({ extended: true, limit: '2mb' })); // for parsing URL-encoded bodies
 	app.use(express.json({ limit: '2mb' })); // for parsing JSON bodies
 	app.use(cookieParser()); // for parsing cookies
 

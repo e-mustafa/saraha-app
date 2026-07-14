@@ -236,6 +236,12 @@ export const deleteMessageService = async (userId, messageId) => {
 
 	if (!message.from && !message.to) {
 		await message.deleteOne();
+		// delete attachments if any
+		if (message.attachments && message.attachments.length > 0) {
+			for (const attachment of message.attachments) {
+				await deleteFileHelper(attachment.url);
+			}
+		}
 	} else {
 		await message.save();
 	}
