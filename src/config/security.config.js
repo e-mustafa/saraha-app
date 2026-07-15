@@ -7,7 +7,7 @@ const allowedOrigins = [configEnv.frontendUrl, ...(configEnv.allowedOrigin ? con
 	.map((origin) => origin?.trim()) // Remove any accidental leading/trailing spaces
 	.filter(Boolean); // Filter out undefined, null, or empty strings
 
-export const corsOptions = {
+export const corsConfig = {
 	origin: allowedOrigins,
 	credentials: true,
 };

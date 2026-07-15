@@ -4,9 +4,8 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { corsOptions } from './config/cors.js';
 import { configEnv } from './config/env.js';
-import { rateLimitConfig } from './config/rate-limit.js';
+import { corsConfig, rateLimitConfig } from './config/security.config.js';
 import connectDB from './DB/connection.js';
 import { authRouter, authRoutes, messageRouter, messageRoutes, userRouter, userRoutes } from './modules/index.js';
 import { globalErrorHandler } from './utils/error-handler/index.js';
@@ -20,9 +19,8 @@ const __dirname = path.dirname(__filename);
 export default async function bootstrap(app, express) {
 	// middlewares
 	// Security ------
-	app.use(cors(corsOptions)); // for handling CORS
+	app.use(cors(corsConfig)); // for handling CORS
 	app.use(helmet()); // for handling security headers
-	app.use(rateLimit(rateLimitConfig)); // for handling rate limiting
 
 	// app.use(express.urlencoded({ extended: true, limit: '2mb' })); // for parsing URL-encoded bodies
 	app.use(express.json({ limit: '2mb' })); // for parsing JSON bodies
@@ -31,6 +29,8 @@ export default async function bootstrap(app, express) {
 	// connect to Database
 	await connectDB();
 	await connectRedis();
+
+	app.use(rateLimit(rateLimitConfig)); // for handling rate limiting
 
 	app.get('/', (_, res) => {
 		successResponse({ res, message: `Hello in ${configEnv.appName} Api!` });
