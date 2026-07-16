@@ -26,10 +26,14 @@ export default async function bootstrap(app, express) {
 	app.use(express.json({ limit: '2mb' })); // for parsing JSON bodies
 	app.use(cookieParser()); // for parsing cookies
 
+	// Enable 'trust proxy' so Express can read the X-Forwarded-For header correctly
+	// '1' means trust the first hop (the proxy right in front of your app, e.g., Vercel, Heroku, AWS ALB)
+	app.set('trust proxy', 1);
+
 	// connect to Database
 	await connectDB();
 	await connectRedis();
-	
+
 	// handling rate limiting
 	app.use(rateLimit(rateLimitConfig));
 
