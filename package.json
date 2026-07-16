@@ -20,6 +20,7 @@
 		"@vercel/functions": "^3.7.5",
 		"argon2": "^0.44.0",
 		"bcrypt": "^6.0.0",
+		"cloudinary": "^2.10.0",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.6",
 		"dotenv": "^17.4.2",
@@ -34,7 +35,8 @@
 		"multer": "^2.2.0",
 		"nodemailer": "^9.0.1",
 		"rate-limit-redis": "^5.0.0",
-		"redis": "^6.0.1"
+		"redis": "^6.0.1",
+		"streamifier": "^0.1.1"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",

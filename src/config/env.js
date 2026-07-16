@@ -51,11 +51,10 @@ export const providersAuth = {
 	},
 };
 
-
 export const emailConfig = {
 	googleAppPassword: process.env.GOOGLE_APP_PASSWORD || '',
 	googleEmail: process.env.GOOGLE_APP_EMAIL || '',
-	
+
 	// from: process.env.EMAIL_FROM || 'Saraha App <no-reply@saraha-app.com>',
 
 	// smtp: {
@@ -69,5 +68,8 @@ export const emailConfig = {
 	// },
 };
 
-
-
+export const cloudinaryConfig = {
+	name: process.env.CLOUDINARY_NAME || '',
+	apiKey: process.env.CLOUDINARY_API_KEY || '',
+	secret: process.env.CLOUDINARY_API_SECRET || '',
+};

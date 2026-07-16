@@ -1,6 +1,6 @@
 import joi from 'joi';
 import { appConfig } from '../../config/app.config.js';
-import { generalFields } from '../../utils/validation/general-fields.validation.js';
+import { generalFields, uploadFileSchema } from '../../utils/validation/general-fields.validation.js';
 
 const maxContentLength = appConfig.messages.maxMessageLength;
 
@@ -25,26 +25,17 @@ export const sendMessageSchema = {
 		isPublic: joi.boolean().optional().default(false),
 		isAnonymous: joi.boolean().optional().default(false),
 		saveToMyMessages: joi.boolean().optional().default(false),
-	}),
 
-	files: joi
-		.array()
-		.items(
-			joi
-				.object({
-					filePath: joi.string().required(),
-					mimetype: joi.string().required(),
-				})
-				.unknown(true), // allow other fields like filename to pass without validation errors
-		)
-		.max(appConfig.messages.maxAttachmentsPerMessage)
-		.optional()
-		.default([])
-		.messages({
-			'any.required': 'Files are required',
-			'array.min': 'Please upload at least one file',
-			'array.max': `You can upload a maximum of ${appConfig.messages.maxAttachmentsPerMessage} files`,
-		}),
+		attachments: joi
+			.array()
+			.items(uploadFileSchema)
+			.max(appConfig.messages.maxAttachmentsPerMessage)
+			.optional()
+			.messages({
+				'array.max': `You can upload a maximum of ${appConfig.messages.maxAttachmentsPerMessage} files`,
+				'object.base': 'Please upload a valid cover image file', // Custom message when cover is not a valid file object
+			}),
+	}),
 };
 
 // export const getMessagesTypeSchema = {

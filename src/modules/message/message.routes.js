@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import { appConfig } from '../../config/app.config.js';
 import { auth, authOptional } from '../../middlewares/authentication.middleware.js';
 import validation from '../../middlewares/validation.middleware.js';
-import { localUpload } from '../../utils/upload-files/local.multer.js';
 import { fileTypes } from '../../utils/upload-files/mime-types.js';
+import { uploadCloud } from '../../utils/upload-files/multer.js';
 import {
 	deleteMessage,
 	getMessage,
@@ -43,7 +44,7 @@ export const routes = {
 router.post(
 	routes.sendMessages,
 	authOptional(),
-	localUpload({ dir: 'messages', type: fileTypes.media }).array('attachments', 2),
+	uploadCloud(fileTypes.media).array('attachments', appConfig.messages.maxAttachmentsPerMessage),
 	validation(sendMessageSchema),
 	sendMessages,
 );

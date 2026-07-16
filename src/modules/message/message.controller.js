@@ -17,7 +17,7 @@ export const sendMessages = asyncHandler(async (req, res) => {
 	const messages = await sendMessageService({
 		userId: user?._id || null,
 		username: params.username,
-		files,
+		files: body.attachments,
 		...body,
 	});
 

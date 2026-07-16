@@ -1,40 +1,40 @@
 import joi from 'joi';
-import { generalFields } from '../../utils/validation/general-fields.validation.js';
+import { generalFields, uploadFileSchema } from '../../utils/validation/general-fields.validation.js';
 
 export const deleteImageSchema = {
 	body: joi.object({
-		image: joi.string().required().messages({
-			'any.required': 'Image path is required',
-		}),
+		id: generalFields.public_id,
 	}),
 };
 
 export const avatarUserSchema = {
-	file: joi.object({
-		filePath: joi.string().required().messages({
-			'any.required': 'avatar is required',
+	body: joi.object({
+		avatar: uploadFileSchema.messages({
+			'any.required': 'avatar image is required',
+			'object.base': 'Please upload a valid avatar image file', // Custom message when avatar is not a valid file object
 		}),
 	}),
 };
 
 export const coverUserSchema = {
-	files: joi
-		.array()
-		.items(
-			joi
-				.object({
-					filePath: joi.string().required(),
-				})
-				.unknown(true), // allow other fields like filename to pass without validation errors
-		)
-		.min(1)
-		.max(2)
-		.required()
-		.messages({
-			'any.required': 'Cover images are required',
-			'array.min': 'Please upload at least one cover image',
-			'array.max': 'You can upload a maximum of 2 cover images',
+	body: joi.object({
+		covers: joi.array().items(uploadFileSchema).min(1).required().messages({
+			'any.required': 'cover image is required',
+			'array.min': 'cover image is required',
+			'object.base': 'Please upload a valid cover image file', // Custom message when cover is not a valid file object
 		}),
+	}),
+};
+
+export const replaceCoverUserSchema = {
+	body: joi.object({
+		id: generalFields.public_id,
+		// Covers is now naturally validated as a field inside the body payload
+		cover: uploadFileSchema.messages({
+			'any.required': 'cover image is required',
+			'object.base': 'Please upload a valid cover image file', // Custom message when cover is not a valid file object
+		}),
+	}),
 };
 
 export const visitUserSchema = {

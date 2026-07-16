@@ -1,13 +1,13 @@
 export const appConfig = {
 	otp: {
 		resetPassword: {
-			expiresIn: 60 * 15, // 10 minutes
+			expiresIn: 60 * 10, // 10 minutes
 		},
 		changeEmail: {
-			expiresIn: 60 * 15, // 10 minutes
+			expiresIn: 60 * 10, // 10 minutes
 		},
 		verifyEmail: {
-			expiresIn: 60 * 15, // 10 minutes
+			expiresIn: 60 * 10, // 10 minutes
 		},
 		revertEmail: {
 			expiresIn: 60 * 60 * 24 * 7, // 7 days
@@ -37,6 +37,10 @@ export const appConfig = {
 	},
 	security: {
 		minPasswordLength: 8,
+	},
+
+	user: {
+		maxCovers: 2,
 	},
 };
 

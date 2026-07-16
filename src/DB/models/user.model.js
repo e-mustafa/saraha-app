@@ -81,11 +81,24 @@ const userSchema = new Schema(
 		},
 
 		bio: String,
-		avatar: String,
+		avatar: {
+			id: String,
+			url: String,
+		},
 		covers: {
-			type: Array,
-			maxLength: 2,
-			default: [],
+			type: [
+				{
+					id: String,
+					url: String,
+				},
+			],
+			validate: {
+				validator: function (value) {
+					return value.length <= 2;
+				},
+				message: 'Covers must be at most 2 images',
+			},
+			_id: false, // remove _id from each cover object
 		},
 
 		role: {

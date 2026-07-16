@@ -1,9 +1,12 @@
+import { v2 as cloudinary } from 'cloudinary';
+import streamifier from 'streamifier';
 import { formatFilePath } from '../../utils/general/format-file-path.js';
 import { MessageDTO } from '../message/message.utils.js';
+import { throwInternalException } from '../response/throw.exceptions.js';
 
 export class UserDTO {
 	static single(user, isAdmin = false) {
-		if(!user) return null
+		if (!user) return null;
 		// if (user.phone) {
 		// 	user.phone = decrypt(user.phone);
 		// }
@@ -11,7 +14,7 @@ export class UserDTO {
 		if (user?.covers) {
 			if (Array.isArray(user.covers) && user.covers.length > 0) {
 				// user.covers = user.covers.map((cover) => `${configEnv.appUrl}/${cover.replace(/\\/g, '/')}`);
-				user.covers = user.covers.map((cover) => formatFilePath(cover));
+				user.covers = user.covers.map((cover) => ({ ...cover, url: formatFilePath(cover.url) }));
 			}
 		}
 
@@ -38,7 +41,7 @@ export class UserDTO {
 			name: `${user.firstName} ${user.lastName}`,
 			firstName: user.firstName,
 			lastName: user.lastName,
-			avatar: formatFilePath(user.avatar),
+			avatar: { ...user.avatar, url: formatFilePath(user.avatar?.url) },
 			covers: user.covers || [],
 			username: user.username,
 			email: user.email,
@@ -61,3 +64,29 @@ export class UserDTO {
 		return users.map((user) => this.single(user, isAdmin)) || [];
 	}
 }
+
+// Clean and reusable Cloudinary buffer uploader helper
+export const uploadToCloudinary = (file, userId, customPublicId) => {
+	if (!file) {
+		throwInternalException('No file provided', 'uploadUserImageService');
+	}
+	return new Promise((resolve, reject) => {
+		// Generate a truly unique ID for this cover to allow dynamic sorting/deleting
+		const uniqueId = customPublicId || `cover_${Date.now()}_${Math.round(Math.random() * 1e5)}`;
+
+		const uploadStream = cloudinary.uploader.upload_stream(
+			{
+				folder: `users/${userId}`,
+				public_id: uniqueId,
+				overwrite: true,
+				invalidate: true,
+			},
+			(error, result) => {
+				if (error) return reject(error);
+				resolve({ id: result.public_id, url: result.secure_url });
+			},
+		);
+
+		streamifier.createReadStream(file.buffer).pipe(uploadStream);
+	});
+};

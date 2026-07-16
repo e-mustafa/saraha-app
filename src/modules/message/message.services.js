@@ -2,53 +2,92 @@ import { Types } from 'mongoose';
 import Message from '../../DB/models/message.model.js';
 import User from '../../DB/models/user.model.js';
 import { MESSAGE_TYPE_ENUM } from '../../utils/enums/message.enum.js';
-import { deleteFileHelper } from '../../utils/general/file.util.js';
 import { getAggregateWithPagination, getDataWithPagination } from '../../utils/queries/get-data-with pagination.js';
-import { NotFoundException } from '../../utils/response/throw.exceptions.js';
+import { BadRequestException, NotFoundException } from '../../utils/response/throw.exceptions.js';
 import { decrypt, encrypt } from '../../utils/security/encryption.security.js';
+import { deleteMessageAttachments, uploadToCloudinaryMessage } from './message.utils.js';
+
+// export const sendMessageService = async ({ userId, username, content, files, isAnonymous, saveToMyMessages = false }) => {
+// 	let attachments = [];
+// 	try {
+// 		const receiver = await User.findOne({ username, deletedAt: null }).lean().select('_id username');
+// 		if (!receiver) {
+// 			if (attachments && attachments.length > 0) {
+// 				attachments.forEach((attachment) => deleteFileHelper(attachment.url));
+// 			}
+// 			NotFoundException('User not found', 'SEND_MESSAGE.USER_NOT_FOUND');
+// 		}
+
+// 		if (files && files.length > 0) {
+// 			attachments = files.map((file) => ({
+// 				url: file.filePath,
+// 				fileType: file.mimetype?.split('/')[0] || 'image',
+// 			}));
+// 		}
+
+// 		// الرسائل تشفر دائماً في قاعدة البيانات لحماية الخصوصية كمبدأ أساسي (Secure by Default)
+// 		const encryptedContent = encrypt(content);
+
+// 		const message = await Message.create({
+// 			content: encryptedContent,
+// 			publicContent: null, // يبدأ دائماً بـ null حتى يقرر المستخدم نشرها
+// 			to: receiver._id,
+// 			from: userId && saveToMyMessages ? userId : undefined,
+// 			attachments,
+// 			isAnonymous,
+// 			isPublic: false, // الافتراضي غير منشورة
+// 		});
+
+// 		return message;
+// 	} catch (error) {
+// 		if (attachments && attachments.length > 0) {
+// 			attachments.forEach((attachment) => deleteFileHelper(attachment.url));
+// 		}
+// 		throw error;
+// 	}
+// };
 
 export const sendMessageService = async ({ userId, username, content, files, isAnonymous, saveToMyMessages = false }) => {
-	let attachments = [];
-	try {
-		const receiver = await User.findOne({ username, deletedAt: null }).lean().select('_id username');
-		if (!receiver) {
-			if (attachments && attachments.length > 0) {
-				attachments.forEach((attachment) => deleteFileHelper(attachment.url));
-			}
-			NotFoundException('User not found', 'SEND_MESSAGE.USER_NOT_FOUND');
-		}
-
-		if (files && files.length > 0) {
-			attachments = files.map((file) => ({
-				url: file.filePath,
-				fileType: file.mimetype?.split('/')[0] || 'image',
-			}));
-		}
-
-		// الرسائل تشفر دائماً في قاعدة البيانات لحماية الخصوصية كمبدأ أساسي (Secure by Default)
-		const encryptedContent = encrypt(content);
-
-		const message = await Message.create({
-			content: encryptedContent,
-			publicContent: null, // يبدأ دائماً بـ null حتى يقرر المستخدم نشرها
-			to: receiver._id,
-			from: userId && saveToMyMessages ? userId : undefined,
-			attachments,
-			isAnonymous,
-			isPublic: false, // الافتراضي غير منشورة
-		});
-
-		return message;
-	} catch (error) {
-		if (attachments && attachments.length > 0) {
-			attachments.forEach((attachment) => deleteFileHelper(attachment.url));
-		}
-		throw error;
+	const receiver = await User.findOne({ username, deletedAt: null }).lean().select('_id username');
+	if (!receiver) {
+		// Fixed: Added missing 'throw'
+		NotFoundException('User not found', 'SEND_MESSAGE.USER_NOT_FOUND');
 	}
+
+	// Generate message ID beforehand to use in Cloudinary folder paths if needed,
+	// or rely on a custom unique generator since we upload before saving to DB.
+	const tempMessageId = new Types.ObjectId();
+	let attachments = [];
+
+	// Upload files first to ensure data integrity
+	if (files && files.length > 0) {
+		try {
+			attachments = await Promise.all(files.map((file) => uploadToCloudinaryMessage(receiver._id, file, tempMessageId)));
+		} catch (error) {
+			// Handle upload failure gracefully depending on your business logic
+			BadRequestException(`Failed to upload attachments, ${error.message}`, 'SEND_MESSAGE.UPLOAD_FAILED');
+		}
+	}
+
+	// Encrypt message content for privacy protection (Secure by Default)
+	const encryptedContent = encrypt(content);
+
+	// Create the message in one database operation
+	const message = await Message.create({
+		_id: tempMessageId,
+		content: encryptedContent,
+		publicContent: null, // default null until user decides to publish
+		to: receiver._id,
+		from: userId && saveToMyMessages ? userId : undefined,
+		attachments,
+		isAnonymous,
+	});
+
+	return message.toObject();
 };
 
 export const getPublicMessagesService = async (username, query = {}) => {
-	const user = await User.findOne({ username, deletedAt: null }).lean().select('_id');
+	const user = await User.findOne({ username }).lean().select('_id');
 	if (!user) {
 		NotFoundException('User not found', 'GET_PUBLIC_MESSAGES.USER_NOT_FOUND');
 	}
@@ -218,7 +257,6 @@ export const getMessageService = async (userId, messageId) => {
 	return message;
 };
 
-// دوال الـ delete و الـ toggleFavorite لا تحتاج لتعديل لأنها لا تتعامل مع حقل الـ content مباشرة
 export const deleteMessageService = async (userId, messageId) => {
 	const message = await Message.findOne({ _id: messageId, $or: [{ to: userId }, { from: userId }] });
 	if (!message) {
@@ -236,12 +274,15 @@ export const deleteMessageService = async (userId, messageId) => {
 
 	if (!message.from && !message.to) {
 		await message.deleteOne();
-		// delete attachments if any
-		if (message.attachments && message.attachments.length > 0) {
-			for (const attachment of message.attachments) {
-				await deleteFileHelper(attachment.url);
-			}
-		}
+		// delete attachments if any - local upload
+		// if (message.attachments && message.attachments.length > 0) {
+		// 	for (const attachment of message.attachments) {
+		// 		await deleteFileHelper(attachment.url);
+		// 	}
+		// }
+
+		// delete message attachments from cloudinary
+		await deleteMessageAttachments(message.attachments);
 	} else {
 		await message.save();
 	}

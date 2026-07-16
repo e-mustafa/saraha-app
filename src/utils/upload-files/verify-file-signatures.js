@@ -1,4 +1,4 @@
-import { fileTypeFromFile } from 'file-type';
+import { fileTypeFromBuffer, fileTypeFromFile } from 'file-type';
 import path from 'node:path';
 import { createException } from '../response/throw.exceptions.js';
 import { fileTypes } from './mime-types.js';
@@ -11,9 +11,16 @@ import { fileTypes } from './mime-types.js';
  */
 const verifyFileSignatures = async (files, allowedList, categoryType) => {
 	for (const file of files) {
-		const actualMeta = await fileTypeFromFile(file.path);
+		let actualMeta = null;
 
-		// Handle raw text files (.txt) which naturally lack binary magic numbers
+		// 1. Detect file signature dynamically from Buffer (RAM) or Path (Disk)
+		if (file.buffer) {
+			actualMeta = await fileTypeFromBuffer(file.buffer);
+		} else if (file.path) {
+			actualMeta = await fileTypeFromFile(file.path);
+		}
+
+		// 2. Handle raw text files (.txt) which naturally lack binary magic numbers
 		if (!actualMeta) {
 			const fileExt = path.extname(file.originalname).toLowerCase();
 			if (categoryType === fileTypes.docs && fileExt === '.txt' && file.mimetype === 'text/plain') {
@@ -28,7 +35,7 @@ const verifyFileSignatures = async (files, allowedList, categoryType) => {
 			);
 		}
 
-		// Block file extension spoofing attacks (e.g., hacker.exe renamed to avatar.png)
+		// 3. Block file extension spoofing attacks (e.g., hacker.exe renamed to avatar.png)
 		if (!allowedList.includes(actualMeta.mime)) {
 			throw createException(
 				400,
@@ -38,4 +45,5 @@ const verifyFileSignatures = async (files, allowedList, categoryType) => {
 		}
 	}
 };
+
 export default verifyFileSignatures;

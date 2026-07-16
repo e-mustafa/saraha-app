@@ -29,8 +29,9 @@ export default async function bootstrap(app, express) {
 	// connect to Database
 	await connectDB();
 	await connectRedis();
-
-	app.use(rateLimit(rateLimitConfig)); // for handling rate limiting
+	
+	// handling rate limiting
+	app.use(rateLimit(rateLimitConfig));
 
 	app.get('/', (_, res) => {
 		successResponse({ res, message: `Hello in ${configEnv.appName} Api!` });

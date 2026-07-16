@@ -99,4 +99,17 @@ export const generalFields = {
 	token: joi.string().required().messages({
 		'string.required': 'Token is required',
 	}),
+	// public id for cloudinary upload file
+	public_id: joi.string().required().messages({
+		'any.required': 'File id is required',
+	}),
 };
+
+export const uploadFileSchema = joi.object({
+	fieldname: joi.string().required(),
+	originalname: joi.string().required(),
+	encoding: joi.string().required(),
+	mimetype: joi.string().required(),
+	buffer: joi.binary().required(),
+	size: joi.number().required(),
+});

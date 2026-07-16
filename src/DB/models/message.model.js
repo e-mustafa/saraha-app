@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { appConfig } from '../../config/app.config.js';
 
 const maxLength = appConfig.messages.maxMessageLength;
+const maxAttachments = appConfig.messages.maxAttachmentsPerMessage;
 
 const messageSchema = new Schema(
 	{
@@ -12,13 +13,23 @@ const messageSchema = new Schema(
 			maxlength: [maxLength, `Message content must be less than ${maxLength} characters`],
 		},
 
-		attachments: [
-			{
-				url: String,
-				fileType: String,
-				_id: false,
+		attachments: {
+			type: [
+				{
+					id: String,
+					url: String,
+					fileType: String,
+					_id: false,
+				},
+			],
+			validate: {
+				validator: function (value) {
+					return value.length <= maxAttachments;
+				},
+				message: `Attachments must be at most ${maxAttachments} files`,
 			},
-		],
+			_id: false,
+		},
 
 		to: {
 			type: Schema.Types.ObjectId,
@@ -40,11 +51,12 @@ const messageSchema = new Schema(
 			default: true,
 		},
 		// isConfidential: {
-			
+
 		// 	type: Boolean,
 		// 	default: true,
 		// },
-		isPublic: { // Messages are not encrypted and only visible to sender and receiver
+		isPublic: {
+			// Messages are not encrypted and only visible to sender and receiver
 			type: Boolean,
 			default: false,
 		},

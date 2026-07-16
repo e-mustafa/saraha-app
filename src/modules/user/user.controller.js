@@ -1,27 +1,29 @@
 import { Router } from 'express';
+import { appConfig } from '../../config/app.config.js';
 import { auth, authOptional } from '../../middlewares/authentication.middleware.js';
 import validation from '../../middlewares/validation.middleware.js';
 import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
-import { localUpload } from '../../utils/upload-files/local.multer.js';
+import { uploadCloud } from '../../utils/upload-files/multer.js';
 import {
 	deleteAvatarService,
 	deleteSingleCoverService,
 	getProfileService,
 	getUsersService,
+	replaceCoverService,
 	updateProfileService,
 	uploadAvatarService,
 	uploadCoversService,
 	visitUserService,
 } from './user.services.js';
 import { UserDTO } from './user.utils.js';
-import { coverUserSchema, deleteImageSchema, visitUserSchema } from './user.validation.js';
+import { avatarUserSchema, coverUserSchema, deleteImageSchema, replaceCoverUserSchema, visitUserSchema } from './user.validation.js';
 
 const router = Router();
 
 export const routes = {
 	base: '/users',
-	
+
 	visitUser: '/visit/:username',
 
 	getProfile: '/profile',
@@ -61,10 +63,12 @@ router.patch(
 router.patch(
 	routes.uploadAvatar,
 	auth(),
-	localUpload({ dir: 'users' }).single('avatar'),
+	// uploadLocal({ dir: 'users' }).single('avatar'),
+	uploadCloud().single('avatar'),
+	validation(avatarUserSchema),
 	asyncHandler(async (req, res) => {
-		const { user, file } = req;
-		const data = await uploadAvatarService(user, file);
+		const { user, body } = req;
+		const data = await uploadAvatarService(user, body.avatar);
 
 		successResponse({ res, message: 'Avatar updated successfully', data });
 	}),
@@ -82,17 +86,32 @@ router.delete(
 );
 
 // add or update user covers
+router.post(
+	routes.uploadCovers,
+	auth(),
+	// uploadLocal({ dir: 'users' }).array('covers', 2),
+	uploadCloud().array('covers', appConfig.user.maxCovers),
+	validation(coverUserSchema), // copy files content to body under field key
+	asyncHandler(async (req, res) => {
+		const { user, body } = req;
+		const data = await uploadCoversService(user, body.covers);
+
+		successResponse({ res, message: 'Covers updated successfully', data });
+	}),
+);
+
+// replace user cover
 router.patch(
 	routes.uploadCovers,
 	auth(),
-	localUpload({ dir: 'users' }).array('covers', 2),
-	validation(coverUserSchema),
+	// uploadLocal({ dir: 'users' }).array('covers', 2),
+	uploadCloud().single('cover'),
+	validation(replaceCoverUserSchema),
 	asyncHandler(async (req, res) => {
-		const { user, files } = req;
-		const filePaths = files ? files.map((file) => file.filePath) : [];
-		const data = await uploadCoversService(user, filePaths);
+		const { user, body } = req;
+		const data = await replaceCoverService(user, body.cover, body.id);
 
-		successResponse({ res, message: 'Covers updated successfully', data });
+		successResponse({ res, message: 'Cover replaced successfully', data });
 	}),
 );
 
@@ -102,7 +121,7 @@ router.delete(
 	auth(),
 	validation(deleteImageSchema),
 	asyncHandler(async (req, res) => {
-		const data = await deleteSingleCoverService(req.user, req?.body?.image || '');
+		const data = await deleteSingleCoverService(req.user, req?.body?.id || '');
 
 		successResponse({ res, message: 'Cover Image deleted successfully', data });
 	}),
