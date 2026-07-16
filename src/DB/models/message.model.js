@@ -18,7 +18,7 @@ const messageSchema = new Schema(
 				{
 					id: String,
 					url: String,
-					type: String,
+					fileType: String,
 					_id: false,
 				},
 			],

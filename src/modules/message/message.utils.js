@@ -82,7 +82,7 @@ export const uploadToCloudinaryMessage = async (receiverId, file, messageId) => 
 			},
 			(error, result) => {
 				if (error) return reject(error);
-				resolve({ id: result.public_id, url: result.secure_url, type: result.resource_type });
+				resolve({ id: result.public_id, url: result.secure_url, fileType: result.resource_type });
 			},
 		);
 

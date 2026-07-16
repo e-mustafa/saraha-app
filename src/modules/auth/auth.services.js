@@ -188,7 +188,7 @@ export const socialLoginService = async (provider, idToken) => {
 		firstName: given_name || email.split('@')[0],
 		lastName: family_name || given_name || email.split('@')[0],
 		username: `${email.split('@')[0].replace(/\./g, '')}_${Math.floor(Math.random() * 1000)}`,
-		avatar: picture,
+		avatar: {url: picture},
 		provider,
 	});
 	// generate access token
