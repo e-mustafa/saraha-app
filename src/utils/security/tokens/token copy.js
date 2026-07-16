@@ -51,7 +51,6 @@ export const generateTokens = (user, type = 'BOTH', customPayload) => {
 	}
 
 	const signature = getSignature(user.role);
-	console.log('signature', signature);
 	if (!signature) {
 		throwInternalException(`Unauthorized or Invalid role: ${user?.role}`);
 	}

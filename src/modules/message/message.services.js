@@ -21,7 +21,7 @@ import { deleteMessageAttachments, uploadToCloudinaryMessage } from './message.u
 // 		if (files && files.length > 0) {
 // 			attachments = files.map((file) => ({
 // 				url: file.filePath,
-// 				fileType: file.mimetype?.split('/')[0] || 'image',
+// 				type: file.mimetype?.split('/')[0] || 'image',
 // 			}));
 // 		}
 

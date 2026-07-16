@@ -357,7 +357,6 @@ export const changeEmailRequestService = async ({ userId, newEmail, password }) 
 	// if (!user) {
 	// 	NotFoundException('User not found', 'changeEmailService-user-not-found');
 	// }
-	console.log('user', user);
 
 	if (!user.isActive || user.deletedAt) {
 		BadRequestException('User is not active or deleted', 'changeEmailService-user-not-active');
@@ -382,9 +381,6 @@ export const changeEmailRequestService = async ({ userId, newEmail, password }) 
 	const newOtp = generateOTP();
 	// const token = getRandomValues(new Uint32Array(1))[0].toString();
 
-	console.log('newOtp', newOtp);
-	// console.log('token', token);
-
 	await changeEmailOtpServices.set(userId, { otp: newOtp, newEmail });
 
 	// send email
@@ -396,7 +392,6 @@ export const changeEmailRequestService = async ({ userId, newEmail, password }) 
 
 export const changeEmailService = async (userId, otp) => {
 	const user = await User.findById(userId);
-	console.log('user', user);
 	if (!user) {
 		NotFoundException('User not found', 'changeEmailService-user-not-found');
 	}
@@ -413,8 +408,6 @@ export const changeEmailService = async (userId, otp) => {
 	if (!otpData) {
 		BadRequestException('Expired OTP, please request a new one', 'changeEmailService-invalid-otp');
 	}
-
-	console.log('otpData', otpData);
 
 	let parsedOtp;
 	try {

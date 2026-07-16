@@ -45,9 +45,7 @@ const createFileFilter = (type) => {
 const runMiddleware = ({ multerInstance, maxCount, expectedFieldName, type, size, isLocal }) => {
 	return (req, res, next) => {
 		multerInstance(req, res, async (err) => {
-			console.log('maxCount', maxCount);
 			if (err) {
-				console.log('err', err);
 				if (err instanceof multer.MulterError) {
 					let message = `File upload error: ${err.message}`;
 

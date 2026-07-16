@@ -287,7 +287,7 @@ export const deleteSingleCoverService = async (user, imageId) => {
 export const visitUserService = async (user, username) => {
 	let targetUser;
 	if (user && user.username === username) {
-		targetUser = await User.findById(user._id).select('-visitCount -password -__v - -phone -role -provider -otp').lean();
+		targetUser = await User.findById(user._id).select('-visitCount -password -__v -phone -role -provider -otp').lean();
 	} else {
 		targetUser = await User.findOneAndUpdate({ username }, { $inc: { visitCount: 1 } }, { returnDocument: 'after' })
 			// .select('-visitCount -password -phone -__v -role -provider -otp')

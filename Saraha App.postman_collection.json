@@ -17,7 +17,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"firstName\": \"aya\",\r\n    \"lastName\": \"mohamed\",\r\n    \"username\": \"Aya200\",\r\n    \"email\":\"ooyvwdf380@yzcalo.com\",\r\n    \"password\": \"Ahmed@123\",\r\n    \"confirmPassword\": \"Ahmed@123\"\r\n\r\n}",
+              "raw": "{\r\n    \"firstName\": \"ody\",\r\n    \"lastName\": \"mohamed\",\r\n    \"username\": \"ody100\",\r\n    \"email\":\"40pytrtfvr@yzcalo.com\",\r\n    \"password\": \"Ahmed@123\",\r\n    \"confirmPassword\": \"Ahmed@123\"\r\n\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -404,7 +404,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"email\": \"n2nbiczj5o@lnovic.com\",\r\n    \"password\": \"Password@123\"\r\n}",
+              "raw": "{\r\n    \"email\": \"o9hxqozc90@ozsaip.com\",\r\n    \"password\": \"Ahmed@123\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -877,13 +877,14 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/auth/social-login",
+              "raw": "{{baseUrl}}/auth/social-login/google",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "auth",
-                "social-login"
+                "social-login",
+                "google"
               ]
             }
           },
@@ -896,7 +897,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n\r\n    \"email\":\"n2nbiczj5o@lnovic.com\",\r\n    \"otp\": \"709119\"\r\n}",
+              "raw": "{\r\n\r\n    \"email\":\"40pytrtfvr@yzcalo.com\",\r\n    \"otp\": \"563244\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1672,6 +1673,50 @@
           ]
         },
         {
+          "name": "Request Change Email",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{json_web_token_0zim}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"newEmail\": \"iy43vq4ooi@ozsaip.com\",\r\n    \"password\": \"Ahmed@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Logout current session",
           "request": {
             "method": "PATCH",
@@ -1783,7 +1828,7 @@
           ]
         },
         {
-          "name": "New Request",
+          "name": "Logout All sessions",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1892,6 +1937,77 @@
               "body": "{\n    \"success\": true,\n    \"message\": \"Logged out from all sessions successfully\"\n}"
             }
           ]
+        },
+        {
+          "name": "Check username availability",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"Aya200\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/check-username",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "check-username"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Email",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{json_web_token_0zim}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    // \"newEmail\": \"iy43vq4ooi@ozsaip.com\",\r\n    \"otp\": \"347017\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-email"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -1934,6 +2050,131 @@
           "response": []
         },
         {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{json_web_token_0zim}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"phon\":\"01112224449\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Update Profile",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"phon\":\"01112224449\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "http://localhost:4000"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "331"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"14b-eWmArhdvrghUOEggKsBAMeucwls\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sun, 12 Jul 2026 21:38:10 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Profile updated successfully\",\n    \"data\": {\n        \"id\": \"6a4a90e159e8136e15a92671\",\n        \"name\": \"ali mohamed\",\n        \"firstName\": \"ali\",\n        \"lastName\": \"mohamed\",\n        \"avatar\": null,\n        \"covers\": [],\n        \"username\": \"ali100\",\n        \"email\": \"iy43vq4ooi@ozsaip.com\",\n        \"gender\": 0,\n        \"birthdate\": \"\",\n        \"verified\": \"2026-07-10T20:33:11.371Z\",\n        \"isActive\": true,\n        \"visitCount\": 6\n    }\n}"
+            }
+          ]
+        },
+        {
           "name": "Upload user Avatar",
           "request": {
             "auth": {
@@ -1959,10 +2200,10 @@
               "mode": "formdata",
               "formdata": [
                 {
-                  "key": "profileImage",
+                  "key": "avatar",
                   "type": "file",
                   "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
-                  "src": "/D:/MUSTAFA-User/Downloads/a2cb8eb590911f6ffd6b0f3ac90e787b.png"
+                  "src": "/D:/MUSTAFA-User/Downloads/15-153152_male-user-icon-male-user-icon.png"
                 }
               ]
             },
@@ -2142,13 +2383,10 @@
                   "mode": "formdata",
                   "formdata": [
                     {
-                      "key": "avatar",
+                      "key": "avatars",
                       "type": "file",
                       "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
-                      "src": [
-                        "/D:/MUSTAFA-User/Downloads/user-avatar-placeholder-male.webp",
-                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_ymy289ymy289ymy223.png"
-                      ]
+                      "src": "/D:/MUSTAFA-User/Downloads/e68bf6fe6ef012d358c15624d825dc90.png"
                     }
                   ]
                 },
@@ -2168,88 +2406,6 @@
               "_postman_previewlanguage": null,
               "header": [
                 {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "896"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"380-i968bhOgbFRQKlViwqGoFEmPy7c\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Fri, 26 Jun 2026 17:05:10 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Only 1 file is allowed to be uploaded.\",\n    \"timestamp\": \"2026-06-26T17:05:10.173Z\",\n    \"path\": \"/api/v1/users/profile-avatar\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"multer_limit_file_count\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Only 1 file is allowed to be uploaded.\\n    at createException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:32:9)\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/upload-files/local.multer.js:89:20\\n    at IncomingMessage.onFinished (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:45:9)\\n    at Object.onceWrapper (node:events:622:28)\\n    at IncomingMessage.emit (node:events:508:28)\\n    at endReadableNT (node:internal/streams/readable:1701:12)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)\"\n    }\n}"
-            },
-            {
-              "name": "Upload user Avatar",
-              "originalRequest": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{json_web_token_0zim}}",
-                    "type": "text",
-                    "disabled": true
-                  }
-                ],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "profileImage",
-                      "type": "file",
-                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
-                      "src": "/D:/MUSTAFA-User/Downloads/a2cb8eb590911f6ffd6b0f3ac90e787b.png"
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/users/profile-avatar",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "users",
-                    "profile-avatar"
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "http://localhost:4000"
-                },
-                {
                   "key": "Vary",
                   "value": "Origin"
                 },
@@ -2258,20 +2414,68 @@
                   "value": "true"
                 },
                 {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
                   "key": "Content-Type",
                   "value": "application/json; charset=utf-8"
                 },
                 {
                   "key": "Content-Length",
-                  "value": "1130"
+                  "value": "988"
                 },
                 {
                   "key": "ETag",
-                  "value": "W/\"46a-WN/+DSclsGMlEGtC4Itg/JJFeQw\""
+                  "value": "W/\"3dc-+7DjRtqdICngPJF/tR41kP8O2oc\""
                 },
                 {
                   "key": "Date",
-                  "value": "Sat, 27 Jun 2026 17:23:38 GMT"
+                  "value": "Wed, 15 Jul 2026 23:28:51 GMT"
                 },
                 {
                   "key": "Connection",
@@ -2283,7 +2487,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Avatar updated successfully\",\n    \"data\": {\n        \"verified\": null,\n        \"passwordChangedAt\": null,\n        \"_id\": \"6a315f9df0198ff64e403d55\",\n        \"firstName\": \"hind\",\n        \"lastName\": \"mohamed\",\n        \"username\": \"hind10\",\n        \"email\": \"n2nbiczj5o@lnovic.com\",\n        \"isActive\": true,\n        \"phone\": \"48c4a1cf98f9d576a9f595a35cc2f71c:c06cdbafa092655af41b24d9b11f8f07\",\n        \"gender\": 1,\n        \"birthdate\": \"2006-10-19T00:00:00.000Z\",\n        \"createdAt\": \"2026-06-16T14:37:17.422Z\",\n        \"updatedAt\": \"2026-06-27T17:23:38.567Z\",\n        \"visitCount\": 0,\n        \"profileImage\": \"uploads/users/6a315f9df0198ff64e403d55/profileImage-1782581018563-891519514.png\",\n        \"coverImages\": [\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"fullName\": \"hind mohamed\",\n        \"age\": 19,\n        \"avatar\": \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/profileImage-1782581018563-891519514.png\",\n        \"covers\": [\n            \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"id\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Invalid field name 'avatars'. Please upload your file(s) using the field name 'avatar'.\",\n    \"timestamp\": \"2026-07-15T23:28:51.989Z\",\n    \"path\": \"/api/v1/users/profile-avatar\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"multer_limit_file_count\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Invalid field name 'avatars'. Please upload your file(s) using the field name 'avatar'.\\n    at createException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:33:9)\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/upload-files/multer.js:70:19\\n    at IncomingMessage.onFinished (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:45:9)\\n    at Object.onceWrapper (node:events:622:28)\\n    at IncomingMessage.emit (node:events:508:28)\\n    at endReadableNT (node:internal/streams/readable:1701:12)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)\"\n    }\n}"
             }
           ]
         },
@@ -2309,6 +2513,17 @@
                 "disabled": true
               }
             ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                  "src": "/D:/MUSTAFA-User/Downloads/e68bf6fe6ef012d358c15624d825dc90.png"
+                }
+              ]
+            },
             "url": {
               "raw": "{{baseUrl}}/users/profile-avatar",
               "host": [
@@ -2333,6 +2548,17 @@
                     "disabled": true
                   }
                 ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "avatar",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": "/D:/MUSTAFA-User/Downloads/e68bf6fe6ef012d358c15624d825dc90.png"
+                    }
+                  ]
+                },
                 "url": {
                   "raw": "{{baseUrl}}/users/profile-avatar",
                   "host": [
@@ -2349,14 +2575,6 @@
               "_postman_previewlanguage": null,
               "header": [
                 {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "http://localhost:4000"
-                },
-                {
                   "key": "Vary",
                   "value": "Origin"
                 },
@@ -2365,20 +2583,68 @@
                   "value": "true"
                 },
                 {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
                   "key": "Content-Type",
                   "value": "application/json; charset=utf-8"
                 },
                 {
                   "key": "Content-Length",
-                  "value": "954"
+                  "value": "110"
                 },
                 {
                   "key": "ETag",
-                  "value": "W/\"3ba-vwjtUFF5Cd0B7xxzJzd5DSehp+o\""
+                  "value": "W/\"6e-hL3DYeW5pGp5mbHDln+XE4GlasI\""
                 },
                 {
                   "key": "Date",
-                  "value": "Sat, 27 Jun 2026 17:24:45 GMT"
+                  "value": "Wed, 15 Jul 2026 23:54:31 GMT"
                 },
                 {
                   "key": "Connection",
@@ -2390,7 +2656,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Avatar deleted successfully\",\n    \"data\": {\n        \"verified\": null,\n        \"passwordChangedAt\": null,\n        \"_id\": \"6a315f9df0198ff64e403d55\",\n        \"firstName\": \"hind\",\n        \"lastName\": \"mohamed\",\n        \"username\": \"hind10\",\n        \"email\": \"n2nbiczj5o@lnovic.com\",\n        \"isActive\": true,\n        \"phone\": \"48c4a1cf98f9d576a9f595a35cc2f71c:c06cdbafa092655af41b24d9b11f8f07\",\n        \"gender\": 1,\n        \"birthdate\": \"2006-10-19T00:00:00.000Z\",\n        \"createdAt\": \"2026-06-16T14:37:17.422Z\",\n        \"updatedAt\": \"2026-06-27T17:24:45.561Z\",\n        \"visitCount\": 0,\n        \"profileImage\": null,\n        \"coverImages\": [\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"fullName\": \"hind mohamed\",\n        \"age\": 19,\n        \"avatar\": null,\n        \"covers\": [\n            \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"http://127.0.0.1:3000/uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"id\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Avatar deleted successfully\",\n    \"data\": {\n        \"_id\": \"6a4a90e159e8136e15a92671\",\n        \"avatar\": {}\n    }\n}"
             },
             {
               "name": "Delete user Avatar",
@@ -2404,6 +2670,17 @@
                     "disabled": true
                   }
                 ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "avatar",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": "/D:/MUSTAFA-User/Downloads/e68bf6fe6ef012d358c15624d825dc90.png"
+                    }
+                  ]
+                },
                 "url": {
                   "raw": "{{baseUrl}}/users/profile-avatar",
                   "host": [
@@ -2415,18 +2692,10 @@
                   ]
                 }
               },
-              "status": "Internal Server Error",
-              "code": 500,
+              "status": "Bad Request",
+              "code": 400,
               "_postman_previewlanguage": null,
               "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "http://localhost:4000"
-                },
                 {
                   "key": "Vary",
                   "value": "Origin"
@@ -2436,20 +2705,68 @@
                   "value": "true"
                 },
                 {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
                   "key": "Content-Type",
                   "value": "application/json; charset=utf-8"
                 },
                 {
                   "key": "Content-Length",
-                  "value": "1231"
+                  "value": "1364"
                 },
                 {
                   "key": "ETag",
-                  "value": "W/\"4cf-+Dl3YXni9kVbJQqMnd0S8XgGeR8\""
+                  "value": "W/\"554-Uy3YBBBKr9cUx8VX2T509nH+81U\""
                 },
                 {
                   "key": "Date",
-                  "value": "Sat, 27 Jun 2026 17:24:52 GMT"
+                  "value": "Wed, 15 Jul 2026 23:54:43 GMT"
                 },
                 {
                   "key": "Connection",
@@ -2461,7 +2778,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"statusCode\": 500,\n    \"message\": \"You do not have an avatar to delete\",\n    \"timestamp\": \"2026-06-27T17:24:52.743Z\",\n    \"path\": \"/api/v1/users/profile-avatar\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"\",\n        \"isOperational\": false,\n        \"stack\": \"Error: You do not have an avatar to delete\\n    at throwInternalException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:21:8)\\n    at deleteAvatarService (file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.services.js:47:3)\\n    at file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.controller.js:61:22\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at file:///D:/Programing/route-projects/saraha-app/src/middlewares/authentication.middleware.js:18:10\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\\n    at async file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:4\"\n    }\n}"
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"You do not have an avatar to delete\",\n    \"timestamp\": \"2026-07-15T23:54:43.235Z\",\n    \"path\": \"/api/v1/users/profile-avatar\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"deleteAvatarService\",\n        \"isOperational\": true,\n        \"stack\": \"Error: You do not have an avatar to delete\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at BadRequestException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:53:2)\\n    at deleteAvatarService (file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.services.js:120:3)\\n    at file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.controller.js:83:22\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at file:///D:/Programing/route-projects/saraha-app/src/middlewares/authentication.middleware.js:22:10\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\\n    at async file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:4\"\n    }\n}"
             }
           ]
         },
@@ -2478,7 +2795,7 @@
                 }
               ]
             },
-            "method": "PATCH",
+            "method": "POST",
             "header": [
               {
                 "key": "Authorization",
@@ -2491,10 +2808,10 @@
               "mode": "formdata",
               "formdata": [
                 {
-                  "key": "coverImages",
+                  "key": "covers",
                   "type": "file",
                   "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
-                  "value": null
+                  "src": "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png"
                 }
               ]
             },
@@ -2513,7 +2830,7 @@
             {
               "name": "Upload user Covers",
               "originalRequest": {
-                "method": "PATCH",
+                "method": "POST",
                 "header": [
                   {
                     "key": "Authorization",
@@ -2526,84 +2843,7 @@
                   "mode": "formdata",
                   "formdata": [
                     {
-                      "key": "coverImgs",
-                      "type": "file",
-                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
-                      "src": [
-                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png",
-                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_7dju9p7dju9p7dju.png"
-                      ]
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/users/profile-covers",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "users",
-                    "profile-covers"
-                  ]
-                }
-              },
-              "status": "Conflict",
-              "code": 409,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "1457"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"5b1-ZNlpDQS67PWopHN3EcjwpLE5MqQ\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 25 Jun 2026 19:22:46 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"statusCode\": 409,\n    \"message\": \"Upload failed. Total covers cannot exceed 2. You currently have 2.\",\n    \"timestamp\": \"2026-06-25T19:22:46.230Z\",\n    \"path\": \"/api/v1/users/profile-covers\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"ConflictException\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Upload failed. Total covers cannot exceed 2. You currently have 2.\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at ConflictException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:45:2)\\n    at uploadCoversService (file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.services.js:69:3)\\n    at file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.controller.js:70:22\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at done (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:70:7)\\n    at indicateDone (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:74:68)\\n    at D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:247:11\"\n    }\n}"
-            },
-            {
-              "name": "Upload user Covers",
-              "originalRequest": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{json_web_token_0zim}}",
-                    "type": "text",
-                    "disabled": true
-                  }
-                ],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "coverImgs",
+                      "key": "covers",
                       "type": "file",
                       "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
                       "src": "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png"
@@ -2626,12 +2866,60 @@
               "_postman_previewlanguage": null,
               "header": [
                 {
-                  "key": "X-Powered-By",
-                  "value": "Express"
+                  "key": "Vary",
+                  "value": "Origin"
                 },
                 {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
                 },
                 {
                   "key": "Content-Type",
@@ -2639,15 +2927,15 @@
                 },
                 {
                   "key": "Content-Length",
-                  "value": "708"
+                  "value": "338"
                 },
                 {
                   "key": "ETag",
-                  "value": "W/\"2c4-I0so49KWfujspmIogeJhfXmFv+c\""
+                  "value": "W/\"152-LP+jOWMPNgrv1frIAuTtrDr25Lw\""
                 },
                 {
                   "key": "Date",
-                  "value": "Thu, 25 Jun 2026 19:30:58 GMT"
+                  "value": "Wed, 15 Jul 2026 20:10:49 GMT"
                 },
                 {
                   "key": "Connection",
@@ -2659,7 +2947,661 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Covers updated successfully\",\n    \"data\": {\n        \"verified\": null,\n        \"_id\": \"6a315f9df0198ff64e403d55\",\n        \"firstName\": \"hind\",\n        \"lastName\": \"mohamed\",\n        \"username\": \"hind10\",\n        \"email\": \"hind@gmail.com\",\n        \"isActive\": true,\n        \"phone\": \"48c4a1cf98f9d576a9f595a35cc2f71c:c06cdbafa092655af41b24d9b11f8f07\",\n        \"gender\": 0,\n        \"birthdate\": \"2006-10-19T00:00:00.000Z\",\n        \"createdAt\": \"2026-06-16T14:37:17.422Z\",\n        \"updatedAt\": \"2026-06-25T19:30:58.305Z\",\n        \"avatar\": \"uploads/users/6a315f9df0198ff64e403d55/avatar-1782415253384-690857324.png\",\n        \"coverImgs\": [\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\",\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415858296-722595179.png\"\n        ],\n        \"id\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Covers updated successfully\",\n    \"data\": {\n        \"_id\": \"6a4a90e159e8136e15a92671\",\n        \"covers\": [\n            {\n                \"id\": \"users/6a4a90e159e8136e15a92671/cover_1784146244778_99762\",\n                \"url\": \"https://res.cloudinary.com/gfbmzaqc/image/upload/v1784146248/users/6a4a90e159e8136e15a92671/cover_1784146244778_99762.png\",\n                \"_id\": \"6a57e94903f46ce34fb6c574\"\n            }\n        ]\n    }\n}"
+            },
+            {
+              "name": "Upload user Covers",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "covers",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": [
+                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png",
+                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png"
+                      ]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-covers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-covers"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "565"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"235-7WXuZhK6mUkebqEeyJZyBJ4cgEA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 16 Jul 2026 00:12:40 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Covers updated successfully\",\n    \"data\": {\n        \"_id\": \"6a4a90e159e8136e15a92671\",\n        \"covers\": [\n            {\n                \"id\": \"users/6a4a90e159e8136e15a92671/cover_1784160755476_62888\",\n                \"url\": \"https://res.cloudinary.com/gfbmzaqc/image/upload/v1784160760/users/6a4a90e159e8136e15a92671/cover_1784160755476_62888.png\",\n                \"_id\": \"6a5821f8ba0ada45f381b48a\"\n            },\n            {\n                \"id\": \"users/6a4a90e159e8136e15a92671/cover_1784160755513_8147\",\n                \"url\": \"https://res.cloudinary.com/gfbmzaqc/image/upload/v1784160760/users/6a4a90e159e8136e15a92671/cover_1784160755513_8147.png\",\n                \"_id\": \"6a5821f8ba0ada45f381b48b\"\n            }\n        ]\n    }\n}"
+            },
+            {
+              "name": "Upload user Covers",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "covers",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": [
+                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png",
+                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png"
+                      ]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-covers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-covers"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1414"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"586-dtQdceNqxJO3ae5fQfpB2aasERk\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 16 Jul 2026 00:13:16 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 409,\n    \"message\": \"Upload limit reached. Maximum allowed covers is 2\",\n    \"timestamp\": \"2026-07-16T00:13:16.897Z\",\n    \"path\": \"/api/v1/users/profile-covers\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"covers_limit_reached\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Upload limit reached. Maximum allowed covers is 2\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at ConflictException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:57:2)\\n    at uploadCoversService (file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.services.js:189:3)\\n    at file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.controller.js:99:22\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at file:///D:/Programing/route-projects/saraha-app/src/middlewares/validation.middleware.js:80:3\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\"\n    }\n}"
+            },
+            {
+              "name": "Upload user Covers",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{json_web_token_0zim}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "covers",
+                      "type": "file",
+                      "uuid": "b867d6a3-b0d7-4b39-be5b-060209487556",
+                      "src": [
+                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png",
+                        "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_8i0s3t8i0s3t8i0s.png",
+                        "/D:/MUSTAFA-User/Downloads/saraha-app-logo.ico"
+                      ]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-covers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-covers"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "968"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"3c8-5qDD37EtDX3G4gRZOM4SCGEjTdo\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 16 Jul 2026 00:13:32 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Too many files uploaded. Maximum limit allowed is 2 files for field 'covers'.\",\n    \"timestamp\": \"2026-07-16T00:13:32.732Z\",\n    \"path\": \"/api/v1/users/profile-covers\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"multer_LIMIT_FILE_COUNT\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Too many files uploaded. Maximum limit allowed is 2 files for field 'covers'.\\n    at createException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:33:9)\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/upload-files/multer.js:77:18\\n    at IncomingMessage.onFinished (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\multer\\\\lib\\\\make-middleware.js:45:9)\\n    at Object.onceWrapper (node:events:622:28)\\n    at IncomingMessage.emit (node:events:508:28)\\n    at endReadableNT (node:internal/streams/readable:1701:12)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Replace single cover",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "cover",
+                  "type": "file",
+                  "uuid": "e019f5e0-6e15-40e0-b35d-95af56cb2928",
+                  "src": "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_ltxakfltxakfltxa.png"
+                },
+                {
+                  "key": "id",
+                  "value": "users/6a4a90e159e8136e15a92671/cover_1784146244778_99762",
+                  "type": "text",
+                  "uuid": "8683844b-5415-4c58-8cb1-c261edf653b8"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/profile-covers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile-covers"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Replace single cover",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "cover",
+                      "type": "file",
+                      "uuid": "e019f5e0-6e15-40e0-b35d-95af56cb2928",
+                      "src": "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_ltxakfltxakfltxa.png"
+                    },
+                    {
+                      "key": "id",
+                      "value": "id",
+                      "type": "text",
+                      "uuid": "8683844b-5415-4c58-8cb1-c261edf653b8"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-covers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-covers"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1380"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"564-qKKN3d2j7ERCnwQ+FuvVjcnVfns\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 15 Jul 2026 22:55:56 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"statusCode\": 400,\n    \"message\": \"Image not found in your profile\",\n    \"timestamp\": \"2026-07-15T22:55:56.423Z\",\n    \"path\": \"/api/v1/users/profile-covers\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"replaceCoverService\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Image not found in your profile\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at BadRequestException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:53:2)\\n    at replaceCoverService (file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.services.js:236:3)\\n    at file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.controller.js:115:22\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at file:///D:/Programing/route-projects/saraha-app/src/middlewares/validation.middleware.js:80:3\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\"\n    }\n}"
+            },
+            {
+              "name": "Replace single cover",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "cover",
+                      "type": "file",
+                      "uuid": "e019f5e0-6e15-40e0-b35d-95af56cb2928",
+                      "src": "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_ltxakfltxakfltxa.png"
+                    },
+                    {
+                      "key": "id",
+                      "value": "users/6a4a90e159e8136e15a92671/cover_1784146244778_99762",
+                      "type": "text",
+                      "uuid": "8683844b-5415-4c58-8cb1-c261edf653b8"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-covers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-covers"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "338"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"152-+mJDIlHSzefPgLYnUr7il4csLow\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 15 Jul 2026 23:19:54 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Cover replaced successfully\",\n    \"data\": {\n        \"_id\": \"6a4a90e159e8136e15a92671\",\n        \"covers\": [\n            {\n                \"id\": \"users/6a4a90e159e8136e15a92671/cover_1784157592678_58828\",\n                \"url\": \"https://res.cloudinary.com/gfbmzaqc/image/upload/v1784157595/users/6a4a90e159e8136e15a92671/cover_1784157592678_58828.png\",\n                \"_id\": \"6a58159ab0ecbeadb1706b1a\"\n            }\n        ]\n    }\n}"
             }
           ]
         },
@@ -2670,7 +3612,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"image\":\"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359345-349644413.png\"\r\n}",
+              "raw": "{\r\n    \"id\":\"users/6a4a90e159e8136e15a92671/cover_1784157592678_58828\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2689,71 +3631,6 @@
             }
           },
           "response": [
-            {
-              "name": "Delete single cover image",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"image\":\"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359345-349644413.png\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/users/profile-covers",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "users",
-                    "profile-covers"
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "634"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"27a-lKHmt7aAJhcR0OQi8X/OiDNZIVw\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 25 Jun 2026 19:29:29 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Cover Image deleted successfully\",\n    \"data\": {\n        \"verified\": null,\n        \"_id\": \"6a315f9df0198ff64e403d55\",\n        \"firstName\": \"hind\",\n        \"lastName\": \"mohamed\",\n        \"username\": \"hind10\",\n        \"email\": \"hind@gmail.com\",\n        \"isActive\": true,\n        \"phone\": \"48c4a1cf98f9d576a9f595a35cc2f71c:c06cdbafa092655af41b24d9b11f8f07\",\n        \"gender\": 0,\n        \"birthdate\": \"2006-10-19T00:00:00.000Z\",\n        \"createdAt\": \"2026-06-16T14:37:17.422Z\",\n        \"updatedAt\": \"2026-06-25T19:29:29.598Z\",\n        \"avatar\": \"uploads/users/6a315f9df0198ff64e403d55/avatar-1782415253384-690857324.png\",\n        \"coverImgs\": [\n            \"uploads/users/6a315f9df0198ff64e403d55/coverImgs-1782415359354-956437721.png\"\n        ],\n        \"id\": \"6a315f9df0198ff64e403d55\"\n    }\n}"
-            },
             {
               "name": "Delete single cover image",
               "originalRequest": {
@@ -2826,6 +3703,119 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": false,\n    \"statusCode\": 404,\n    \"message\": \"Image not found in your profile\",\n    \"timestamp\": \"2026-06-27T17:53:53.589Z\",\n    \"path\": \"/api/v1/users/profile-covers\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"context\": \"NotFoundException\",\n        \"isOperational\": true,\n        \"stack\": \"Error: Image not found in your profile\\n    at throwException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:11:8)\\n    at NotFoundException (file:///D:/Programing/route-projects/saraha-app/src/utils/response/throw.exceptions.js:41:2)\\n    at deleteSingleCoverService (file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.services.js:104:3)\\n    at file:///D:/Programing/route-projects/saraha-app/src/modules/user/user.controller.js:89:22\\n    at file:///D:/Programing/route-projects/saraha-app/src/utils/error-handler/async-handler.js:4:10\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\\n    at file:///D:/Programing/route-projects/saraha-app/src/middlewares/validation.middleware.js:31:3\\n    at Layer.handleRequest (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\layer.js:152:17)\\n    at next (D:\\\\Programing\\\\route-projects\\\\saraha-app\\\\node_modules\\\\router\\\\lib\\\\route.js:157:13)\"\n    }\n}"
+            },
+            {
+              "name": "Delete single cover image",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"id\":\"users/6a4a90e159e8136e15a92671/cover_1784157592678_58828\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/profile-covers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    "profile-covers"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                },
+                {
+                  "key": "Cross-Origin-Opener-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Cross-Origin-Resource-Policy",
+                  "value": "same-origin"
+                },
+                {
+                  "key": "Origin-Agent-Cluster",
+                  "value": "?1"
+                },
+                {
+                  "key": "Referrer-Policy",
+                  "value": "no-referrer"
+                },
+                {
+                  "key": "Strict-Transport-Security",
+                  "value": "max-age=31536000; includeSubDomains"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-DNS-Prefetch-Control",
+                  "value": "off"
+                },
+                {
+                  "key": "X-Download-Options",
+                  "value": "noopen"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Permitted-Cross-Domain-Policies",
+                  "value": "none"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "0"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "115"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"73-piTWFQK9HIlDUseOJOXWpTWYLHQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 15 Jul 2026 23:57:07 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Cover Image deleted successfully\",\n    \"data\": {\n        \"_id\": \"6a4a90e159e8136e15a92671\",\n        \"covers\": []\n    }\n}"
             }
           ]
         },
@@ -2923,22 +3913,35 @@
               }
             ],
             "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"content\": \"no saveToMyMessages hello message 22\",\r\n//   \"from\": \"6a315f9df0198ff64e403d55\",\r\n  \"isConfidential\": false,\r\n  \"isAnonymous\": false,\r\n  \"saveToMyMessages\": false\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "content",
+                  "value": "hello and wellcome",
+                  "type": "text",
+                  "uuid": "20c7b3c6-82d7-46db-991f-e4aaa8d6dd9e"
+                },
+                {
+                  "key": "attachments",
+                  "type": "file",
+                  "uuid": "fad825f2-7da7-4550-9fbd-4380bb432ae8",
+                  "src": [
+                    "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_ah8o6lah8o6lah8o-removebg-preview.png",
+                    "/D:/MUSTAFA-User/Downloads/Gemini_Generated_Image_3qy7633qy7633qy7.png",
+                    "/D:/MUSTAFA-User/Downloads/e-dash-logo-1.png"
+                  ]
                 }
-              }
+              ]
             },
             "url": {
-              "raw": "{{baseUrl}}/messages/ahmed10",
+              "raw": "{{baseUrl}}/messages/public/{{username}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "messages",
-                "ahmed10"
+                "public",
+                "{{username}}"
               ]
             }
           },
@@ -3147,13 +4150,18 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/messages/inbox",
+              "raw": "{{baseUrl}}/messages?type=inbox",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "messages",
-                "inbox"
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "inbox"
+                }
               ]
             }
           },
@@ -3230,13 +4238,18 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/messages/sent",
+              "raw": "{{baseUrl}}/messages?type=sent",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "messages",
-                "sent"
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "sent"
+                }
               ]
             }
           },
@@ -3313,13 +4326,18 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/messages/favorites",
+              "raw": "{{baseUrl}}/messages?type=favorites",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "messages",
-                "favorites"
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "favorites"
+                }
               ]
             }
           },
@@ -3538,7 +4556,7 @@
           ]
         },
         {
-          "name": "New Request",
+          "name": "Delete message",
           "request": {
             "method": "DELETE",
             "header": [],
@@ -3619,6 +4637,50 @@
               "body": "{\n    \"success\": true,\n    \"message\": \"Message deleted successfully\",\n    \"data\": {\n        \"_id\": \"6a494a59d555fa00415e9edb\",\n        \"content\": \" hello message hind\",\n        \"attachments\": [],\n        \"to\": \"6a315f9df0198ff64e403d55\",\n        \"from\": null,\n        \"isAnonymous\": false,\n        \"isConfidential\": false,\n        \"createdAt\": \"2026-07-04T18:00:57.739Z\",\n        \"updatedAt\": \"2026-07-04T21:29:34.388Z\",\n        \"__v\": 1,\n        \"id\": \"6a494a59d555fa00415e9edb\"\n    }\n}"
             }
           ]
+        },
+        {
+          "name": "Toggle Favorite state",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/{{messageId}}/favorite",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "messages",
+                "{{messageId}}",
+                "favorite"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get someone public messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/public/:username",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "messages",
+                "public",
+                ":username"
+              ],
+              "variable": [
+                {
+                  "key": "username",
+                  "value": "ody100"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }

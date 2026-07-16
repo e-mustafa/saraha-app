@@ -17,7 +17,13 @@ import {
 	visitUserService,
 } from './user.services.js';
 import { UserDTO } from './user.utils.js';
-import { avatarUserSchema, coverUserSchema, deleteImageSchema, replaceCoverUserSchema, visitUserSchema } from './user.validation.js';
+import {
+	avatarUserSchema,
+	coverUserSchema,
+	deleteImageSchema,
+	replaceCoverUserSchema,
+	visitUserSchema,
+} from './user.validation.js';
 
 const router = Router();
 
@@ -31,8 +37,10 @@ export const routes = {
 
 	uploadAvatar: '/profile-avatar',
 	deleteAvatar: '/profile-avatar',
-	uploadCovers: '/profile-covers',
-	deleteCovers: '/profile-covers',
+
+	uploadCovers: '/profile-covers', // post
+	replaceCover: '/profile-covers', // patch
+	deleteCovers: '/profile-covers', // delete
 
 	getUsers: '/',
 };
@@ -102,10 +110,10 @@ router.post(
 
 // replace user cover
 router.patch(
-	routes.uploadCovers,
+	routes.replaceCover,
 	auth(),
 	// uploadLocal({ dir: 'users' }).array('covers', 2),
-	uploadCloud().single('cover'),
+	uploadCloud().single('covers'),
 	validation(replaceCoverUserSchema),
 	asyncHandler(async (req, res) => {
 		const { user, body } = req;
