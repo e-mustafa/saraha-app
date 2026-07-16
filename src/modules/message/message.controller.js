@@ -13,7 +13,7 @@ import { MessageDTO } from './message.utils.js';
 // @desc    Send an anonymous message
 // @route   POST /messages/:username
 export const sendMessages = asyncHandler(async (req, res) => {
-	const { user, body, params, files } = req || {};
+	const { user, body, params } = req || {};
 	const messages = await sendMessageService({
 		userId: user?._id || null,
 		username: params.username,

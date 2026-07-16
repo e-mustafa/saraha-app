@@ -1,8 +1,8 @@
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
 import { formatFilePath } from '../../utils/general/format-file-path.js';
+import { throwInternalException } from '../../utils/response/throw.exceptions.js';
 import { MessageDTO } from '../message/message.utils.js';
-import { throwInternalException } from '../response/throw.exceptions.js';
 
 export class UserDTO {
 	static single(user, isAdmin = false) {

@@ -2,7 +2,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
 import { configEnv } from '../../config/env.js';
 import { formatFilePath } from '../../utils/general/format-file-path.js';
-import { throwInternalException } from '../response/throw.exceptions.js';
+import { throwInternalException } from '../../utils/response/throw.exceptions.js';
 
 export class MessageDTO {
 	static single(message, isAdmin = false) {
