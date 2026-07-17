@@ -41,7 +41,7 @@ export class UserDTO {
 			name: `${user.firstName} ${user.lastName}`,
 			firstName: user.firstName,
 			lastName: user.lastName,
-			avatar: { ...user.avatar, url: formatFilePath(user.avatar?.url) },
+			avatar: user.avatar ? { ...user.avatar, url: formatFilePath(user.avatar?.url) } : user.avatar,
 			covers: user.covers || [],
 			username: user.username,
 			email: user.email,

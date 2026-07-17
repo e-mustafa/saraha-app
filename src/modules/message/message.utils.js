@@ -1,6 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
-import { configEnv } from '../../config/env.js';
 import { formatFilePath } from '../../utils/general/format-file-path.js';
 import { throwInternalException } from '../../utils/response/throw.exceptions.js';
 
@@ -26,7 +25,7 @@ export class MessageDTO {
 				id: _id?.toString() || '',
 				name: firstName ? `${firstName || ''} ${lastName || ''}`.trim() : undefined,
 				username: username || undefined,
-				avatar: formatFilePath(avatar),
+				avatar: avatar ? { ...avatar, url: formatFilePath(avatar.url) } : avatar,
 			};
 		}
 
@@ -38,7 +37,7 @@ export class MessageDTO {
 				id: _id?.toString() || '',
 				name: firstName ? `${firstName} ${lastName || ''}`.trim() : undefined,
 				username: username || undefined,
-				avatar: avatar ? `${configEnv.appUrl}/${avatar.replace(/\\/g, '/')}` : null,
+				avatar: avatar ? { ...avatar, url: formatFilePath(avatar.url) } : avatar,
 			};
 		}
 
