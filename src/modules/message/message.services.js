@@ -266,9 +266,9 @@ export const deleteMessageService = async (userId, messageId) => {
 		);
 	}
 
-	if (message.from && message.from.toString() === userId) {
+	if (message.from && message.from.toString() === userId.toString()) {
 		message.from = null;
-	} else if (message.to && message.to.toString() === userId) {
+	} else if (message.to && message.to.toString() === userId.toString()) {
 		message.to = null;
 	}
 
