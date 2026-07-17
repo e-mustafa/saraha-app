@@ -78,7 +78,7 @@ export const uploadToCloudinaryMessage = async (receiverId, file, messageId) => 
 			{
 				folder: folderPath,
 				public_id: customPublicId,
-				resource_type: 'auto', // Auto-detects if it is an image or audio file
+				resource_type: 'auto', // Automatically detects image, video (audio), or raw (docs)
 			},
 			(error, result) => {
 				if (error) return reject(error);

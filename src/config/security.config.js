@@ -21,6 +21,7 @@ export const rateLimitConfig = {
 	legacyHeaders: false,
 	statusCode: 429,
 	message: 'Too many requests, please try again later.',
+	// handler: (res)=>{ res.status(426).json({message: 'Too many requests, please try again later.'})},
 	store: new RedisStore({
 		sendCommand: (...args) => redisDB.sendCommand(args),
 	}),

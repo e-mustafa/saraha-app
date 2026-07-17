@@ -44,7 +44,7 @@ export const routes = {
 router.post(
 	routes.sendMessages,
 	authOptional(),
-	uploadCloud(fileTypes.media).array('attachments', appConfig.messages.maxAttachmentsPerMessage),
+	uploadCloud([fileTypes.images, fileTypes.audios]).array('attachments', appConfig.messages.maxAttachmentsPerMessage),
 	validation(sendMessageSchema),
 	sendMessages,
 );

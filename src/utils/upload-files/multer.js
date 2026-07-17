@@ -4,33 +4,36 @@ import path from 'node:path';
 import AppError from '../error-handler/app-error.js';
 import { deleteFileHelper } from '../general/file.util.js';
 import { createException } from '../response/throw.exceptions.js';
-import { fileTypes, friendlyExtensions, mimeTypes } from './mime-types.js';
+import { fileTypes, resolveFileTypes } from './mime-types.js';
 import verifyFileSignatures from './verify-file-signatures.js';
 
 // ==========================================
 // 1. Shared File Filter
 // ==========================================
-const createFileFilter = (type) => {
+const createFileFilter = (typeInput) => {
 	return (req, file, cb) => {
-		const allowedList = mimeTypes[type];
+		const { allowedList, friendlyMsg } = resolveFileTypes(typeInput);
+
 		if (!allowedList) {
 			return cb(
 				new AppError({
 					statusCode: 500,
-					message: `Developer Error: Invalid file type category provided: ${type}`,
+					message: `Developer Error: Invalid file type category provided: ${typeInput}`,
 					context: 'Multer File Filter Setup',
 				}),
 				false,
 			);
 		}
 
-		if (type === 'all' || allowedList.includes(file.mimetype)) {
+		const isAll = Array.isArray(typeInput) ? typeInput.includes('all') : typeInput === 'all';
+
+		if (isAll || allowedList.includes(file.mimetype)) {
 			cb(null, true);
 		} else {
 			cb(
 				new AppError({
 					statusCode: 400,
-					message: `Invalid file format! Allowed formats: ${friendlyExtensions[type]}`,
+					message: `Invalid file format! Allowed formats: ${friendlyMsg}`,
 					context: 'User File Type Verification',
 				}),
 				false,
@@ -82,7 +85,8 @@ const runMiddleware = ({ multerInstance, maxCount, expectedFieldName, type, size
 			const uploadedFiles = req.file ? [req.file] : req.files || [];
 
 			try {
-				const allowedList = mimeTypes[type];
+				// Resolve the mixed allowed list dynamically
+				const { allowedList } = resolveFileTypes(type);
 
 				// Validate buffer or file path signatures
 				await verifyFileSignatures(uploadedFiles, allowedList, type);
