@@ -313,3 +313,22 @@ export const toggleFavoriteMessageService = async (userId, messageId) => {
 
 	return data;
 };
+
+export const togglePublicMessageService = async (userId, messageId) => {
+	const message = await Message.findOne({ _id: messageId, to: userId });
+	if (!message) {
+		NotFoundException(
+			'Message not found, or you not authorized to edit this message',
+			'TOGGLE_PUBLIC_MESSAGE.MESSAGE_NOT_FOUND',
+		);
+	}
+
+	const data = {};
+	message.isPublic = !message.isPublic;
+	data.isPublic = message.isPublic;
+	data.newState = message.isPublic;
+
+	await message.save();
+
+	return data;
+};

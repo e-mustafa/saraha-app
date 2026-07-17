@@ -11,6 +11,7 @@ import {
 	getPublicMessages,
 	sendMessages,
 	toggleFavoriteMessage,
+	togglePublicMessage,
 } from './message.controller.js';
 import {
 	deleteMessageSchema,
@@ -39,6 +40,7 @@ export const routes = {
 	getMessage: '/:id',
 	deleteMessage: '/:id',
 	toggleFavorite: '/:id/favorite',
+	togglePublic: '/:id/public',
 };
 
 router.post(
@@ -62,5 +64,6 @@ router.get(routes.getMyMessages, auth(), getMessages());
 router.get(routes.getMessage, auth(), validation(getMessageSchema), getMessage);
 router.delete(routes.deleteMessage, auth(), validation(deleteMessageSchema), deleteMessage);
 router.patch(routes.toggleFavorite, auth(), validation(toggleMessageSchema), toggleFavoriteMessage);
+router.patch(routes.togglePublic, auth(), validation(toggleMessageSchema), togglePublicMessage);
 
 export default router;

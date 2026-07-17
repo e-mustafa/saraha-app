@@ -7,6 +7,7 @@ import {
 	getPublicMessagesService,
 	sendMessageService,
 	toggleFavoriteMessageService,
+	togglePublicMessageService,
 } from './message.services.js';
 import { MessageDTO } from './message.utils.js';
 
@@ -77,6 +78,17 @@ export const toggleFavoriteMessage = asyncHandler(async (req, res) => {
 	successResponse({
 		res,
 		message: newState ? 'Message marked as favorite' : 'Message removed from favorites',
+		data: reset,
+	});
+});
+
+// toggle public message by id
+export const togglePublicMessage = asyncHandler(async (req, res) => {
+	const { user, params } = req || {};
+	const { newState, ...reset } = await togglePublicMessageService(user._id, params.id || '');
+	successResponse({
+		res,
+		message: newState ? 'Message marked as public' : 'Message removed from public',
 		data: reset,
 	});
 });
