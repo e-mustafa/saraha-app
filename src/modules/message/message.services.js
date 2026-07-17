@@ -50,40 +50,43 @@ import { deleteMessageAttachments, uploadToCloudinaryMessage } from './message.u
 export const sendMessageService = async ({ userId, username, content, files, isAnonymous, saveToMyMessages = false }) => {
 	const receiver = await User.findOne({ username, deletedAt: null }).lean().select('_id username');
 	if (!receiver) {
-		// Fixed: Added missing 'throw'
 		NotFoundException('User not found', 'SEND_MESSAGE.USER_NOT_FOUND');
 	}
 
-	// Generate message ID beforehand to use in Cloudinary folder paths if needed,
-	// or rely on a custom unique generator since we upload before saving to DB.
 	const tempMessageId = new Types.ObjectId();
 	let attachments = [];
 
-	// Upload files first to ensure data integrity
+	// Upload files to Cloudinary first
 	if (files && files.length > 0) {
 		try {
 			attachments = await Promise.all(files.map((file) => uploadToCloudinaryMessage(receiver._id, file, tempMessageId)));
 		} catch (error) {
-			// Handle upload failure gracefully depending on your business logic
-			BadRequestException(`Failed to upload attachments, ${error.message}`, 'SEND_MESSAGE.UPLOAD_FAILED');
+			BadRequestException(`Failed to upload attachments: ${error.message}`, 'SEND_MESSAGE.UPLOAD_FAILED');
 		}
 	}
 
-	// Encrypt message content for privacy protection (Secure by Default)
+	// Encrypt message content for privacy protection
 	const encryptedContent = encrypt(content);
 
-	// Create the message in one database operation
-	const message = await Message.create({
-		_id: tempMessageId,
-		content: encryptedContent,
-		publicContent: null, // default null until user decides to publish
-		to: receiver._id,
-		from: userId && saveToMyMessages ? userId : undefined,
-		attachments,
-		isAnonymous,
-	});
+	try {
+		const message = await Message.create({
+			_id: tempMessageId,
+			content: encryptedContent,
+			publicContent: null,
+			to: receiver._id,
+			from: userId && saveToMyMessages ? userId : undefined,
+			attachments,
+			isAnonymous,
+		});
 
-	return message.toObject();
+		return message.toObject();
+	} catch (dbError) {
+		// Rollback uploaded Cloudinary files if DB creation fails
+		if (attachments.length > 0) {
+			await deleteMessageAttachments(attachments);
+		}
+		throw dbError;
+	}
 };
 
 export const getPublicMessagesService = async (username, query = {}) => {
@@ -133,23 +136,20 @@ export const getPublicMessagesService = async (username, query = {}) => {
 		},
 		sort: { createdAt: -1 },
 		additionalStages: [
-			// 1. ربط مجموعة الرسائل بمجموعة المستخدمين (Users) لجلب بيانات المرسل
 			{
 				$lookup: {
-					from: 'users', // تأكد أن هذا الاسم يطابق اسم الـ Collection الفعلي في قاعدة البيانات (غالباً users بالجمع)
+					from: 'users',
 					localField: 'from',
 					foreignField: '_id',
 					as: 'sender',
 				},
 			},
-			// 2. تحويل مصفوفة sender الناتجة من الـ lookup إلى كائن واحد نَشِط
 			{
 				$unwind: {
 					path: '$sender',
-					preserveNullAndEmptyArrays: true, // هامة جداً لكي لا تختفي الرسائل المرسلة من زوار غير مسجلين
+					preserveNullAndEmptyArrays: true,
 				},
 			},
-			// 3. صياغة وتشكيل المخرج النهائي للبيانات
 			{
 				$project: {
 					content: '$publicContent',
@@ -157,13 +157,11 @@ export const getPublicMessagesService = async (username, query = {}) => {
 					createdAt: 1,
 					isAnonymous: 1,
 					isPublic: 1,
-					// التحكم الذكي في حقل from بناءً على مجهولية الرسالة
 					from: {
 						$cond: {
 							if: { $eq: ['$isAnonymous', true] },
-							then: '$$REMOVE', // إذا كانت مجهولة، يتم تدمير حقل from تماماً لحماية الخوية
+							then: '$$REMOVE', // Completely wipe out sender info if anonymous
 							else: {
-								// إذا كانت علنية، نمرر الكائن بالحقول التي يتوقعها الـ DTO للتنسيق
 								_id: '$sender._id',
 								username: '$sender.username',
 								avatar: '$sender.avatar',
@@ -201,8 +199,12 @@ export const getMessagesService = async (userId, query = {}) => {
 			};
 			break;
 		case MESSAGE_TYPE_ENUM.FAVORITES:
+			// Context-aware filter: ensuring users only fetch what THEY favorited
 			filter = {
-				$and: [{ $or: [{ to: userId }, { from: userId }] }, { $or: [{ toFavorite: true }, { fromFavorite: true }] }],
+				$or: [
+					{ to: userId, toFavorite: true },
+					{ from: userId, fromFavorite: true },
+				],
 			};
 			populate = {
 				path: 'from',
@@ -211,8 +213,11 @@ export const getMessagesService = async (userId, query = {}) => {
 			break;
 		case MESSAGE_TYPE_ENUM.PUBLIC:
 			filter = { to: userId, isPublic: true };
+			populate = {
+				path: 'from',
+				select: 'username firstName lastName avatar',
+			};
 			break;
-
 		default:
 			filter = {};
 			break;
@@ -229,12 +234,20 @@ export const getMessagesService = async (userId, query = {}) => {
 		...(populate && { populate }),
 	});
 
-	// decrypt content for owner
 	if (result.data && result.data.length > 0) {
-		result.data = result.data.map((message) => ({
-			...message,
-			content: message.content ? decrypt(message.content) : '',
-		}));
+		result.data = result.data.map((doc) => {
+			const message = doc.toObject ? doc.toObject() : doc;
+
+			// Privacy Shield: Double check and strip sender reference if viewer is the recipient of an anonymous message
+			if (message.isAnonymous && message.to?.toString() === userId.toString()) {
+				delete message.from;
+			}
+
+			if (message.content) {
+				message.content = decrypt(message.content);
+			}
+			return message;
+		});
 	}
 
 	return result;
@@ -246,10 +259,17 @@ export const getMessageService = async (userId, messageId) => {
 		.lean();
 
 	if (!message) {
-		NotFoundException('Message not found, or you not authorized to view this message', 'GET_MESSAGE.MESSAGE_NOT_FOUND');
+		NotFoundException(
+			'Message not found, or you are not authorized to view this message',
+			'GET_MESSAGE.MESSAGE_NOT_FOUND',
+		);
 	}
 
-	// فك تشفير محتوى الرسالة الفردية الخاصة
+	// Strip sender info for absolute privacy if anonymous
+	if (message.isAnonymous && message.to?.toString() === userId.toString()) {
+		delete message.from;
+	}
+
 	if (message.content) {
 		message.content = decrypt(message.content);
 	}
@@ -261,14 +281,18 @@ export const deleteMessageService = async (userId, messageId) => {
 	const message = await Message.findOne({ _id: messageId, $or: [{ to: userId }, { from: userId }] });
 	if (!message) {
 		NotFoundException(
-			'Message not found, or you not authorized to delete this message',
+			'Message not found, or you are not authorized to delete this message',
 			'DELETE_MESSAGE.MESSAGE_NOT_FOUND',
 		);
 	}
 
-	if (message.from && message.from.toString() === userId.toString()) {
+	const userIdStr = userId.toString();
+
+	// Handle distinct fields separately to support self-messaging edge cases safely
+	if (message.from && message.from.toString() === userIdStr) {
 		message.from = null;
-	} else if (message.to && message.to.toString() === userId.toString()) {
+	}
+	if (message.to && message.to.toString() === userIdStr) {
 		message.to = null;
 	}
 
@@ -294,23 +318,26 @@ export const toggleFavoriteMessageService = async (userId, messageId) => {
 	const message = await Message.findOne({ _id: messageId, $or: [{ to: userId }, { from: userId }] });
 	if (!message) {
 		NotFoundException(
-			'Message not found, or you not authorized to edit this message',
+			'Message not found, or you are not authorized to edit this message',
 			'TOGGLE_FAVORITE_MESSAGE.MESSAGE_NOT_FOUND',
 		);
 	}
 
 	const data = {};
-	if (message.to && message.to.toString() === userId) {
+	const userIdStr = userId.toString();
+
+	if (message.to && message.to.toString() === userIdStr) {
 		message.toFavorite = !message.toFavorite;
 		data.toFavorite = message.toFavorite;
 		data.newState = message.toFavorite;
-	} else if (message.from && message.from.toString() === userId) {
+	}
+	if (message.from && message.from.toString() === userIdStr) {
 		message.fromFavorite = !message.fromFavorite;
 		data.fromFavorite = message.fromFavorite;
 		data.newState = message.fromFavorite;
 	}
-	await message.save();
 
+	await message.save();
 	return data;
 };
 
@@ -318,17 +345,24 @@ export const togglePublicMessageService = async (userId, messageId) => {
 	const message = await Message.findOne({ _id: messageId, to: userId });
 	if (!message) {
 		NotFoundException(
-			'Message not found, or you not authorized to edit this message',
+			'Message not found, or you are not authorized to edit this message',
 			'TOGGLE_PUBLIC_MESSAGE.MESSAGE_NOT_FOUND',
 		);
 	}
 
 	const data = {};
 	message.isPublic = !message.isPublic;
+
+	// Update publicContent when making the message public
+	if (message.isPublic && message.content) {
+		message.publicContent = decrypt(message.content);
+	} else if (!message.isPublic) {
+		message.publicContent = null;
+	}
+
 	data.isPublic = message.isPublic;
 	data.newState = message.isPublic;
 
 	await message.save();
-
 	return data;
 };

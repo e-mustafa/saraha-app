@@ -7,44 +7,49 @@ export class MessageDTO {
 	static single(message, isAdmin = false) {
 		if (!message) return null;
 
-		// تنسيق المرفقات وتحويل المسارات لروابط كاملة
 		let formattedAttachments = [];
 		if (message.attachments && message.attachments.length > 0) {
 			formattedAttachments = message.attachments.map((attachment) => ({
 				...attachment,
 				url: formatFilePath(attachment.url),
-				// type: attachment.type,
 			}));
 		}
 
-		// تنسيق بيانات المرسل (from) مع حماية الهوية المجهولة
 		let formattedFrom = null;
+		// Ensure 'from' exists, and message is either not anonymous OR requester is an admin
 		if (message.from && (!message.isAnonymous || isAdmin)) {
-			const { firstName, lastName, username, avatar, _id } = message.from || {};
-			formattedFrom = {
-				id: _id?.toString() || '',
-				name: firstName ? `${firstName || ''} ${lastName || ''}`.trim() : undefined,
-				username: username || undefined,
-				avatar: avatar ? { ...avatar, url: formatFilePath(avatar.url) } : avatar,
-			};
+			if (typeof message.from === 'object' && '_id' in message.from) {
+				const { firstName, lastName, username, avatar, _id } = message.from;
+				formattedFrom = {
+					id: _id?.toString() || '',
+					name: firstName ? `${firstName} ${lastName || ''}`.trim() : undefined,
+					username: username || undefined,
+					avatar: avatar ? { ...avatar, url: formatFilePath(avatar.url) } : avatar,
+				};
+			} else {
+				// Fallback if 'from' is just an ID string or ObjectId due to strict pipeline constraints
+				formattedFrom = { id: message.from.toString() };
+			}
 		}
 
-		// تنسيق بيانات المستقبل (to)
 		let formattedTo = null;
 		if (message.to) {
-			const { firstName, lastName, username, avatar, _id } = message.to || {};
-			formattedTo = {
-				id: _id?.toString() || '',
-				name: firstName ? `${firstName} ${lastName || ''}`.trim() : undefined,
-				username: username || undefined,
-				avatar: avatar ? { ...avatar, url: formatFilePath(avatar.url) } : avatar,
-			};
+			if (typeof message.to === 'object' && '_id' in message.to) {
+				const { firstName, lastName, username, avatar, _id } = message.to;
+				formattedTo = {
+					id: _id?.toString() || '',
+					name: firstName ? `${firstName} ${lastName || ''}`.trim() : undefined,
+					username: username || undefined,
+					avatar: avatar ? { ...avatar, url: formatFilePath(avatar.url) } : avatar,
+				};
+			} else {
+				formattedTo = { id: message.to.toString() };
+			}
 		}
 
-		// بناء كائن الرد النظيف الموحد للـ Frontend
 		return {
 			id: message._id || message.id,
-			content: message.content || '', // يأتي دائماً مفكوك التشفير وجاهز للعرض من الـ Services
+			content: message.content || '',
 			attachments: formattedAttachments,
 			createdAt: message.createdAt,
 			fromFavorite: message.fromFavorite || false,
@@ -62,13 +67,11 @@ export class MessageDTO {
 	}
 }
 
-// Service to upload files attached to anonymous messages
 export const uploadToCloudinaryMessage = async (receiverId, file, messageId) => {
 	if (!file) {
 		throwInternalException('No file provided', 'uploadMessageAttachmentService');
 	}
 
-	// Upload directly to the receiver's message subfolder
 	const customPublicId = `msg_${messageId}_${Math.floor(Math.random() * 10000)}`;
 	const folderPath = `users/${receiverId}/messages`;
 
@@ -77,7 +80,7 @@ export const uploadToCloudinaryMessage = async (receiverId, file, messageId) => 
 			{
 				folder: folderPath,
 				public_id: customPublicId,
-				resource_type: 'auto', // Automatically detects image, video (audio), or raw (docs)
+				resource_type: 'auto',
 			},
 			(error, result) => {
 				if (error) return reject(error);
@@ -91,19 +94,16 @@ export const uploadToCloudinaryMessage = async (receiverId, file, messageId) => 
 	return uploadResult;
 };
 
-// delete message attachments
 export const deleteMessageAttachments = async (attachments) => {
 	if (!attachments || attachments.length === 0) return;
 
-	// Group attachments by their Cloudinary resource_type (image, video, raw)
 	const groupedByFileType = attachments.reduce((acc, file) => {
-		const type = file.fileType || 'image'; // Fallback to image if undefined
+		const type = file.fileType || 'image';
 		if (!acc[type]) acc[type] = [];
-		acc[type].push(file.id); // 'id' contains the public_id
+		acc[type].push(file.id);
 		return acc;
 	}, {});
 
-	// Execute deletion for each group with the correct resource_type
 	const deletePromises = Object.entries(groupedByFileType).map(([fileType, publicIds]) => {
 		return cloudinary.api.delete_resources(publicIds, {
 			resource_type: fileType,
