@@ -19,9 +19,13 @@ export const rateLimitConfig = {
 	limit: 100, // limit each IP to 100 requests per windowMs
 	standardHeaders: false,
 	legacyHeaders: false,
-	statusCode: 429,
-	message: 'Too many requests, please try again later.',
+	// statusCode: 429,
+	// message: 'Too many requests, please try again later.',
 	// handler: (res)=>{ res.status(426).json({message: 'Too many requests, please try again later.'})},
+	// Custom handler to guarantee JSON response format
+	handler: (req, res, next, options) => {
+		res.status(429).json({ message: 'Too many requests, please try again later.' });
+	},
 	store: new RedisStore({
 		sendCommand: (...args) => redisDB.sendCommand(args),
 	}),

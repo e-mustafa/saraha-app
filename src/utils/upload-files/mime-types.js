@@ -16,11 +16,13 @@ const allowedMimeTypes = {
 		'audio/wav', // Uncompressed .wav files
 		'audio/x-wav', // Fallback for some wav encoders
 		'audio/webm', // Crucial: Default format for browser voice recorders (MediaRecorder API)
+		'video/webm', // Crucial: Browsers wrap voice recorder audio in webm containers, detected as video/webm by file-type
 		'audio/ogg', // Open audio format .ogg
 		'audio/aac', // Advanced Audio Coding .aac
 		'audio/x-m4a', // Apple voice memos .m4a
 		'audio/m4a', // Alternative .m4a mime type
 		'audio/3gpp', // Legacy mobile recordings .3gp
+		'video/mp4', // Crucial: iOS Safari wraps audio recordings in mp4 containers, detected as video/mp4
 	],
 	videos: [
 		'video/mp4',
@@ -53,7 +55,7 @@ const allowedMimeTypes = {
 
 export const friendlyExtensions = {
 	images: 'JPG, PNG, WebP, SVG, GIF, AVIF',
-	audio: 'MP3, M4A, mpeg, WebM, WAV, AAC, OGG',
+	audios: 'MP3, M4A, mpeg, WebM, WAV, AAC, OGG', // Fixed: Aligned to plural "audios" to prevent undefined output
 	videos: 'MP4, WebM, MOV, MKV, AVI',
 	docs: 'PDF, DOC, DOCX, XLS, XLSX, TXT',
 	media: 'Images or Videos (MP4, JPG, PNG, etc.)',
@@ -78,25 +80,24 @@ export const fileTypes = {
 	all: 'all',
 };
 
-
 // Helper to dynamically resolve mime types and friendly extensions from string or array
 export const resolveFileTypes = (typeInput) => {
-   const types = Array.isArray(typeInput) ? typeInput : [typeInput];
-   
-   const allowedMimes = [];
-   const extensionsArray = [];
-   
-   for (const t of types) {
-      if (mimeTypes[t]) {
-         allowedMimes.push(...mimeTypes[t]);
-      }
-      if (friendlyExtensions[t]) {
-         extensionsArray.push(friendlyExtensions[t]);
-      }
-   }
-   
-   return {
-      allowedList: allowedMimes.length > 0 ? [...new Set(allowedMimes)] : null,
-      friendlyMsg: extensionsArray.join(' or ')
-   };
+	const types = Array.isArray(typeInput) ? typeInput : [typeInput];
+
+	const allowedMimes = [];
+	const extensionsArray = [];
+
+	for (const t of types) {
+		if (mimeTypes[t]) {
+			allowedMimes.push(...mimeTypes[t]);
+		}
+		if (friendlyExtensions[t]) {
+			extensionsArray.push(friendlyExtensions[t]);
+		}
+	}
+
+	return {
+		allowedList: allowedMimes.length > 0 ? [...new Set(allowedMimes)] : null,
+		friendlyMsg: extensionsArray.join(' or '),
+	};
 };
