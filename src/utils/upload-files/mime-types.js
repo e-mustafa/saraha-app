@@ -72,6 +72,7 @@ export const mimeTypes = {
 export const fileTypes = {
 	images: 'images',
 	videos: 'videos',
+	audios: 'audios',
 	docs: 'docs',
 	media: 'media',
 	all: 'all',
