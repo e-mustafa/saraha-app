@@ -51,11 +51,11 @@ const handleMongooseDuplicateFields = (err) => {
 
 // Transformer for schema validation failures (e.g., age out of bounds)
 const handleMongooseValidationError = (err) => {
-	const errors = {};
+	const errors = { body: {} };
 
 	// Extract field-specific validation messages
 	Object.values(err.errors).forEach((el) => {
-		errors[el?.properties?.path || el.path] = el.message;
+		errors.body[el?.properties?.path || el.path] = el.message;
 	});
 
 	const message = `Database validation failed. Please check your information.`;
