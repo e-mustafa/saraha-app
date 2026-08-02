@@ -6,7 +6,7 @@ const maxContentLength = appConfig.messages.maxMessageLength;
 
 export const sendMessageSchema = {
 	params: joi.object({
-		username: generalFields.username,
+		id: generalFields.id,
 	}),
 
 	body: joi.object({

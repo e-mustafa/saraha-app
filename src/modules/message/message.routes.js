@@ -26,7 +26,7 @@ const router = Router();
 export const routes = {
 	base: '/messages',
 
-	sendMessages: '/public/:username',
+	sendMessages: '/public/:id',
 	getPublicMessages: '/public/:username',
 
 	// ?type=favorites

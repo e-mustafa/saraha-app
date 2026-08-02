@@ -135,6 +135,19 @@ const userSchema = new Schema(
 
 		loggedOutAllAt: { type: Date, default: null },
 
+		// block users
+		blockedUsers: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'user',
+			},
+		],
+		allowAnonymousUsers: {
+			type: Boolean,
+			default: true,
+			index: true,
+		},
+
 		// deletedAt: {
 		// 	type: Date,
 		// 	default: null,

@@ -1,5 +1,6 @@
 import { appConfig } from '../../config/app.config.js';
 import User from '../../DB/models/user.model.js';
+import { formatFilePath } from '../../utils/general/format-file-path.js';
 import { getDataWithPagination } from '../../utils/queries/get-data-with pagination.js';
 import { BadRequestException, ConflictException, NotFoundException } from '../../utils/response/throw.exceptions.js';
 import { decrypt } from '../../utils/security/encryption.security.js';
@@ -16,18 +17,21 @@ export const getProfileService = async (user) => {
 	return userData;
 };
 
-export const updateProfileService = async (user, { firstName, lastName, username, bio, phone, gender, birthdate }) => {
+export const updateProfileService = async (
+	user,
+	{ firstName, lastName, username, bio, phone, gender, birthdate, allowAnonymousUsers },
+) => {
 	if (username) {
 		await checkIfUsernameExists(user._id, username);
 	}
 
 	const updatedUser = await User.findByIdAndUpdate(
 		user._id,
-		{ firstName, lastName, username, bio, phone, gender, birthdate },
+		{ firstName, lastName, username, bio, phone, gender, birthdate, allowAnonymousUsers },
 		{ returnDocument: 'after' },
 	)
 		.lean()
-		.select('-password -__v -role -provider -otp');
+		.select('-password -__v -role -provider');
 
 	if (updatedUser.phone) {
 		updatedUser.phone = decrypt(updatedUser.phone);
@@ -49,7 +53,7 @@ export const updateProfileService = async (user, { firstName, lastName, username
 // 			user._id,
 // 			{ avatar: file.filePath },
 // 			{ returnDocument: 'after' },
-// 			// ).select('-password -__v -role -provider -otp');
+// 			// ).select('-password -__v -role -provider');
 // 		).lean().select('avatar');
 
 // 		// if (updatedUser.phone) {
@@ -103,7 +107,7 @@ export const uploadAvatarService = async (user, file) => {
 // 		{ avatar: null },
 // 		{ returnDocument: 'after' },
 
-// 		// ).select('-password -__v -role -provider -otp')
+// 		// ).select('-password -__v -role -provider')
 // 	).lean().select('avatar');
 
 // 	// Delete the physical file from the disk in the background
@@ -159,7 +163,7 @@ export const deleteAvatarService = async (user) => {
 // 			user._id,
 // 			{ $push: { covers: { $each: newFilePaths } } },
 // 			{ returnDocument: 'after' },
-// 			// ).select('-password -__v -visitCount -role -provider -otp');
+// 			// ).select('-password -__v -visitCount -role -provider');
 // 		)
 // 			.lean()
 // 			.select('covers');
@@ -251,7 +255,7 @@ export const replaceCoverService = async (user, file, imageId) => {
 // 		user._id,
 // 		{ $pull: { covers: relativePath } },
 // 		{ returnDocument: 'after' },
-// 		// ).select('-password -__v -visitCount -role -provider -otp');
+// 		// ).select('-password -__v -visitCount -role -provider');
 // 	).select('covers');
 
 // 	return updatedUser;
@@ -285,24 +289,48 @@ export const deleteSingleCoverService = async (user, imageId) => {
 
 // Increment visit count
 export const visitUserService = async (user, username) => {
-	let targetUser;
-	if (user && user.username === username) {
-		targetUser = await User.findById(user._id).select('-visitCount -password -__v -phone -role -provider -otp').lean();
-	} else {
-		targetUser = await User.findOneAndUpdate({ username }, { $inc: { visitCount: 1 } }, { returnDocument: 'after' })
-			// .select('-visitCount -password -phone -__v -role -provider -otp')
-			.lean()
-			.select('firstName lastName username gender');
-	}
-	if (!targetUser) {
-		NotFoundException('User not found');
+	const visitorId = user?._id;
+	const isSelfVisit = user && user.username === username;
+
+	// Base query by username
+	const query = { username };
+
+	// Atomic Mutual Block Check at Database Level
+	if (visitorId) {
+		// 1. Ensure target user has not blocked the visitor
+		query.blockedUsers = { $ne: visitorId };
+
+		// 2. Ensure visitor has not blocked the target user
+		if (user.blockedUsers?.length) {
+			query._id = { $nin: user.blockedUsers };
+		}
 	}
 
-	// if (user && user.username === username && user.phone) {
-	// 	targetUser.phone = decrypt(user.phone);
-	// }
-	targetUser.id = targetUser._id;
-	return targetUser;
+	// Fetch user and atomically increment visit count only for valid non-self visits
+	let targetUser;
+
+	if (isSelfVisit) {
+		targetUser = await User.findOne(query).lean().select('-password -__v -phone -role -provider');
+	} else {
+		targetUser = await User.findOneAndUpdate(query, { $inc: { visitCount: 1 } }, { returnDocument: 'after' })
+			.lean()
+			.select('-password -__v -phone -role -provider');
+	}
+
+	// Validate existence (Triggers if user doesn't exist OR if blocked in either direction)
+	if (!targetUser) NotFoundException('User not found', 'VISIT_USER.USER_NOT_FOUND');
+
+	// Return formatted public user payload
+	return {
+		id: targetUser._id,
+		_id: targetUser._id,
+		name: `${targetUser.firstName} ${targetUser.lastName}`,
+		username: targetUser.username,
+		gender: targetUser.gender,
+		avatar: targetUser.avatar?.url
+			? { ...targetUser.avatar, url: formatFilePath(targetUser.avatar?.url) }
+			: targetUser.avatar,
+	};
 };
 
 // Get all users
@@ -317,5 +345,46 @@ export const getUsersService = async ({ search, page, limit, sort }) => {
 		select: '-password -__v',
 		populate: ['receivedMessages', 'sentMessages'],
 	});
+	return data;
+};
+
+export const blockUserService = async (user, id) => {
+	const update = await User.findByIdAndUpdate(
+		user?._id,
+		{ $addToSet: { blockedUsers: id } },
+		{ returnDocument: 'after' },
+	).select('-__v -password');
+
+	if (!update) {
+		NotFoundException('User not found', 'block_user');
+	}
+
+	return update;
+};
+
+export const unBlockUserService = async (user, id) => {
+	const update = await User.findByIdAndUpdate(
+		user?._id,
+		{ $pull: { blockedUsers: id } },
+		{ returnDocument: 'after' },
+	).select('-__v -password');
+
+	if (!update) {
+		NotFoundException('User not found', 'unblock_user');
+	}
+
+	return update;
+};
+
+export const getBlockedUsersService = async (userId) => {
+	const data = await User.findById(userId).select('blockedUsers').populate({
+		path: 'blockedUsers',
+		select: 'username firstName lastName avatar',
+	});
+	// .lean();
+
+	if (!data) {
+		NotFoundException('User not found', 'GET_BLOCKED_USERS.USER_NOT_FOUND');
+	}
 	return data;
 };

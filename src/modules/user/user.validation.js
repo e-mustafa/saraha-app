@@ -42,3 +42,9 @@ export const visitUserSchema = {
 		username: generalFields.username,
 	}),
 };
+
+export const blockUserSchema = {
+	params: joi.object({
+		id: generalFields.id,
+	}),
+};

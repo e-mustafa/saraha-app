@@ -3,7 +3,7 @@ import Message from '../../DB/models/message.model.js';
 import User from '../../DB/models/user.model.js';
 import { MESSAGE_TYPE_ENUM } from '../../utils/enums/message.enum.js';
 import { getAggregateWithPagination, getDataWithPagination } from '../../utils/queries/get-data-with pagination.js';
-import { BadRequestException, NotFoundException } from '../../utils/response/throw.exceptions.js';
+import { BadRequestException, ForbiddenException, NotFoundException } from '../../utils/response/throw.exceptions.js';
 import { decrypt, encrypt } from '../../utils/security/encryption.security.js';
 import { deleteMessageAttachments, uploadToCloudinaryMessage } from './message.utils.js';
 
@@ -47,10 +47,18 @@ import { deleteMessageAttachments, uploadToCloudinaryMessage } from './message.u
 // 	}
 // };
 
-export const sendMessageService = async ({ userId, username, content, files, isAnonymous, saveToMyMessages = false }) => {
-	const receiver = await User.findOne({ username, deletedAt: null }).lean().select('_id username');
+export const sendMessageService = async ({ userId, id, content, files, isAnonymous, saveToMyMessages = false }) => {
+	const receiver = await User.findById(id).lean();
 	if (!receiver) {
 		NotFoundException('User not found', 'SEND_MESSAGE.USER_NOT_FOUND');
+	}
+
+	if (!userId && !receiver.allowAnonymousUsers) {
+		BadRequestException('This user only accepts messages from logged-in users.', 'SEND_MESSAGE.ANONYMOUS_NOT_ALLOWED');
+	}
+
+	if (userId && receiver.blockedUsers?.some((id) => id.toString() === userId.toString())) {
+		ForbiddenException('You are blocked by this user.', 'SEND_MESSAGE.BLOCKED_BY_USER');
 	}
 
 	const tempMessageId = new Types.ObjectId();

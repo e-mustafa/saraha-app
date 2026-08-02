@@ -38,7 +38,7 @@ export default app;
 // https://documenter.getpostman.com/view/49016393/2sBXwvHnuD
 
 //! 👈🏻👈🏻👈🏻👈🏻 <-- Github link
-// https://github.com/e-mustafa/saraha-app/tree/main
+// https://github.com/e-mustafa/saraha-app
 
 //! 👈🏻👈🏻👈🏻👈🏻 <-- online link
 // https://saraha-app-back.vercel.app/

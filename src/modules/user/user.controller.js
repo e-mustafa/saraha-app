@@ -6,11 +6,14 @@ import asyncHandler from '../../utils/error-handler/async-handler.js';
 import { successResponse } from '../../utils/response/success.response.js';
 import { uploadCloud } from '../../utils/upload-files/multer.js';
 import {
+	blockUserService,
 	deleteAvatarService,
 	deleteSingleCoverService,
+	getBlockedUsersService,
 	getProfileService,
 	getUsersService,
 	replaceCoverService,
+	unBlockUserService,
 	updateProfileService,
 	uploadAvatarService,
 	uploadCoversService,
@@ -19,6 +22,7 @@ import {
 import { UserDTO } from './user.utils.js';
 import {
 	avatarUserSchema,
+	blockUserSchema,
 	coverUserSchema,
 	deleteImageSchema,
 	replaceCoverUserSchema,
@@ -43,6 +47,10 @@ export const routes = {
 	deleteCovers: '/profile-covers', // delete
 
 	getUsers: '/',
+
+	blockUser: '/block/:id',
+	unBlockUser: '/block/:id',
+	getBlockedUsers: '/block',
 };
 
 router.get(
@@ -159,4 +167,36 @@ router.get(
 		successResponse({ res, data: formattedData, metadata });
 	}),
 );
+
+router.patch(
+	routes.blockUser,
+	auth(),
+	validation(blockUserSchema),
+	asyncHandler(async (req, res) => {
+		const { id } = req.params;
+		const data = await blockUserService(req.user, id);
+		successResponse({ res, message: 'User blocked successfully', data });
+	}),
+);
+
+router.delete(
+	routes.unBlockUser,
+	auth(),
+	validation(blockUserSchema),
+	asyncHandler(async (req, res) => {
+		const { id } = req.params;
+		const data = await unBlockUserService(req.user, id);
+		successResponse({ res, message: 'User unblocked successfully', data });
+	}),
+);
+
+router.get(
+	routes.getBlockedUsers,
+	auth(),
+	asyncHandler(async (req, res) => {
+		const data = await getBlockedUsersService(req.user?._id);
+		successResponse({ res, data });
+	}),
+);
+
 export default router;

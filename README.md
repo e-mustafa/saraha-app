@@ -25,8 +25,6 @@ The project is built with a strong focus on **security**, **performance**, **sca
 
 Designed to serve as a solid foundation for high-traffic applications, the system combines stateless authentication, Redis-powered session management, optimized MongoDB queries, and modular service-oriented architecture to deliver both speed and maintainability.
 
-
-
 ## ✨ Features
 
 ### Authentication
@@ -79,8 +77,8 @@ Designed to serve as a solid foundation for high-traffic applications, the syste
 
 ---
 
-
 ## 📁 Project Structure
+
 ```text
 src
 ├── config/
@@ -133,6 +131,7 @@ Response
 ---
 
 ## 🏛️ High-Level Architecture
+
 ```text
                     Client
                        │
@@ -170,8 +169,6 @@ Each module is designed around clear responsibilities:
 - **Redis** provides ultra-fast session and token management.
 
 This architecture keeps the codebase clean, testable, and easy to extend as new features are introduced.
-
-
 
 ---
 
@@ -212,21 +209,19 @@ To mitigate token-theft and replay attacks, every time a new Access Token is req
 
 ---
 
-
 ## 💬 Advanced Messaging Architecture & Privacy Framework
 
 The messaging module is designed as an enterprise-grade, privacy-first system. It implements a unique **Dual-Field Cryptographic Pattern** that ensures maximum data security at rest, while maintaining ultra-high performance for public profile views without draining server CPU resources.
 
 ### 🚀 Core Architecture Concepts
 
-* **Secure by Default (Zero-Knowledge Pattern):** Every incoming message is immediately encrypted on the server side using AES-256-CBC prior to database insertion. The raw text is never stored in plain format within the primary storage.
-* **Dual-Field Performance Optimization (`content` vs `publicContent`):** * `content` (Ciphertext): Always holds the securely encrypted version of the message, accessible only to the account owner after server-side decryption.
-    * `publicContent` (Plaintext Cache): When a user chooses to publish a message (`isPublic: true`), the server decrypts the text **exactly once** and caches the plaintext in this field. 
-* **Zero-CPU Profile Browsing:** When public visitors view a user's profile, the system fetches the pre-decrypted `publicContent` using database aggregation, completely bypassing any runtime decryption algorithms. This eliminates CPU bottlenecks during high-traffic events.
-* **Instant One-Click Unpublish:** If a user toggles a message back to private, the server simply sets `isPublic: false` and purges `publicContent: null`. The original encrypted payload remains untouched in `content`, removing the need for re-encryption cycles.
+- **Secure by Default (Zero-Knowledge Pattern):** Every incoming message is immediately encrypted on the server side using AES-256-CBC prior to database insertion. The raw text is never stored in plain format within the primary storage.
+- **Dual-Field Performance Optimization (`content` vs `publicContent`):** \* `content` (Ciphertext): Always holds the securely encrypted version of the message, accessible only to the account owner after server-side decryption.
+   - `publicContent` (Plaintext Cache): When a user chooses to publish a message (`isPublic: true`), the server decrypts the text **exactly once** and caches the plaintext in this field.
+- **Zero-CPU Profile Browsing:** When public visitors view a user's profile, the system fetches the pre-decrypted `publicContent` using database aggregation, completely bypassing any runtime decryption algorithms. This eliminates CPU bottlenecks during high-traffic events.
+- **Instant One-Click Unpublish:** If a user toggles a message back to private, the server simply sets `isPublic: false` and purges `publicContent: null`. The original encrypted payload remains untouched in `content`, removing the need for re-encryption cycles.
 
 ---
-
 
 ### 🛡️ Implemented Features
 
@@ -276,14 +271,15 @@ The messaging system is optimized for large datasets.
 
 ### 📊 Message Flow & Cryptographic States
 
-| Operation | Processing Layer | Database Strategy | Cryptographic Action |
-| :--- | :--- | :--- | :--- |
-| **Send Message** | Validation → Service | MongoDB Insert | Text encrypted into `content` field. |
-| **Inbox View** | Decryption Filter → DTO | Indexed Query + Map | `content` decrypted on-the-fly for owner. |
-| **Publish Message** | Toggle Service | Update Document | Decrypts `content` → Saves to `publicContent`. |
-| **Profile View (Public)** | Aggregation Pipeline | `baseMatch: { isPublic: true }` | Zero-CPU. Aliases `publicContent` as `content`. |
-| **Unpublish Message** | Toggle Service | Update Document | Sets `publicContent: null` & `isPublic: false`. |
-| **Delete Message** | Ownership Validation | Remove Reference / Delete | Document completely purged from storage. |
+| Operation                 | Processing Layer        | Database Strategy               | Cryptographic Action                            |
+| :------------------------ | :---------------------- | :------------------------------ | :---------------------------------------------- |
+| **Send Message**          | Validation → Service    | MongoDB Insert                  | Text encrypted into `content` field.            |
+| **Inbox View**            | Decryption Filter → DTO | Indexed Query + Map             | `content` decrypted on-the-fly for owner.       |
+| **Publish Message**       | Toggle Service          | Update Document                 | Decrypts `content` → Saves to `publicContent`.  |
+| **Profile View (Public)** | Aggregation Pipeline    | `baseMatch: { isPublic: true }` | Zero-CPU. Aliases `publicContent` as `content`. |
+| **Unpublish Message**     | Toggle Service          | Update Document                 | Sets `publicContent: null` & `isPublic: false`. |
+| **Delete Message**        | Ownership Validation    | Remove Reference / Delete       | Document completely purged from storage.        |
+
 ---
 
 ## 🚀 Future Improvements
@@ -309,6 +305,7 @@ The messaging system is optimized for large datasets.
 - [x] Optimized Performance Compound MongoDB Indexes
 - [x] Dual-Field Cryptographic Caching (content / publicContent)
 - [x] Zero-CPU Public Profile Aggregation Logic
+
 ---
 
 ## 🚀 Quick Start
@@ -339,6 +336,7 @@ npm run dev
 Create a .env file
 
 Required variables:
+
 - in .env.example file
 
 ```text
@@ -370,18 +368,13 @@ EMAIL_PORT=587
 EMAIL_USER=your_verified_email@gmail.com
 EMAIL_PASS=your_app_specific_password
 ```
+
 ---
 
 ## 📚 API Documentation
 
 - [📖 Postman Collection](https://documenter.getpostman.com/view/49016393/2sBXwvHnuD)
-<!-- - Swagger -->
-
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/e-mustafa/saraha-app/issues).
+ <!-- - Swagger -->
 
 ---
 

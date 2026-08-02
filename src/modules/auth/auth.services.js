@@ -188,8 +188,8 @@ export const socialLoginService = async (provider, idToken) => {
 		firstName: given_name || email.split('@')[0],
 		lastName: family_name || given_name || email.split('@')[0],
 		username: `${email.split('@')[0].replace(/\./g, '')}_${Math.floor(Math.random() * 1000)}`,
-		avatar: { id: 'google-avatar', url: picture },
-		verified:email_verified,
+		avatar: picture ? { id: 'google-avatar', url: picture } : null,
+		verified: email_verified,
 		provider,
 	});
 	// generate access token
@@ -494,7 +494,7 @@ export const logoutAllService = async (user, refreshToken) => {
 	const decoded = await decodeToken(refreshToken, true);
 	await tokenServices.delete(decoded.jti);
 
-	const updatedUser = await User.findByIdAndUpdate(user._id, { loggedOutAllAt: Date.now() });
+	const updatedUser = await User.findByIdAndUpdate(user._id, { loggedOutAllAt: new Date() });
 	if (!updatedUser) {
 		NotFoundException('User not found', 'logoutAllService-user-not-found');
 	}
